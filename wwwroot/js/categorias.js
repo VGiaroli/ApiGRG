@@ -13,9 +13,11 @@ function mostrarCategorias(listaCategorias){
     $("#tabla-categorias").empty();
 
     $.each(listaCategorias, function(index, categoria){
+        let estadoCategoria = categoria.eliminado ? 'Inactivo' : 'Activo'
         $("#tabla-categorias").append(
             "<tr>" +
                 "<td>" + categoria.nombreProducto + "</td>" +
+                "<td>" + estadoCategoria + "</td>" +
                 "<td class='text-center'>" +
                 //Editar
                 "<button class='btn-action' title='Editar' onclick='buscarCategoria("+ categoria.categoriaID +")'><i class='bi bi-pencil-square'></i></button>" +
@@ -88,7 +90,7 @@ function buscarCategoria(id){
         document.getElementById("categoriaID").value = categoria.categoriaID;
         document.getElementById("nombreProducto").value = categoria.nombreProducto;
         document.getElementById("eliminado").value = categoria.eliminado.toString();
-        document.getElementById("contenedorEstado").style.display = 'none';
+        document.getElementById("contenedorEstado").style.display = 'block';
         document.getElementById('modalTitulo').textContent = "Editar Categoria";
 
         $("#modalRegistroCategoria").modal("show");
