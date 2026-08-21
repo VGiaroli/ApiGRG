@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+    --admin-accent: #fd7700;
+    --admin-accent-dark: #ff7700;
+}
+
+.hr-abajoTitulo {
+    border: none;
+    border-top: 2px dotted #dfdfdf;
+    margin: 0 0 1.5rem 0;
+    opacity: 1;
+}
+
+.page-head {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: flex;
+    align-items: center; /* Mantenemos centrado o como estaba */
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.6rem;
+}
+
+/* Hacemos que el bloque de texto se alinee contra el fondo del flex container */
+.page-head > div:first-child {
+    align-self: flex-end; 
+}
+
+.page-head h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--admin-text);
+    letter-spacing: -0.01em;
+}
+
+.page-head p {
+    margin: 0.2rem 0 0;
+    color: var(--admin-muted);
+    font-size: 0.9rem;
+}
+
+.subTitle {
+    font-size: 0.8rem; /* Puedes probar con 0.75rem o 0.8rem para que sea más chica */
+    color: var(--admin-muted); /* Asegura que mantenga el color grisáceo sutil */
+}
+
+.btn-agregar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.62rem 1.1rem;
+    border: none;
+    border-radius: 10px;
+    background: var(--admin-accent);
+    /* Ahora sí leerá el color correctamente */
+    color: #ffffff;
+    /* El texto debe ser blanco (o claro) para que contraste bien con el fondo */
+    font-weight: 700;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    box-shadow: 0 10px 20px rgba(162, 162, 163, 0.28);
+    /* Sombra acorde al color */
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.btn-agregar:hover,
+.btn-agregar:focus {
+    background: var(--admin-accent-dark);
+    color: #ffffff;
+    /* Mantenemos el texto blanco al hacer hover */
+    transform: translateY(-1px);
+}
+
+
+
+
+
+/* Aplicamos la tipografía moderna a toda la tabla y contenedores */
+.table-custom-container {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+    overflow: hidden;
+}
+
+/* Estilos específicos para la tabla estilo Inapp */
+.table-custom {
+    margin-bottom: 0;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table-custom th {
+    background-color: #f9fafb !important;
+    color: #6b7280 !important;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+.table-custom td {
+    padding: 1rem 1.25rem;
+    color: #1f2937;
+    font-size: 0.875rem;
+    font-weight: 500;
+    vertical-align: middle;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.table-custom tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Botones de acción dentro de la tabla (Editar / Eliminar) */
+.btn-action {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #4b5563;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-right: 4px;
+}
+
+.btn-action:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #1f2937;
+}
+
+.btn-action.btn-delete:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #dc2626;
+}
