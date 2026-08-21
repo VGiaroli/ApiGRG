@@ -76,7 +76,7 @@ function guardarRegistro(){
 
 
 function buscarCategoria(id){
-    fetch(``, {
+    fetch(`http://localhost:5194/api/categorias/${id}`, {
         method:'GET',
         headers: {'Accept': 'application/json', 'Content-Type': 'application/json' }
     })

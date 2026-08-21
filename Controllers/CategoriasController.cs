@@ -20,12 +20,12 @@ namespace ApiGRG.Models
             return await _context.Categorias.ToListAsync();
         }
 
-        [HttpGet("${id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Categoria>> GetCategoria(int id)
         {
             var categorias = await _context.Categorias.FindAsync(id);
-            
-            if(categorias == null)
+
+            if (categorias == null)
             {
                 return NotFound();
             }
@@ -46,14 +46,50 @@ namespace ApiGRG.Models
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCategoria", new { id = categoria.CategoriaID }, categoria);
-        } 
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> EditarCategoria(int id, Categoria categorias)
+        {
+            if (id != categorias.CategoriaID)
+            {
+                return BadRequest(new { message = "El ID no coincide" });
+            }
+
+
+            if (string.IsNullOrWhiteSpace(categorias.NombreProducto))
+            {
+                return BadRequest(new { message = "El Nombre del Producto es requerido." });
+            }
+
+            _context.Entry(categorias).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CategoriaExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+
+            return NoContent();
+        }
 
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarCategoria(int id)
         {
             var categoria = await _context.Categorias.FindAsync(id);
-            if(categoria == null)
+            if (categoria == null)
             {
                 return NotFound();
             }
