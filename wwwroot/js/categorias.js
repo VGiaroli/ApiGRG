@@ -32,7 +32,7 @@ function mostrarCategorias(listaCategorias){
 
 function guardarRegistro(){
     let categoriaID = document.getElementById("categoriaID").value;
-    let nombreProducto = document.getElementById("nombreProducto").value;
+    let nombreProducto = document.getElementById("nombreProducto").value.trim().toUpperCase();
     let eliminado = document.getElementById("eliminado").value === "true";
 
     let guardarCategoria = {

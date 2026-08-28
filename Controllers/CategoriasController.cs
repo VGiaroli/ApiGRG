@@ -42,6 +42,9 @@ namespace ApiGRG.Models
                 return BadRequest(new { message = "El nombre del producto es requerido." });
             }
 
+            // Convertir a mayúsculas aquí
+            categoria.NombreProducto = categoria.NombreProducto.ToUpper();
+
             _context.Categorias.Add(categoria);
             await _context.SaveChangesAsync();
 
@@ -61,6 +64,9 @@ namespace ApiGRG.Models
             {
                 return BadRequest(new { message = "El Nombre del Producto es requerido." });
             }
+
+            // Convertir a mayúsculas aquí
+            categorias.NombreProducto = categorias.NombreProducto.ToUpper();
 
             _context.Entry(categorias).State = EntityState.Modified;
 

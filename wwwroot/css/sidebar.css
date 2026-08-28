@@ -79,7 +79,7 @@ a { text-decoration: none; }
   width: 42px;
   height: 42px;
   border-radius: 8px;
-  background: linear-gradient(93deg, #8325eb, #1a0f76);
+  background: linear-gradient(93deg, #dd8c13, #da8320);
   color: #fff;
   font-size: 1.1rem;
   font-weight: 800;
@@ -185,7 +185,7 @@ a { text-decoration: none; }
 }
 
 .admin-navbar.bg-white {
-  background: linear-gradient(93deg, #da8439, #fd7700); /* Violeta vibrante con transparencia */
+  background: linear-gradient(93deg, #8325eb, #3b2fa0); /* Violeta vibrante con transparencia */
   backdrop-filter: blur(14px);
   color: #ffffff; /* Texto blanco para contrastar con el fondo fuerte */
 }
@@ -344,7 +344,7 @@ html[data-theme="dark"] body {
 
 .sidebar-footer {
   border-top-color: var(--admin-sidebar-border);
-  color: var(--admin-sidebar-text);
+  color: black;
 }
 
 html[data-theme="dark"] .admin-navbar.bg-white {
@@ -471,3 +471,4 @@ div[style*="margin-left"] {
     display: none;
   }
 }
+
