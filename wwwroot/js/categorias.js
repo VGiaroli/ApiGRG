@@ -1,36 +1,35 @@
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', function () {
     obtenerCategorias();
 })
 
-function obtenerCategorias(){
-    fetch('http://localhost:5194/api/categorias')
-    .then(response => response.json())
-    .then(listaCategorias => mostrarCategorias(listaCategorias))
-    .catch(error => console.error("Error al obtener las categorias: ", error))
+function obtenerCategorias() {
+    fetch(`${linkApi}/categorias`)
+        .then(response => response.json())
+        .then(listaCategorias => mostrarCategorias(listaCategorias))
+        .catch(error => console.error("Error al obtener las categorias: ", error))
 }
 
-function mostrarCategorias(listaCategorias){
+function mostrarCategorias(listaCategorias) {
     $("#tabla-categorias").empty();
 
-    $.each(listaCategorias, function(index, categoria){
+    $.each(listaCategorias, function (index, categoria) {
         let estadoCategoria = categoria.eliminado ? 'Inactivo' : 'Activo'
         $("#tabla-categorias").append(
             "<tr>" +
-                "<td>" + categoria.nombreProducto + "</td>" +
-                "<td>" + estadoCategoria + "</td>" +
-                "<td class='text-center'>" +
-                //Editar
-                "<button class='btn-action' title='Editar' onclick='buscarCategoria("+ categoria.categoriaID +")'><i class='bi bi-pencil-square'></i></button>" +
-                //Eliminar
-                "<button class='btn-action btn-delete' title='Eliminar' onclick='confirmarEliminar("+ categoria.categoriaID +")'><i class='bi bi-trash'></i></button>" +
-                "</td>" +
-            "</tr>" 
+            "<td>" + categoria.nombreProducto + "</td>" +
+            "<td>" + estadoCategoria + "</td>" +
+            "<td class='text-center'>" +
+            //Editar
+            "<button class='btn-action' title='Editar' onclick='buscarCategoria(" + categoria.categoriaID + ")'><i class='bi bi-pencil-square'></i></button>" +
+            //Eliminar
+            "<button class='btn-action btn-delete' title='Eliminar' onclick='confirmarEliminar(" + categoria.categoriaID + ")'><i class='bi bi-trash'></i></button>" +
+            "</td>" +
+            "</tr>"
         )
     })
 }
 
-
-function guardarRegistro(){
+function guardarRegistro() {
     let categoriaID = document.getElementById("categoriaID").value;
     let nombreProducto = document.getElementById("nombreProducto").value.trim().toUpperCase();
     let eliminado = document.getElementById("eliminado").value === "true";
@@ -41,62 +40,56 @@ function guardarRegistro(){
         eliminado
     }
 
-    if(categoriaID > 0){
-        fetch(`http://localhost:5194/api/categorias/${categoriaID}`, {
+    if (categoriaID > 0) {
+        fetch(`${linkApi}/categorias/${categoriaID}`, {
             method: 'PUT',
-            headers: {'Accept': 'application/json', 'Content-Type': 'application/json' },
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             body: JSON.stringify(guardarCategoria)
         })
-        .then(response => {
-            if(!response.ok) !response.json().then(error => { throw error()})
+            .then(response => {
+                if (!response.ok) throw new Error(`Error ${response.status}`);
                 $('#modalRegistroCategoria').modal('hide');
-
-
-            obtenerCategorias();
-        })
-        .catch(error => console.error("Error al editar la categoria", error))
-    } 
-    else{
-        fetch(`http://localhost:5194/api/categorias`, {
-            method:'POST',
-            headers: {'Accept': 'application/json', 'Content-Type': 'application/json' },
+                obtenerCategorias();
+            })
+            .catch(error => console.error("Error al editar la categoria", error))
+    }
+    else {
+        fetch(`${linkApi}/categorias`, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             body: JSON.stringify(guardarCategoria)
         })
-        .then(async response => {
-            if(!response.ok){
-                const text = await response.text();
-                throw new Error(text || `Error ${response.status}`);
-            }
-            $('#modalRegistroCategoria').modal('hide');
-
-
-            obtenerCategorias();
-        })
-        .catch(error => console.error("Error al crear una categoria: ", error));
+            .then(async response => {
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(text || `Error ${response.status}`);
+                }
+                $('#modalRegistroCategoria').modal('hide');
+                obtenerCategorias();
+            })
+            .catch(error => console.error("Error al crear una categoria: ", error));
     }
 }
 
-
-function buscarCategoria(id){
-    fetch(`http://localhost:5194/api/categorias/${id}`, {
-        method:'GET',
-        headers: {'Accept': 'application/json', 'Content-Type': 'application/json' }
+function buscarCategoria(id) {
+    fetch(`${linkApi}/categorias/${id}`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
     })
-    .then(response => {
-        if(!response.ok) throw new Error("Error al obtener la categoria");
-        return response.json();
-    })
-    .then(categoria => {
-        document.getElementById("categoriaID").value = categoria.categoriaID;
-        document.getElementById("nombreProducto").value = categoria.nombreProducto;
-        document.getElementById("eliminado").value = categoria.eliminado.toString();
-        document.getElementById("contenedorEstado").style.display = 'block';
-        document.getElementById('modalTitulo').textContent = "Editar Categoria";
+        .then(response => {
+            if (!response.ok) throw new Error("Error al obtener la categoria");
+            return response.json();
+        })
+        .then(categoria => {
+            document.getElementById("categoriaID").value = categoria.categoriaID;
+            document.getElementById("nombreProducto").value = categoria.nombreProducto;
+            document.getElementById("eliminado").value = categoria.eliminado.toString();
+            document.getElementById("contenedorEstado").style.display = 'block';
+            document.getElementById('modalTitulo').textContent = "Editar Categoria";
 
-        $("#modalRegistroCategoria").modal("show");
-
-    })
-    .catch(error => console.error("Error al obtener la categoria", error))
+            $("#modalRegistroCategoria").modal("show");
+        })
+        .catch(error => console.error("Error al obtener la categoria", error))
 }
 
 function confirmarEliminar(id) {
@@ -114,10 +107,10 @@ function confirmarEliminar(id) {
     });
 }
 
-function eliminarCategoria(id){
-    fetch(`http://localhost:5194/api/categorias/${id}`, {
-        method:'DELETE',
-        headers: {'Accept': 'application/json', 'Content-Type': 'application/json' }
+function eliminarCategoria(id) {
+    fetch(`${linkApi}/categorias/${id}`, {
+        method: 'DELETE',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
     }).then(() => {
         Swal.fire({
             text: "La categoria fue eliminada correctamente",
@@ -130,16 +123,16 @@ function eliminarCategoria(id){
         });
         obtenerCategorias();
     })
-    .catch(error => console.error("Error al eliminar la categoria: ", error))
+        .catch(error => console.error("Error al eliminar la categoria: ", error))
 }
 
-function abrirModalCrear(){
+function abrirModalCrear() {
     limpiarFormulario();
     $("#modalRegistroCategoria").modal('show');
 }
 
-function limpiarFormulario(){
-    document.getElementById('categoriaID').value = "0"; 
+function limpiarFormulario() {
+    document.getElementById('categoriaID').value = "0";
     document.getElementById('nombreProducto').value = "";
     document.getElementById('contenedorEstado').style.display = 'none';
     document.getElementById('modalTitulo').textContent = "Agregar Categoria";

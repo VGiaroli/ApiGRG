@@ -36,6 +36,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Sirve wwwroot/index.html cuando entran a "/" y habilita el resto de archivos estáticos (js, css, html, img)
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
 
 app.UseCors();

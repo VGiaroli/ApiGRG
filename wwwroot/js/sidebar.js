@@ -67,7 +67,7 @@
     var mediaQuery = window.matchMedia(desktopMedia);
     var storageAvailable = canUseStorage();
 
-    
+
 
     function initValidation() {
       var forms = document.querySelectorAll(".needs-validation");
@@ -149,7 +149,11 @@
 
     // Initialize user profile values in UI. Provide a window.adminHMDUser object to override defaults.
     function initUserProfile() {
-      var user = window.adminHMDUser || { name: "Random", workspace: "Active Workspace", avatar: "/wwwroot/img/avatar.jpg" };
+      var user = window.adminHMDUser;
+
+      if (!user) {
+        return;
+      }
 
       var sidebarNameEl = document.querySelector(".sidebar-user strong");
       var sidebarWorkspaceEl = document.querySelector(".sidebar-user small");

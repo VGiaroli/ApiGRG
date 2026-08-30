@@ -13,14 +13,44 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <link rel="stylesheet" href="/wwwroot/css/productos.css">
+    <link rel="stylesheet" href="/css/productos.css">
 </head>
 
 <body>
     <div id="navbar-placeholder"></div>
 
+    <div class="admin-main">
+        <main class="container-fluid px-4 py-4">
 
+            <div class="page-head">
+                <div>
+                    <h1>Productos</h1>
+                    <h4 class="subTitle">Manage your product inventory</h4>
+                </div>
+            </div>
 
+            <hr class="hr-abajoTitulo">
+
+            <div class="table-custom-container my-4">
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Categoria</th>
+                                <th scope="col">Precio ARS</th>
+                                <th scope="col">Precio USD</th>
+                                <th scope="col">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-productos">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -28,23 +58,9 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script src="/wwwroot/js/productos.js"></script>
-
-    <script>
-        // sidebar.html trae embebido <script src="/wwwroot/js/sidebar.js">, pero al insertarlo
-        // con innerHTML el navegador NO lo ejecuta (restricción de seguridad del DOM).
-        // Por eso hace falta agregarlo a mano con createElement, como abajo.
-        fetch('/wwwroot/views/Components/sidebar.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('navbar-placeholder').innerHTML = data;
-
-                var script = document.createElement('script');
-                script.src = '/wwwroot/js/sidebar.js';
-                document.body.appendChild(script);
-            })
-            .catch(error => console.error('Error cargando sidebar:', error));
-    </script>
+    <script src="/js/config.js"></script>
+    <script src="/js/productos.js"></script>
+    <script src="/js/layout.js"></script>
 </body>
 
 </html>
