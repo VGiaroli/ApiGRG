@@ -1,0 +1,203 @@
+<!-- ============================================================ -->
+<!-- VISTA ADMIN DE SERVICIOS                                     -->
+<!-- Página de administración para gestionar servicios:            -->
+<!--   - Listar todos los servicios en una tabla                   -->
+<!--   - Crear nuevos servicios (modal)                            -->
+<!--   - Editar servicios existentes (modal)                       -->
+<!--   - Eliminar servicios con confirmación                       -->
+<!--                                                              -->
+<!-- Componentes:                                                 -->
+<!--   - Sidebar (cargado via fetch desde Components/sidebar.html) -->
+<!--   - Tabla con columnas: Nombre, Descuento, Tipo, Estado,     -->
+<!--     Productos, Categorías, Acciones                           -->
+<!--   - Modal Crear/Editar con campos y checkboxes                -->
+<!--                                                              -->
+<!-- Dependencias:                                                -->
+<!--   - Bootstrap 5.3 (layout, modal, select)                    -->
+<!--   - Font Awesome 6 (íconos de editar/eliminar)               -->
+<!--   - Bootstrap Icons (ícono de agregar)                       -->
+<!--   - jQuery (para $(document).ready)                          -->
+<!--   - SweetAlert2 (alertas de confirmación)                    -->
+<!--   - servicios.js (lógica CRUD)                               -->
+<!--   - servicios.css (estilos de tabla y botones)               -->
+<!-- ============================================================ -->
+
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Servicios - Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="/wwwroot/css/servicios.css" />
+</head>
+
+<body>
+    <!-- Placeholder donde se inyecta el sidebar via JavaScript -->
+    <div id="navbar-placeholder"></div>
+
+    <div class="admin-main">
+        <main class="container-fluid px-4 py-4">
+
+            <!-- ========== HEADER: Título + Botón Agregar ========== -->
+            <div class="page-head">
+                <div>
+                    <h1>Servicios</h1>
+                    <h4 class="subTitle">
+                        Gestionar servicios, descuentos y asociaciones
+                    </h4>
+                </div>
+                <!-- Botón que abre el modal en modo "crear" -->
+                <button class="btn-agregar" type="button" onclick="abrirModalCrear()">
+                    <i class="bi bi-plus-lg"></i> Agregar
+                </button>
+            </div>
+            <hr class="hr-abajoTitulo" />
+
+            <!-- ========== TABLA DE SERVICIOS ========== -->
+            <div class="table-custom-container my-4">
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Descuento</th>
+                                <th>Tipo</th>
+                                <th>Estado</th>
+                                <th>Productos</th>
+                                <th>Categorías</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <!-- El tbody se llena dinámicamente con servicios.js -->
+                        <tbody id="tabla-servicios"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ========== MODAL CREAR/EDITAR SERVICIO ========== -->
+            <!-- Se usa para crear (POST) o editar (PUT) un servicio -->
+            <!-- El título cambia según el modo: "Agregar" o "Editar" -->
+            <div class="modal fade" id="modalServicio" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="modalTitulo">
+                                Agregar Servicio
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Campo oculto: ID del servicio (0 = crear, >0 = editar) -->
+                            <input type="hidden" id="servicioID" value="0" />
+
+                            <!-- Fila 1: Nombre (obligatorio) + Orden -->
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label for="nombre" class="form-label">Nombre *</label>
+                                    <input type="text" id="nombre" class="form-control" />
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="orden" class="form-label">Orden</label>
+                                    <input type="number" id="orden" class="form-control" value="0" />
+                                </div>
+                            </div>
+
+                            <!-- Descripción (opcional) -->
+                            <div class="mb-3">
+                                <label for="descripcion" class="form-label">Descripción</label>
+                                <textarea id="descripcion" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <!-- Fila 3: Descuento + Tipo Descuento + Estado -->
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="descuento" class="form-label">Descuento</label>
+                                    <input type="number" id="descuento" class="form-control" value="0" min="0" />
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="tipoDescuento" class="form-label">Tipo Descuento</label>
+                                    <select id="tipoDescuento" class="form-select">
+                                        <option value="1">Porcentaje (%)</option>
+                                        <option value="2">Monto Fijo ($)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="activo" class="form-label">Estado</label>
+                                    <select id="activo" class="form-select">
+                                        <option value="true">Activo</option>
+                                        <option value="false">Inactivo</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Visibilidad -->
+                            <div class="mb-3">
+                                <label for="visibilidad" class="form-label">Visibilidad</label>
+                                <select id="visibilidad" class="form-select">
+                                    <option value="true">Visible</option>
+                                    <option value="false">Oculto</option>
+                                </select>
+                            </div>
+
+                            <hr />
+
+                            <!-- ========== CHECKBOXES DE PRODUCTOS ASOCIADOS ========== -->
+                            <!-- Se llena dinámicamente con servicios.js -->
+                            <h6>Productos asociados</h6>
+                            <div id="checkboxes-productos" class="mb-3" style="
+                    max-height: 150px;
+                    overflow-y: auto;
+                    border: 1px solid #ddd;
+                    padding: 10px;
+                    border-radius: 8px;
+                  "></div>
+
+                            <!-- ========== CHECKBOXES DE CATEGORÍAS ASOCIADAS ========== -->
+                            <!-- Se llena dinámicamente con servicios.js -->
+                            <h6>Categorías asociadas</h6>
+                            <div id="checkboxes-categorias" class="mb-3" style="
+                    max-height: 150px;
+                    overflow-y: auto;
+                    border: 1px solid #ddd;
+                    padding: 10px;
+                    border-radius: 8px;
+                  "></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Cerrar
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="guardarRegistro()">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========== SCRIPTS ========== -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/wwwroot/js/servicios.js"></script>
+
+    <!-- Carga del sidebar via fetch (patrón usado en todo el proyecto) -->
+    <script>
+        fetch("/wwwroot/views/Components/sidebar.html")
+            .then((r) => r.text())
+            .then((data) => {
+                document.getElementById("navbar-placeholder").innerHTML = data;
+                var s = document.createElement("script");
+                s.src = "/wwwroot/js/sidebar.js";
+                document.body.appendChild(s);
+            });
+    </script>
+</body>
+
+</html>

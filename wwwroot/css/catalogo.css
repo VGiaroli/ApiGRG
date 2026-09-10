@@ -1,0 +1,192 @@
+/* ============================================================
+   ESTILOS DEL CATÁLOGO DEL CLIENTE
+   Estilos para la vista pública de servicios organizados por categoría.
+   
+   Secciones:
+     1. Reset y body (fondo degradado)
+     2. Contenedor principal
+     3. Header del catálogo
+     4. Secciones de categoría (título + contador)
+     5. Tarjetas de servicios (cards)
+     6. Badges de descuento
+     7. Precios (original tachado + final verde)
+     8. Tags de productos asociados
+     9. Responsive (mobile)
+   ============================================================ */
+
+/* ========== 1. RESET Y BODY ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: linear-gradient(#F1FAFF, #CBE4FF);  /* Fondo degradado azul claro */
+    min-height: 100vh;
+}
+
+/* ========== 2. CONTENEDOR PRINCIPAL ========== */
+.catalogo-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* ========== 3. HEADER DEL CATÁLOGO ========== */
+.catalogo-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.catalogo-header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #1e3a5f;  /* Azul oscuro */
+}
+
+.catalogo-header p {
+    color: #6c757d;  /* Gris para subtítulo */
+    font-size: 16px;
+}
+
+/* ========== 4. SECCIONES DE CATEGORÍA ========== */
+
+/* Espacio entre cada sección de categoría */
+.categoria-seccion {
+    margin-bottom: 40px;
+}
+
+/* Header de cada categoría: título + contador + línea decorativa */
+.categoria-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid;
+    border-image: linear-gradient(90deg, #1e3a5f, #2b4d77, transparent) 1;
+}
+
+.categoria-titulo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e3a5f;
+}
+
+/* Badge con cantidad de servicios: "3 servicio(s)" */
+.categoria-contador {
+    background: #e9ecef;
+    color: #495057;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ========== 5. TARJETAS DE SERVICIOS ========== */
+
+/* Tarjeta de servicio: fondo blanco, bordes redondeados, sombra */
+.card-servicio {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    position: relative;      /* Para posicionar el badge de descuento */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;            /* Para que todas las tarjetas tengan igual altura */
+    border-left: 4px solid #1e3a5f;  /* Borde azul izquierdo decorativo */
+}
+
+/* Hover: subir tarjeta y agrandar sombra */
+.card-servicio:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+/* ========== 6. BADGE DE DESCUENTO ========== */
+
+/* Badge rojo en esquina superior derecha */
+.badge-descuento {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);  /* Rojo */
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* ========== 7. NOMBRE Y DESCRIPCIÓN ========== */
+.servicio-nombre {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin-bottom: 8px;
+    padding-right: 80px;  /* Espacio para que no choque con el badge */
+}
+
+.servicio-descripcion {
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+/* ========== 8. PRECIOS ========== */
+.precios {
+    margin-bottom: 12px;
+}
+
+/* Precio original tachado (cuando hay descuento) */
+.precio-original {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 14px;
+    margin-right: 8px;
+}
+
+/* Precio final: grande y verde */
+.precio-final {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1f7a4d;  /* Verde */
+}
+
+/* ========== 9. TAGS DE PRODUCTOS ========== */
+.asociaciones {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.asociaciones strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Tag individual: fondo gris, bordes redondeados */
+.tag {
+    display: inline-block;
+    background: #e9ecef;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    margin: 2px;
+    color: #495057;
+}
+
+/* ========== 10. RESPONSIVE ========== */
+
+/* En pantallas pequeñas: reducir tamaños de fuente */
+@media (max-width: 768px) {
+    .catalogo-header h1 {
+        font-size: 28px;
+    }
+
+    .categoria-titulo {
+        font-size: 20px;
+    }
+}

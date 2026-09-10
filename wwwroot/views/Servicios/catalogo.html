@@ -1,0 +1,48 @@
+<!-- ============================================================ -->
+<!-- VISTA CATÁLOGO DEL CLIENTE                                   -->
+<!-- Página pública que muestra los servicios organizados por      -->
+<!-- categoría.                                                    -->
+<!--                                                              -->
+<!-- Estructura visual:                                            -->
+<!--   1. Header con título "Catálogo de Servicios"               -->
+<!--   2. Contenedor #catalogo-categorias donde se renderizan:     -->
+<!--      - Secciones por cada categoría                           -->
+<!--      - Dentro de cada categoría: tarjetas de servicios        -->
+<!--      - Cada tarjeta muestra: nombre, descuento, precio,       -->
+<!--        productos asociados                                    -->
+<!--                                                              -->
+<!-- Dependencias:                                                -->
+<!--   - Bootstrap 5.3 (layout de grid)                           -->
+<!--   - Bootstrap Icons (íconos decorativos)                      -->
+<!--   - catalogo.js (fetch + agrupación + renderizado)           -->
+<!--   - catalogo.css (estilos de cards y categorías)             -->
+<!--                                                              -->
+<!-- NOTA: No tiene sidebar. Es una página standalone para clientes.-->
+<!-- ============================================================ -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios - Catálogo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/wwwroot/css/catalogo.css">
+</head>
+<body>
+    <!-- Contenedor principal del catálogo -->
+    <div class="catalogo-container">
+        <!-- Header con título y subtítulo -->
+        <header class="catalogo-header">
+            <h1>Catálogo de Servicios</h1>
+            <p>Explorá nuestros servicios organizados por categoría</p>
+        </header>
+
+        <!-- Contenedor dinámico: se llena con categorías y tarjetas via catalogo.js -->
+        <div id="catalogo-categorias"></div>
+    </div>
+
+    <script src="/wwwroot/js/catalogo.js"></script>
+</body>
+</html>
