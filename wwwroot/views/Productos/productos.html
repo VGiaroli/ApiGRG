@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Categorias</title>
+    <title>Productos</title>
 
     <!-- FontAwesome para los iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,13 +27,16 @@
                     <h1>Productos</h1>
                     <h4 class="subTitle">Manage your product inventory</h4>
                 </div>
+                <button type="button" class="btn-imprimir-informe" onclick="imprimir()" title="Generar PDF">
+                    <i class="bi bi-file-earmark-pdf-fill" style="color: rgb(255, 0, 0);" aria-hidden="true"></i>
+                </button>
             </div>
 
             <hr class="hr-abajoTitulo">
 
             <div class="table-custom-container my-4">
                 <div class="table-responsive">
-                    <table class="table table-custom">
+                    <table class="table table-custom" id="tablaInformeProductos">
                         <thead>
                             <tr>
                                 <th scope="col">Nombre</th>
@@ -44,6 +47,34 @@
                             </tr>
                         </thead>
                         <tbody id="tabla-productos">
+                            <tr>
+                                <td>Notebook Gamer Pro</td>
+                                <td>Tecnología</td>
+                                <td>1.450.000</td>
+                                <td>1.200</td>
+                                <td><span class="badge bg-success">Disponible</span></td>
+                            </tr>
+                            <tr>
+                                <td>Auriculares Inalámbricos</td>
+                                <td>Accesorios</td>
+                                <td>85.000</td>
+                                <td>70</td>
+                                <td><span class="badge bg-success">Disponible</span></td>
+                            </tr>
+                            <tr>
+                                <td>Monitor LED 24"</td>
+                                <td>Tecnología</td>
+                                <td>230.000</td>
+                                <td>190</td>
+                                <td><span class="badge bg-warning text-dark">Stock bajo</span></td>
+                            </tr>
+                            <tr>
+                                <td>Teclado Mecánico RGB</td>
+                                <td>Periféricos</td>
+                                <td>65.000</td>
+                                <td>55</td>
+                                <td><span class="badge bg-danger">Agotado</span></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -51,6 +82,10 @@
 
         </main>
     </div>
+
+    <script src="/js/cdnPDF/jspdf.umd.min.js"></script>
+    <script src="/js/cdnPDF/jspdf.plugin.autotable.min.js"></script>
+    <script src="/js/listadoPDF/listadoProductos.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -61,6 +96,7 @@
     <script src="/js/config.js"></script>
     <script src="/js/productos.js"></script>
     <script src="/js/layout.js"></script>
+    <script src="/js/sesion-usuario.js"></script>
 </body>
 
 </html>

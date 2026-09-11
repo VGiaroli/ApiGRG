@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+/* Tarjeta principal */
+.stat-card {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #FFF2EE; /* Fondo rosa suave / crema */
+  border: 1px solid #FFD6C9;  /* Borde fino coordinado */
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* .stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 91, 60, 0.08);
+} */
+
+/* Caja contenedora del icono */
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #E55B3C; /* Naranja/Coral sólido */
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+/* Columna de información */
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #2D3748;
+  line-height: 1.2;
+}
+
+.stat-value {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1A202C;
+  margin: 4px 0 2px 0;
+  line-height: 1.1;
+}
+
+.stat-subtext {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #E55B3C;
+}
+
+.bienvenido{
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.75rem;
+}

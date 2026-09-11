@@ -20,6 +20,13 @@ namespace ApiGRG.Models
             return await _context.Categorias.ToListAsync();
         }
 
+        //obtenemos el total de categorias cargadas en el index
+        [HttpGet("total")]
+        public async Task<ActionResult<int>> GetTotalCategorias()
+        {
+            return await _context.Categorias.CountAsync();
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Categoria>> GetCategoria(int id)
         {

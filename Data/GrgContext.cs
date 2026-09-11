@@ -1,8 +1,8 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ApiGRG.Models;
 
-namespace ApiGRG.Models;
-
-public class GrgContext : DbContext
+public class GrgContext : IdentityDbContext<ApplicationUser>
 {
     public GrgContext(DbContextOptions<GrgContext> options)
         : base(options)
