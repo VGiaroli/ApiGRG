@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
 :root {
   --sidebar-width: 280px;
   --sidebar-mini-width: 84px;
@@ -54,6 +56,12 @@ a { text-decoration: none; }
   transition: margin-left 0.2s ease;
 }
 
+.hr-abajoTitulo {
+    border: none;
+    border-top: 2px dotted #dfdfdf;
+    margin: 0 0 1.5rem 0;
+    opacity: 1;
+}
 
 
 .sidebar-header {
@@ -73,17 +81,14 @@ a { text-decoration: none; }
 .brand-mark:focus { color: #fff; }
 
 .brand-icon {
-  display: inline-grid;
-  place-items: center;
+  display: block; /* o flex/inline-block */
   flex: 0 0 auto;
   width: 42px;
   height: 42px;
   border-radius: 8px;
-  background: linear-gradient(93deg, #dd8c13, #da8320);
-  color: #fff;
-  font-size: 1.1rem;
-  font-weight: 800;
+  object-fit: cover; /* Mantiene la proporción de la imagen sin deformarla */
 }
+
 
 .brand-copy,
 .brand-title,
@@ -110,6 +115,7 @@ a { text-decoration: none; }
   color: #9ca3af;
   font-size: 0.78rem;
 }
+
 
 .sidebar-nav {
   display: grid;
@@ -151,6 +157,89 @@ a { text-decoration: none; }
   color: #bfdbfe;
   font-size: 0.95rem;
   font-weight: 800;
+}
+
+/* =========================================
+   USUARIO DEL SIDEBAR
+   ========================================= */
+
+.sidebar-user {
+
+  position: absolute;
+
+  left: 1rem;
+  right: 1rem;
+  bottom: 4.5rem;
+
+  display: flex;
+  align-items: center;
+
+  gap: 0.75rem;
+
+  min-height: 48px;
+
+  padding: 0.78rem 0.9rem;
+
+  border-radius: 8px;
+
+  color: var(--admin-sidebar-text);
+
+  font-size: 0.8rem;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  background: transparent;
+
+  /* border-top: 1px solid var(--admin-sidebar-border); */
+
+  border-radius: 0;
+
+  padding-top: 1rem;
+}
+
+
+/* Icono */
+
+.sidebar-user .nav-icon {
+
+  flex: 0 0 auto;
+
+}
+
+
+/* Email */
+
+.sidebar-user .nav-text {
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+}
+
+
+/* Cuando el sidebar está minimizado */
+
+@media (min-width: 992px) {
+
+  body.sidebar-mini .sidebar-user {
+
+    left: 1rem;
+    right: 1rem;
+
+    justify-content: center;
+
+    padding-left: 0;
+    padding-right: 0;
+
+  }
+
 }
 
 .sidebar-footer {

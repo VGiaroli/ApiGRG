@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Iniciar sesión — GRG Servicio Técnico">
+    <meta name="author" content="">
+
+    <title>Ingreso</title>
+
+    <!-- Custom fonts for this template-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="/css/login.css" rel="stylesheet">
+
+    <style>
+
+        :root{
+            --dark:        #1B1C1E;
+            --dark-raise:  #26272a;
+            --accent:      #E35B2A;
+            --accent-dim:  #b9481f;
+            --accent-glow: rgba(227,91,42,.18);
+            --paper:       #FFFFFF;
+            --ink:         #1B1C1E;
+            --muted:       #7A7B80;
+            --line:        #E7E7E9;
+            --success:     #1F9254;
+            --warning:     #E35B2A;
+            --error:       #D64545;
+        }
+
+        *{ box-sizing:border-box; }
+
+        html,body{
+            margin:0;
+            padding:0;
+            height:100%;
+            font-family:'Inter',sans-serif;
+            color:var(--ink);
+        }
+
+        .page{
+            min-height:100vh;
+            display:grid;
+            grid-template-columns:minmax(360px,1fr) minmax(420px,1.1fr);
+        }
+
+        /* ---------- left / visual panel ---------- */
+
+        .panel-visual{
+            position:relative;
+            overflow:hidden;
+            background:
+                radial-gradient(120% 90% at 26% 104%, rgba(227,91,42,.55), transparent 60%),
+                radial-gradient(90% 70% at 82% -6%, rgba(227,91,42,.16), transparent 60%),
+                linear-gradient(160deg, #26272a 0%, #1B1C1E 55%, #101011 100%);
+            color:#fff;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+            padding:3rem;
+        }
+
+        .brand-mark{
+            display:flex;
+            align-items:center;
+            gap:.55rem;
+        }
+        .brand-glyph{
+            width:34px;
+            height:34px;
+            border-radius:9px;
+            border:1.5px solid rgba(255,255,255,.35);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-family:'Space Grotesk',sans-serif;
+            font-weight:600;
+            font-size:.85rem;
+            letter-spacing:.01em;
+        }
+        .brand-glyph span{ color:var(--accent); }
+
+        .visual-copy{ max-width:22ch; }
+        .visual-copy h2{
+            font-size:2.35rem;
+            line-height:1.18;
+            font-weight:700;
+            margin:0 0 .85rem;
+            letter-spacing:-.01em;
+        }
+        .visual-copy p{
+            font-size:1rem;
+            line-height:1.55;
+            color:rgba(255,255,255,.68);
+            margin:0;
+            max-width:30ch;
+        }
+
+        /* ---------- right / form panel ---------- */
+
+        .panel-form{
+            background:var(--paper);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:3rem 2rem;
+        }
+
+        .form-wrap{ width:100%; max-width:360px; }
+
+        .form-glyph{
+            width:30px;
+            height:30px;
+            border-radius:8px;
+            background:var(--ink);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-family:'Space Grotesk',sans-serif;
+            font-weight:600;
+            font-size:.72rem;
+            color:#fff;
+            margin-bottom:1.6rem;
+        }
+        .form-glyph span{ color:var(--accent); }
+
+        .form-heading{
+            font-size:1.7rem;
+            font-weight:700;
+            letter-spacing:-.01em;
+            margin:0 0 .5rem;
+        }
+        .form-copy{
+            font-size:.92rem;
+            line-height:1.5;
+            color:var(--muted);
+            margin:0 0 2.1rem;
+        }
+
+        .input-group{ margin-bottom:1.3rem; position:relative; }
+        .input-group label{
+            display:block;
+            font-size:.82rem;
+            font-weight:500;
+            color:var(--ink);
+            margin-bottom:.45rem;
+        }
+        .input-group input{
+            width:100%;
+            border:1px solid var(--line);
+            border-radius:8px;
+            background:#fff;
+            padding:.7rem .85rem;
+            font-family:'Inter',sans-serif;
+            font-size:.95rem;
+            color:var(--ink);
+            outline:none;
+            transition:border-color .15s ease, box-shadow .15s ease;
+        }
+        .input-group input::placeholder{ color:#B7B8BC; }
+        .input-group input:focus{
+            border-color:var(--ink);
+            box-shadow:0 0 0 3px var(--accent-glow);
+        }
+        .input-group.has-toggle input{ padding-right:2.6rem; }
+
+        .toggle-visibility{
+            position:absolute;
+            right:.6rem;
+            bottom:.62rem;
+            border:0;
+            background:none;
+            cursor:pointer;
+            padding:.2rem;
+            color:#B0B1B5;
+            line-height:0;
+        }
+        .toggle-visibility:hover{ color:var(--muted); }
+        .toggle-visibility svg{ width:18px; height:18px; }
+
+        #tokenOutput{
+            display:block;
+            font-family:ui-monospace, monospace;
+            font-size:.72rem;
+            color:var(--muted);
+            margin-top:.5rem;
+            word-break:break-all;
+        }
+        #tokenOutput:empty{ display:none; }
+
+        button[type="submit"]{
+            width:100%;
+            border:0;
+            border-radius:8px;
+            background:var(--ink);
+            color:#fff;
+            font-family:'Inter',sans-serif;
+            font-weight:600;
+            font-size:.95rem;
+            padding:.85rem 1rem;
+            cursor:pointer;
+            margin-top:.4rem;
+            transition:background-color .15s ease;
+        }
+        button[type="submit"]:hover{ background:#000; }
+        button[type="submit"]:focus-visible{
+            outline:none;
+            box-shadow:0 0 0 3px var(--accent-glow);
+        }
+
+        .links{
+            margin-top:1.6rem;
+            text-align:center;
+            font-size:.9rem;
+            color:var(--muted);
+        }
+        .links a{
+            color:var(--accent);
+            text-decoration:none;
+            font-weight:500;
+        }
+        .links a:hover{ color:var(--accent-dim); }
+
+        @media (max-width:860px){
+            .page{ grid-template-columns:1fr; }
+            .panel-visual{ min-height:38vh; padding:2rem; }
+            .visual-copy h2{ font-size:1.8rem; }
+            .panel-form{ padding:2.5rem 1.5rem; }
+        }
+
+        /* ---------- toast ---------- */
+
+        .toast-stack{
+            position:fixed;
+            top:1.25rem;
+            right:1.25rem;
+            z-index:1000;
+            display:flex;
+            flex-direction:column;
+            gap:.6rem;
+            width:min(340px,calc(100vw - 2.5rem));
+        }
+
+        .toast{
+            display:flex;
+            align-items:flex-start;
+            gap:.65rem;
+            background:#fff;
+            border:1px solid var(--line);
+            border-left:3px solid var(--ink);
+            border-radius:8px;
+            padding:.85rem .9rem;
+            box-shadow:0 8px 24px rgba(0,0,0,.14);
+            font-size:.88rem;
+            line-height:1.4;
+            color:var(--ink);
+            opacity:0;
+            transform:translateX(12px);
+            animation:toast-in .25s ease forwards;
+        }
+        .toast.leaving{ animation:toast-out .2s ease forwards; }
+        @keyframes toast-in{ to{ opacity:1; transform:translateX(0); } }
+        @keyframes toast-out{ to{ opacity:0; transform:translateX(12px); } }
+        @media (prefers-reduced-motion: reduce){
+            .toast{ animation:none; opacity:1; transform:none; }
+        }
+
+        .toast.success{ border-left-color:var(--success); }
+        .toast.warning{ border-left-color:var(--warning); }
+        .toast.error{ border-left-color:var(--error); }
+
+        .toast .toast-icon{ width:18px; height:18px; flex:none; margin-top:.05rem; }
+        .toast.success .toast-icon{ color:var(--success); }
+        .toast.warning .toast-icon{ color:var(--warning); }
+        .toast.error .toast-icon{ color:var(--error); }
+
+        .toast .toast-body{ flex:1; }
+        .toast .toast-title{ font-weight:600; margin:0 0 .1rem; }
+        .toast .toast-msg{ color:var(--muted); margin:0; }
+
+        .toast .toast-close{
+            border:0;
+            background:none;
+            cursor:pointer;
+            color:#B0B1B5;
+            padding:.1rem;
+            line-height:0;
+            flex:none;
+        }
+        .toast .toast-close:hover{ color:var(--muted); }
+        .toast .toast-close svg{ width:15px; height:15px; }
+
+        @media (max-width:480px){
+            .toast-stack{ left:1.25rem; right:1.25rem; width:auto; }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+    <div class="page">
+
+        <section class="panel-visual">
+
+            <div class="brand-mark">
+                <div class="brand-glyph">G<span>R</span>G</div>
+            </div>
+
+            <div class="visual-copy">
+                <h2>Todo tu negocio, en un solo lugar.</h2>
+                <p>Ventas, stock y órdenes de servicio técnico, siempre a mano.</p>
+            </div>
+
+        </section>
+
+        <section class="panel-form">
+            <div class="form-wrap">
+
+                <div class="form-glyph">G<span>R</span>G</div>
+
+                <h1 class="form-heading">Iniciar sesión</h1>
+                <p class="form-copy">Accedé a ventas, stock y órdenes de servicio técnico desde un mismo panel.</p>
+
+                <form id="loginForm">
+
+                    <div class="input-group">
+                        <label for="loginEmail">Correo electrónico</label>
+                        <input type="email" id="loginEmail" placeholder="nombre@grg.com" autocomplete="email">
+                    </div>
+
+                    <div class="input-group has-toggle">
+                        <label for="loginPassword">Contraseña</label>
+                        <input type="password" id="loginPassword" placeholder="Ingresá tu contraseña" autocomplete="current-password">
+                        <button type="button" class="toggle-visibility" data-target="loginPassword" aria-label="Mostrar contraseña">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                        <span id="tokenOutput"></span>
+                    </div>
+
+                    <button type="submit">Iniciar sesión</button>
+
+                </form>
+
+                <div class="links">
+                    ¿No tenés cuenta? <a href="/views/Usuarios/register.html">Registrarme</a>
+                    <!-- <a href="#" onclick="Migrar()">Migrar</a> -->
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+
+    <script src="/js/config.js"></script>
+    <script src="/js/user.js"></script>
+    <script>
+        document.querySelectorAll('.toggle-visibility').forEach(function(btn){
+            btn.addEventListener('click', function(){
+                var input = document.getElementById(btn.getAttribute('data-target'));
+                input.type = input.type === 'password' ? 'text' : 'password';
+            });
+        });
+
+        /* ---------- toast system ----------
+           window.showToast(type, message, title) queda disponible para que
+           user.js lo llame según la respuesta real del login, ej:
+
+               window.showToast('success', 'Redirigiendo al panel...', 'Sesión iniciada');
+               window.showToast('error', 'Correo o contraseña incorrectos.', 'No se pudo iniciar sesión');
+        */
+        var ICONS = {
+            success: '<path d="M20 6 9 17l-5-5"/>',
+            warning: '<path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
+            error:   '<circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/>'
+        };
+        var TITLES = {
+            success: 'Listo',
+            warning: 'Revisá este dato',
+            error: 'Algo falló'
+        };
+
+        function showToast(type, message, title){
+            type = ICONS[type] ? type : 'warning';
+            var stack = document.getElementById('toastStack');
+
+            var toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.innerHTML =
+                '<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICONS[type] + '</svg>' +
+                '<div class="toast-body">' +
+                    '<p class="toast-title">' + (title || TITLES[type]) + '</p>' +
+                    '<p class="toast-msg"></p>' +
+                '</div>' +
+                '<button type="button" class="toast-close" aria-label="Cerrar">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>' +
+                '</button>';
+            toast.querySelector('.toast-msg').textContent = message;
+
+            function dismiss(){
+                toast.classList.add('leaving');
+                setTimeout(function(){ toast.remove(); }, 200);
+            }
+            toast.querySelector('.toast-close').addEventListener('click', dismiss);
+            var timer = setTimeout(dismiss, 4500);
+            toast.addEventListener('mouseenter', function(){ clearTimeout(timer); });
+
+            stack.appendChild(toast);
+        }
+        window.showToast = showToast;
+
+        /* ---------- client-side validation ----------
+           Bloquea el envío y muestra una advertencia si falta el correo o la
+           contraseña. Si están completos, deja pasar el submit para que
+           user.js haga la autenticación real contra la API.
+        */
+        document.getElementById('loginForm').addEventListener('submit', function(e){
+            var email = document.getElementById('loginEmail').value.trim();
+            var password = document.getElementById('loginPassword').value;
+
+            if(!email || !password){
+                e.preventDefault();
+                showToast('warning', 'Ingresá tu correo y tu contraseña para continuar.');
+                return;
+            }
+            // Datos completos: el submit continúa y user.js toma el control.
+        });
+    </script>
+
+</body>
+
+</html>

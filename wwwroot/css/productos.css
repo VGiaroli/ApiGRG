@@ -146,3 +146,30 @@
     border-color: #fca5a5;
     color: #dc2626;
 }
+
+.btn-imprimir-informe {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #f3efff, #f3efff);
+    color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: filter .15s ease, transform .05s ease;
+}
+
+.btn-imprimir-informe:hover {
+    filter: brightness(1.08);
+}
+
+.btn-imprimir-informe:active {
+    transform: translateY(1px);
+}
+
+.btn-imprimir-informe i {
+    font-size: 0.9rem;
+}
