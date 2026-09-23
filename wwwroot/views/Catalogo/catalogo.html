@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo | GRG Servicio Técnico</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/catalogo.css">
+</head>
+
+<body>
+    <a class="skip-link" href="#contenido-catalogo">Ir al contenido principal</a>
+    <div id="navbar-placeholder"></div>
+
+    <div class="admin-main">
+        <main id="contenido-catalogo" class="catalog-page" aria-labelledby="titulo-catalogo">
+            <header class="catalog-hero">
+                <div class="catalog-hero-copy">
+                    <p class="catalog-eyebrow"><i class="bi bi-stars" aria-hidden="true"></i> Equipos seleccionados</p>
+                    <h1 id="titulo-catalogo">Encontrá tu próximo equipo</h1>
+                    <p class="catalog-intro">Explorá el inventario actualizado de GRG y consultá por WhatsApp el equipo que te interesa.</p>
+                </div>
+                <div class="catalog-summary" aria-label="Resumen del catálogo">
+                    <span class="summary-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></span>
+                    <div>
+                        <strong id="total-productos">—</strong>
+                        <span>equipos en catálogo</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="catalog-filters" aria-label="Buscar y filtrar catálogo">
+                <div class="catalog-search-field">
+                    <label for="catalogo-busqueda">Buscar equipo</label>
+                    <div class="catalog-search-control">
+                        <i class="bi bi-search" aria-hidden="true"></i>
+                        <input id="catalogo-busqueda" type="search" placeholder="Modelo, categoría o color" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="catalog-select-field">
+                    <label for="catalogo-categoria">Categoría</label>
+                    <select id="catalogo-categoria">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+
+                <div class="catalog-select-field">
+                    <label for="catalogo-estado">Condición</label>
+                    <select id="catalogo-estado">
+                        <option value="">Todas</option>
+                        <option value="1">Sellado</option>
+                        <option value="2">Seminuevo</option>
+                    </select>
+                </div>
+
+                <div class="catalog-select-field">
+                    <label for="catalogo-disponibilidad">Disponibilidad</label>
+                    <select id="catalogo-disponibilidad">
+                        <option value="">Todos</option>
+                        <option value="true">Disponibles</option>
+                        <option value="false">No disponibles</option>
+                    </select>
+                </div>
+
+                <button type="button" class="catalog-clear-button" id="catalogo-limpiar-filtros">
+                    <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                    Limpiar
+                </button>
+            </section>
+
+            <div class="catalog-results-bar">
+                <p id="catalogo-contador" aria-live="polite">Cargando equipos...</p>
+                <span class="catalog-results-note"><i class="bi bi-shield-check" aria-hidden="true"></i> Información actualizada por GRG</span>
+            </div>
+
+            <section id="catalogo-cargando" class="catalog-grid" aria-label="Cargando catálogo">
+                <article class="catalog-skeleton"><span></span><span></span><span></span><span></span></article>
+                <article class="catalog-skeleton"><span></span><span></span><span></span><span></span></article>
+                <article class="catalog-skeleton"><span></span><span></span><span></span><span></span></article>
+            </section>
+
+            <section id="catalogo-error" class="catalog-feedback catalog-feedback-error" hidden>
+                <span class="feedback-icon"><i class="bi bi-cloud-slash" aria-hidden="true"></i></span>
+                <h2>No pudimos cargar el catálogo</h2>
+                <p>Revisá la conexión e intentá nuevamente.</p>
+                <button type="button" class="catalog-primary-button" id="catalogo-reintentar">Reintentar</button>
+            </section>
+
+            <section id="catalogo-vacio" class="catalog-feedback" hidden>
+                <span class="feedback-icon"><i class="bi bi-search" aria-hidden="true"></i></span>
+                <h2>No encontramos equipos</h2>
+                <p>Probá con otra búsqueda o limpiá los filtros para ver todo el catálogo.</p>
+                <button type="button" class="catalog-primary-button" id="catalogo-limpiar-vacio">Ver todos los equipos</button>
+            </section>
+
+            <section id="catalogo-grid" class="catalog-grid" aria-live="polite" aria-busy="true" aria-label="Productos del catálogo"></section>
+        </main>
+    </div>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/catalogo.js"></script>
+    <script src="/js/layout.js"></script>
+    <script src="/js/sesion-usuario.js"></script>
+</body>
+
+</html>
