@@ -86,6 +86,7 @@
 
         const grid = document.getElementById('catalogo-grid');
         grid.innerHTML = filtrados.map(crearCardProducto).join('');
+        activarFallbackImagenes(grid);
         grid.setAttribute('aria-busy', 'false');
 
         document.getElementById('catalogo-contador').textContent = `${filtrados.length} equipos encontrados`;
@@ -97,6 +98,7 @@
         const colores = producto.colores || [];
         const disponible = producto.disponible === true;
         const cuota = producto.cuotas && producto.cuotas.length ? producto.cuotas[0] : null;
+        const imagenUrl = typeof producto.imagenUrl === 'string' ? producto.imagenUrl.trim() : '';
         const mensaje = encodeURIComponent(`Hola GRG, me interesa el equipo ${producto.nombre}. ¿Podrían brindarme más información?`);
 
         return `<article class="catalog-card">
@@ -108,8 +110,11 @@
                 <span class="catalog-status ${producto.estado === 2 ? 'status-seminuevo' : ''}">${estado}</span>
             </div>
 
-            <div class="catalog-device" aria-hidden="true">
-                <i class="bi ${obtenerIcono(producto)}"></i>
+            <div class="catalog-device">
+                ${imagenUrl
+                    ? `<img class="catalog-product-image" src="${escaparHtml(imagenUrl)}" alt="Imagen de ${escaparHtml(producto.nombre)}" loading="lazy">
+                        <span class="catalog-image-placeholder" hidden aria-hidden="true"><i class="bi ${obtenerIcono(producto)}"></i></span>`
+                    : `<span class="catalog-image-placeholder" aria-hidden="true"><i class="bi ${obtenerIcono(producto)}"></i></span>`}
             </div>
 
             <div class="catalog-card-body">
@@ -136,6 +141,18 @@
                     : '<span class="catalog-unavailable"><i class="bi bi-clock" aria-hidden="true"></i> No disponible ahora</span>'}
             </div>
         </article>`;
+    }
+
+    function activarFallbackImagenes(grid) {
+        grid.querySelectorAll('.catalog-product-image').forEach(function (imagen) {
+            imagen.addEventListener('error', function () {
+                imagen.hidden = true;
+                const placeholder = imagen.parentElement.querySelector('.catalog-image-placeholder');
+                if (placeholder) {
+                    placeholder.hidden = false;
+                }
+            });
+        });
     }
 
     function obtenerIcono(producto) {

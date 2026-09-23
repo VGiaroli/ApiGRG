@@ -24,10 +24,16 @@
                     <h1>Productos</h1>
                     <h4 class="subTitle">Consulta y filtra el inventario de equipos</h4>
                 </div>
-                <button type="button" class="btn-imprimir-informe" onclick="imprimir()" title="Generar PDF">
-                    <i class="bi bi-file-earmark-pdf-fill" aria-hidden="true"></i>
-                    <span>Exportar informe</span>
-                </button>
+                <div class="page-head-actions">
+                    <button type="button" class="btn-agregar" id="btn-nuevo-producto">
+                        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                        <span>Nuevo producto</span>
+                    </button>
+                    <button type="button" class="btn-imprimir-informe" onclick="imprimir()" title="Generar PDF">
+                        <i class="bi bi-file-earmark-pdf-fill" aria-hidden="true"></i>
+                        <span>Exportar informe</span>
+                    </button>
+                </div>
             </div>
 
             <hr class="hr-abajoTitulo">
@@ -90,6 +96,132 @@
                     </table>
                 </div>
             </div>
+
+            <div class="modal fade" id="modalNuevoProducto" tabindex="-1" aria-labelledby="modalNuevoProductoTitulo"
+                aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                    <form class="modal-content" id="form-nuevo-producto">
+                        <div class="modal-header">
+                            <div>
+                                <p class="modal-eyebrow">Inventario</p>
+                                <h2 class="modal-title" id="modalNuevoProductoTitulo">Nuevo producto</h2>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div id="producto-form-mensaje" class="product-form-message" role="alert" hidden></div>
+
+                            <div class="product-form-layout">
+                                <section class="product-form-section" aria-labelledby="producto-info-titulo">
+                                    <div class="form-section-heading">
+                                        <span class="form-section-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></span>
+                                        <div>
+                                            <h3 id="producto-info-titulo">Información general</h3>
+                                            <p>Identificá el equipo y su condición.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-field form-field-wide">
+                                        <label for="producto-nombre">Nombre del producto <span aria-hidden="true">*</span></label>
+                                        <input type="text" class="form-control" id="producto-nombre" maxlength="160" required>
+                                    </div>
+
+                                    <div class="form-field-grid">
+                                        <div class="form-field">
+                                            <label for="producto-categoria">Categoría <span aria-hidden="true">*</span></label>
+                                            <select class="form-select" id="producto-categoria" required>
+                                                <option value="">Seleccionar categoría</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-field">
+                                            <label for="producto-estado">Estado <span aria-hidden="true">*</span></label>
+                                            <select class="form-select" id="producto-estado" required>
+                                                <option value="1">Sellado</option>
+                                                <option value="2">Seminuevo</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <label class="availability-switch" for="producto-disponible">
+                                        <input type="checkbox" id="producto-disponible" checked>
+                                        <span class="switch-track" aria-hidden="true"><span></span></span>
+                                        <span>
+                                            <strong>Disponible para la venta</strong>
+                                            <small>Se mostrará como disponible en el catálogo.</small>
+                                        </span>
+                                    </label>
+                                </section>
+
+                                <section class="product-form-section" aria-labelledby="producto-precios-titulo">
+                                    <div class="form-section-heading">
+                                        <span class="form-section-icon"><i class="bi bi-cash-coin" aria-hidden="true"></i></span>
+                                        <div>
+                                            <h3 id="producto-precios-titulo">Precios</h3>
+                                            <p>Ingresá cada moneda por separado.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-field-grid">
+                                        <div class="form-field">
+                                            <label for="producto-precio-ars">Precio ARS <span aria-hidden="true">*</span></label>
+                                            <div class="input-with-prefix"><span>ARS</span><input type="number" class="form-control" id="producto-precio-ars" min="0" step="0.01" required></div>
+                                        </div>
+                                        <div class="form-field">
+                                            <label for="producto-precio-usd">Precio USD <span aria-hidden="true">*</span></label>
+                                            <div class="input-with-prefix"><span>USD</span><input type="number" class="form-control" id="producto-precio-usd" min="0" step="0.01" required></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label for="producto-imagen-url">URL de imagen</label>
+                                        <input type="url" class="form-control" id="producto-imagen-url" placeholder="https://ejemplo.com/equipo.jpg">
+                                        <small class="form-help">Opcional. Se guarda solamente la dirección de la imagen.</small>
+                                    </div>
+
+                                    <div class="product-image-preview" id="producto-imagen-preview" aria-live="polite">
+                                        <div class="image-preview-placeholder">
+                                            <i class="bi bi-image" aria-hidden="true"></i>
+                                            <span>La vista previa aparecerá aquí</span>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="product-form-section" aria-labelledby="producto-colores-titulo">
+                                    <div class="form-section-heading form-section-heading-inline">
+                                        <div>
+                                            <h3 id="producto-colores-titulo">Colores</h3>
+                                            <p>Agregá las variantes disponibles.</p>
+                                        </div>
+                                        <button type="button" class="btn-add-row" id="agregar-color"><i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar</button>
+                                    </div>
+                                    <div class="dynamic-list" id="producto-colores"></div>
+                                </section>
+
+                                <section class="product-form-section product-form-section-wide" aria-labelledby="producto-cuotas-titulo">
+                                    <div class="form-section-heading form-section-heading-inline">
+                                        <div>
+                                            <h3 id="producto-cuotas-titulo">Financiación</h3>
+                                            <p>Configurá cuotas y medio de pago.</p>
+                                        </div>
+                                        <button type="button" class="btn-add-row" id="agregar-cuota"><i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar</button>
+                                    </div>
+                                    <div class="financing-list-header" aria-hidden="true"><span>Cuotas</span><span>Monto de cuota</span><span>Medio de pago</span><span></span></div>
+                                    <div class="dynamic-list" id="producto-cuotas"></div>
+                                </section>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn-modal-primary" id="guardar-producto">
+                                <i class="bi bi-check2" aria-hidden="true"></i>
+                                Guardar producto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -99,7 +231,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55DT0xhy9Gkc1E1N7N6jIeHz"
+integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

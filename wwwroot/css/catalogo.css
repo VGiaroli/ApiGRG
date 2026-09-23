@@ -347,6 +347,26 @@ body {
     font-size: 3.25rem;
 }
 
+.catalog-product-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.catalog-image-placeholder {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.catalog-product-image[hidden],
+.catalog-image-placeholder[hidden] {
+    display: none;
+}
+
 .catalog-card-body {
     display: flex;
     flex: 1;

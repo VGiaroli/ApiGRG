@@ -21,6 +21,8 @@ namespace ApiGRG.Models
 
         public bool Disponible {get; set;}
 
+        public string? ImagenUrl { get; set; }
+
         public DateTime FechaCreacion {get; set;}
 
         public DateTime? FechaActualizacion {get; set;}
