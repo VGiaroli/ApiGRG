@@ -626,3 +626,278 @@ body {
         animation: none;
     }
 }
+
+/* Product cards: commerce-first layout */
+.catalog-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 286px), 1fr));
+    max-width: 1280px;
+    margin-inline: auto;
+    align-items: stretch;
+}
+
+.catalog-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #e6e8ef;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 12px 28px rgba(30, 41, 59, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.catalog-card:hover {
+    border-color: #ddd6fe;
+    box-shadow: 0 18px 34px rgba(76, 29, 149, 0.1);
+    transform: translateY(-3px);
+}
+
+.catalog-device {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    background: #eef1f5;
+    color: #7c3aed;
+}
+
+.catalog-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 0;
+}
+
+.catalog-image-placeholder {
+    min-height: 100%;
+    background:
+        radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.8), transparent 38%),
+        #f1edff;
+    color: #7c3aed;
+}
+
+.catalog-image-placeholder i {
+    font-size: 3.4rem;
+}
+
+.catalog-card-body {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.1rem 1.15rem 1.15rem;
+}
+
+.catalog-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.7rem;
+    min-width: 0;
+    padding: 0;
+}
+
+.catalog-card-heading {
+    min-width: 0;
+    flex: 1;
+}
+
+.catalog-category {
+    margin-bottom: 0.38rem;
+    color: #7c3aed;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+}
+
+.catalog-card h2 {
+    min-width: 0;
+    margin: 0;
+    color: #111a35;
+    font-size: clamp(1rem, 0.92rem + 0.22vw, 1.18rem);
+    font-weight: 800;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.catalog-status {
+    flex: 0 0 auto;
+    padding: 0.38rem 0.68rem;
+    border: 0;
+    border-radius: 999px;
+    background: #e5f8ee;
+    color: #0f995b;
+    font-size: 0.67rem;
+    font-weight: 800;
+}
+
+.catalog-status.status-seminuevo {
+    background: #f1eaff;
+    color: #7140d9;
+}
+
+.catalog-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    min-width: 0;
+    margin-top: 0.9rem;
+}
+
+.catalog-tags.is-empty {
+    display: none;
+}
+
+.catalog-tag {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0.3rem 0.55rem;
+    border: 1px solid #e4e7ee;
+    border-radius: 999px;
+    background: #fbfcfe;
+    color: #596780;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.catalog-prices {
+    display: block;
+    min-width: 0;
+    margin: 1.05rem 0 0.95rem;
+}
+
+.catalog-price-ars,
+.catalog-price-usd {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+    font-variant-numeric: tabular-nums;
+}
+
+.catalog-price-ars {
+    color: #6d28d9;
+    font-size: clamp(1.28rem, 1.05rem + 0.65vw, 1.62rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+}
+
+.catalog-price-usd {
+    margin-top: 0.28rem;
+    color: #6d7891;
+    font-size: 0.87rem;
+    font-weight: 700;
+}
+
+.catalog-financing {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+    margin: 0 0 1rem;
+    padding: 0.78rem 0.8rem;
+    border: 1px solid #e5d9ff;
+    border-radius: 12px;
+    background: #faf7ff;
+}
+
+.financing-icon {
+    display: grid;
+    width: 30px;
+    height: 30px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 8px;
+    background: #eee7ff;
+    color: #7c3aed;
+    font-size: 0.95rem;
+}
+
+.financing-copy {
+    display: grid;
+    min-width: 0;
+    gap: 0.12rem;
+    flex: 1;
+}
+
+.catalog-financing .financing-copy strong,
+.catalog-financing .financing-copy span {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.catalog-financing .financing-copy strong {
+    color: #1e2a46;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.catalog-financing .financing-copy span {
+    color: #69758e;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.catalog-financing > small {
+    max-width: 32%;
+    overflow: hidden;
+    color: #7c3aed;
+    font-size: 0.64rem;
+    font-weight: 800;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.catalog-action,
+.catalog-unavailable {
+    min-height: 48px;
+    margin-top: auto;
+    border-radius: 11px;
+    font-size: 0.84rem;
+    touch-action: manipulation;
+}
+
+.catalog-action {
+    background: #10a968;
+    box-shadow: 0 8px 16px rgba(16, 169, 104, 0.16);
+}
+
+.catalog-action:hover,
+.catalog-action:focus-visible {
+    background: #078b54;
+    box-shadow: 0 10px 20px rgba(16, 169, 104, 0.24);
+}
+
+.catalog-action:focus-visible,
+.catalog-clear-button:focus-visible,
+.catalog-primary-button:focus-visible {
+    outline: 3px solid rgba(109, 40, 217, 0.28);
+    outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+    .catalog-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .catalog-page {
+        padding-inline: 0.9rem;
+    }
+
+    .catalog-card-body {
+        padding-inline: 1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .catalog-card,
+    .catalog-action {
+        transition: none;
+    }
+}

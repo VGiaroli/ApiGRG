@@ -102,14 +102,6 @@
         const mensaje = encodeURIComponent(`Hola GRG, me interesa el equipo ${producto.nombre}. ¿Podrían brindarme más información?`);
 
         return `<article class="catalog-card">
-            <div class="catalog-card-top">
-                <div>
-                    <p class="catalog-category">${escaparHtml(producto.categoria || 'Equipo')}</p>
-                    <h2>${escaparHtml(producto.nombre)}</h2>
-                </div>
-                <span class="catalog-status ${producto.estado === 2 ? 'status-seminuevo' : ''}">${estado}</span>
-            </div>
-
             <div class="catalog-device">
                 ${imagenUrl
                     ? `<img class="catalog-product-image" src="${escaparHtml(imagenUrl)}" alt="Imagen de ${escaparHtml(producto.nombre)}" loading="lazy">
@@ -118,10 +110,18 @@
             </div>
 
             <div class="catalog-card-body">
-                <div class="catalog-tags">
+                <div class="catalog-card-top">
+                    <div class="catalog-card-heading">
+                        <p class="catalog-category">${escaparHtml(producto.categoria || 'Equipo')}</p>
+                        <h2>${escaparHtml(producto.nombre)}</h2>
+                    </div>
+                    <span class="catalog-status ${producto.estado === 2 ? 'status-seminuevo' : ''}">${estado}</span>
+                </div>
+
+                <div class="catalog-tags ${colores.length ? '' : 'is-empty'}">
                     ${colores.length
                         ? colores.slice(0, 3).map(function (color) { return `<span class="catalog-tag">${escaparHtml(color)}</span>`; }).join('')
-                        : '<span class="catalog-tag">Consultar colores</span>'}
+                        : ''}
                 </div>
 
                 <div class="catalog-prices">
@@ -130,8 +130,12 @@
                 </div>
 
                 <div class="catalog-financing">
-                    <span>${cuota && cuota.medioPago ? escaparHtml(cuota.medioPago) : 'Financiación'}</span>
-                    <strong>${cuota ? `${cuota.cantidadCuotas} x ${formatearMoneda(cuota.montoCuota, '')}` : 'Consultar'}</strong>
+                    <span class="financing-icon"><i class="bi bi-credit-card-2-front" aria-hidden="true"></i></span>
+                    <div class="financing-copy">
+                        <strong>${cuota ? `Hasta ${cuota.cantidadCuotas} cuotas` : 'Financiación'}</strong>
+                        <span>${cuota ? `de ${formatearMoneda(cuota.montoCuota, 'ARS')}` : 'Consultar alternativas disponibles'}</span>
+                    </div>
+                    ${cuota && cuota.medioPago ? `<small>${escaparHtml(cuota.medioPago)}</small>` : ''}
                 </div>
 
                 ${disponible
