@@ -159,87 +159,30 @@ a { text-decoration: none; }
   font-weight: 800;
 }
 
-/* =========================================
-   USUARIO DEL SIDEBAR
-   ========================================= */
-
 .sidebar-user {
-
   position: absolute;
-
   left: 1rem;
   right: 1rem;
   bottom: 4.5rem;
-
-  display: flex;
-  align-items: center;
-
-  gap: 0.75rem;
-
-  min-height: 48px;
-
-  padding: 0.78rem 0.9rem;
-
-  border-radius: 8px;
-
-  color: var(--admin-sidebar-text);
-
-  font-size: 0.8rem;
-
-  font-weight: 600;
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  background: transparent;
-
-  /* border-top: 1px solid var(--admin-sidebar-border); */
-
-  border-radius: 0;
-
   padding-top: 1rem;
 }
 
-
-/* Icono */
-
-.sidebar-user .nav-icon {
-
-  flex: 0 0 auto;
-
+.sidebar-user .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 48px;
+  padding: 0.78rem 0.9rem;
+  border-radius: 8px;
+  width: 100%;
 }
-
-
-/* Email */
-
-.sidebar-user .nav-text {
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-
-  white-space: nowrap;
-
-}
-
-
-/* Cuando el sidebar está minimizado */
 
 @media (min-width: 992px) {
-
-  body.sidebar-mini .sidebar-user {
-
-    left: 1rem;
-    right: 1rem;
-
+  body.sidebar-mini .sidebar-user .nav-link {
     justify-content: center;
-
     padding-left: 0;
     padding-right: 0;
-
   }
-
 }
 
 .sidebar-footer {
@@ -561,3 +504,12 @@ div[style*="margin-left"] {
   }
 }
 
+/* Oculto por defecto en todas las vistas PERFIL*/
+.nav-link-sub {
+  display: none;
+}
+
+/* Visible solo cuando estamos en Configuración o Perfil */
+body.page-config .nav-link-sub {
+  display: flex;
+}
