@@ -1,0 +1,1394 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GRG Store - Tecnología y Electrónica</title>
+
+    <!-- FontAwesome & Iconify Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Owl Carousel & AOS Animations CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+
+    <!-- Enlace al CSS externo separado -->
+    <link rel="stylesheet" href="/wwwroot/css/inicio.css">
+</head>
+
+<body>
+
+    <!-- Barra de progreso de scroll -->
+    <div id="scrollProgress"></div>
+
+    <!-- Header -->
+    <header id="mainHeader"
+        class="header border-4 border-primary border-top position-fixed start-0 top-0 w-100 bg-white">
+        <div class="container">
+            <div class="header-wrapper d-flex align-items-center justify-content-between py-3">
+
+                <div class="logo">
+                    <a href="index.html" class="text-decoration-none d-flex align-items-center gap-2">
+                        <span class="fs-4 fw-extrabold tracking-tight text-dark"
+                            style="letter-spacing: -1px; font-weight: 800; font-size: 1.8rem;">GRG<span
+                                class="text-primary">.</span></span>
+                    </a>
+                </div>
+
+                <nav class="d-none d-xl-flex align-items-center gap-5">
+                    <a href="/wwwroot/views/Components/inicio.html"
+                        class="fs-6 fw-bold nav-link-custom active">Inicio</a>
+                    <a href="#categorias" class="fs-6 fw-bold nav-link-custom">Categorías</a>
+                    <a href="#destacados" class="fs-6 fw-bold nav-link-custom">Tecnología</a>
+                    <a href="#ofertas" class="fs-6 fw-bold nav-link-custom">Ofertas</a>
+                    <a href="#nosotros" class="fs-6 fw-bold nav-link-custom">Nosotros</a>
+                    <a href="#contacto" class="fs-6 fw-bold nav-link-custom">Servicios</a>
+                </nav>
+
+                <div class="d-flex align-items-center gap-2 gap-md-3 shop-header-actions">
+                    <!-- Botón de Búsqueda 
+                    <button class="btn btn-secondary icon-btn" type="button" data-bs-toggle="modal"
+                        data-bs-target="#searchModal" aria-label="Buscar">
+                        <iconify-icon icon="lucide:search" class="fs-5"></iconify-icon>
+                    </button>
+                    Botón de Carrito con indicador 
+                    <button class="btn btn-secondary icon-btn position-relative" type="button"
+                        data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-label="Carrito">
+                        <iconify-icon icon="lucide:shopping-bag" class="fs-5"></iconify-icon>
+                        <span id="cartBadgeCount"
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary text-dark fw-bold"
+                            style="font-size: 10px;">3</span>
+                    </button>-->
+                    <button class="btn btn-secondary icon-btn d-xl-none" type="button" data-bs-toggle="dropdown"
+                        data-bs-auto-close="true" aria-expanded="false" aria-label="Menú móvil">
+                        <iconify-icon icon="lucide:menu" class="fs-5"></iconify-icon>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end p-4 shadow-lg border-0 rounded-4"
+                        style="min-width: 220px;">
+                        <div class="d-flex flex-column gap-3">
+                            <li><a class="fs-6 fw-bold text-dark text-decoration-none"
+                                    href="/wwwroot/views/Components/inicio.html">Inicio</a></li>
+                            <li><a class="fs-6 fw-bold text-dark text-decoration-none" href="#categorias">Categorías</a>
+                            </li>
+                            <li><a class="fs-6 fw-bold text-dark text-decoration-none" href="#destacados">Tecnología</a>
+                            </li>
+                            <li><a class="fs-6 fw-bold text-dark text-decoration-none" href="#ofertas">Ofertas</a></li>
+                            <li><a class="fs-6 fw-bold text-dark text-decoration-none" href="#nosotros">Nosotros</a>
+                            </li>
+                            <li><a class="fs-6 fw-bold text-dark text-decoration-none" href="#contacto">Contacto</a>
+                            </li>
+                        </div>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+
+    <div class="page-wrapper overflow-hidden" style="padding-top:88px;">
+
+        <!-- Marquee de beneficios -->
+        <div class="ticker-strip">
+            <div class="ticker-track">
+                <span><iconify-icon icon="lucide:truck" class="me-2"></iconify-icon>Envío gratis a todo el país</span>
+                <span><iconify-icon icon="lucide:shield-check" class="me-2"></iconify-icon>Garantía oficial 12
+                    meses</span>
+                <span><iconify-icon icon="lucide:credit-card" class="me-2"></iconify-icon>Hasta 18 cuotas sin
+                    interés</span>
+                <span><iconify-icon icon="lucide:headset" class="me-2"></iconify-icon>Soporte técnico experto</span>
+                <span><iconify-icon icon="lucide:truck" class="me-2"></iconify-icon>Envío gratis a todo el país</span>
+                <span><iconify-icon icon="lucide:shield-check" class="me-2"></iconify-icon>Garantía oficial 12
+                    meses</span>
+                <span><iconify-icon icon="lucide:credit-card" class="me-2"></iconify-icon>Hasta 18 cuotas sin
+                    interés</span>
+                <span><iconify-icon icon="lucide:headset" class="me-2"></iconify-icon>Soporte técnico experto</span>
+            </div>
+        </div>
+
+        <!-- Hero -->
+        <section class="hero-shop py-5 py-lg-7 text-white position-relative">
+            <div class="blob" style="width:340px;height:340px;background:#C1FF72;top:-60px;left:-80px;"></div>
+            <div class="blob"
+                style="width:260px;height:260px;background:#7ee0ff;bottom:-40px;right:10%;animation-delay:2s;"></div>
+            <div class="container py-lg-4 position-relative">
+                <div class="row align-items-center gy-5">
+                    <div class="col-lg-6" data-aos="fade-right" data-aos-duration="900">
+                        <div class="d-flex flex-column gap-4">
+                            <span
+                                class="badge text-bg-primary align-self-start fs-6 px-3 py-2 rounded-pill fw-bold text-dark shadow-sm">Lo
+                                último en Gaming y Celulares</span>
+                            <h1 class="mb-0 text-white fw-extrabold"
+                                style="font-size: clamp(36px, 5.2vw, 64px); line-height:1.05; letter-spacing: -2px;">
+                                Potencia y tecnología al mejor precio
+                            </h1>
+                            <p class="fs-5 mb-0 text-white text-opacity-75" style="max-width:500px; line-height: 1.6;">
+                                Encontrá PlayStation 5, smartphones liberados, notebooks de alto rendimiento, parlantes
+                                JBL y accesorios originales con garantía oficial.
+                            </p>
+                            <div class="d-flex flex-wrap gap-3 pt-2">
+                                <a href="#destacados"
+                                    class="btn btn-primary text-dark px-4 py-3 fs-6 rounded-pill shadow">Ver
+                                    productos</a>
+                                <a href="#categorias" class="btn btn-outline-light px-4 py-3 fs-6 rounded-pill">Explorar
+                                    categorías</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6" data-aos="fade-left" data-aos-duration="900">
+                        <div class="hero-visual p-6 d-flex align-items-center justify-content-center"
+                            style="background-image: linear-gradient(160deg, rgba(43,58,63,0.55) 0%, rgba(31,42,46,0.9) 75%), url('https://loremflickr.com/900/900/gaming,setup,dark'); background-size: cover; background-position: center;">
+                            <div class="text-center text-primary">
+                                <iconify-icon icon="lucide:gamepad-2" style="font-size: 100px;"></iconify-icon>
+                            </div>
+                            <div class="float-badge">¡Envío Gratis!</div>
+                            <div class="float-card">
+                                <p class="mb-1 fs-2 text-dark text-opacity-60 fw-bold">PlayStation 5 Slim</p>
+                                <p class="mb-0 fw-bold fs-6 text-dark">$899.900</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row gy-4 mt-4 mt-lg-5 pt-lg-3" data-aos="fade-up" data-aos-delay="150">
+                    <div class="col-6 col-md-3 hero-stat">
+                        <p class="hero-stat-num mb-0"><span class="count-up" data-count="1200">0</span>+</p>
+                        <p class="hero-stat-label mb-0">Productos</p>
+                    </div>
+                    <div class="col-6 col-md-3 hero-stat">
+                        <p class="hero-stat-num mb-0"><span class="count-up" data-count="48">0</span>hs</p>
+                        <p class="hero-stat-label mb-0">Envío express</p>
+                    </div>
+                    <div class="col-6 col-md-3 hero-stat">
+                        <p class="hero-stat-num mb-0"><span class="count-up" data-count="3200">0</span>+</p>
+                        <p class="hero-stat-label mb-0">Clientes felices</p>
+                    </div>
+                    <div class="col-6 col-md-3 hero-stat">
+                        <p class="hero-stat-num mb-0"><span class="count-up" data-count="4.9" data-decimal="1">0</span>★
+                        </p>
+                        <p class="hero-stat-label mb-0">Valoración media</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Franja de confianza -->
+        <section class="trust-strip py-5">
+            <div class="container">
+                <div class="row g-4 text-center text-md-start">
+                    <div class="col-6 col-md-3 d-flex align-items-center gap-3 justify-content-center justify-content-md-start"
+                        data-aos="fade-up" data-aos-delay="0">
+                        <div class="p-3 bg-light-gray rounded-circle d-flex align-items-center justify-content-center text-dark flex-shrink-0"
+                            style="width: 52px; height: 52px;">
+                            <iconify-icon icon="lucide:truck" class="fs-6"></iconify-icon>
+                        </div>
+                        <div>
+                            <p class="mb-1 fw-bold fs-6 text-dark">Envío a todo el país</p>
+                            <p class="mb-0 fs-3 text-muted">Rápido y seguro</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 d-flex align-items-center gap-3 justify-content-center justify-content-md-start"
+                        data-aos="fade-up" data-aos-delay="100">
+                        <div class="p-3 bg-light-gray rounded-circle d-flex align-items-center justify-content-center text-dark flex-shrink-0"
+                            style="width: 52px; height: 52px;">
+                            <iconify-icon icon="lucide:shield-check" class="fs-6"></iconify-icon>
+                        </div>
+                        <div>
+                            <p class="mb-1 fw-bold fs-6 text-dark">Garantía oficial</p>
+                            <p class="mb-0 fs-3 text-muted">12 meses en equipos</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 d-flex align-items-center gap-3 justify-content-center justify-content-md-start"
+                        data-aos="fade-up" data-aos-delay="200">
+                        <div class="p-3 bg-light-gray rounded-circle d-flex align-items-center justify-content-center text-dark flex-shrink-0"
+                            style="width: 52px; height: 52px;">
+                            <iconify-icon icon="lucide:credit-card" class="fs-6"></iconify-icon>
+                        </div>
+                        <div>
+                            <p class="mb-1 fw-bold fs-6 text-dark">Cuotas sin interés</p>
+                            <p class="mb-0 fs-3 text-muted">Tarjetas bancarizadas</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 d-flex align-items-center gap-3 justify-content-center justify-content-md-start"
+                        data-aos="fade-up" data-aos-delay="300">
+                        <div class="p-3 bg-light-gray rounded-circle d-flex align-items-center justify-content-center text-dark flex-shrink-0"
+                            style="width: 52px; height: 52px;">
+                            <iconify-icon icon="lucide:headset" class="fs-6"></iconify-icon>
+                        </div>
+                        <div>
+                            <p class="mb-1 fw-bold fs-6 text-dark">Soporte técnico</p>
+                            <p class="mb-0 fs-3 text-muted">Asesoramiento experto</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Carrusel de Marcas (Con iconos estables) -->
+        <section class="py-5 bg-white border-bottom">
+            <div class="container" data-aos="fade-up">
+                <div class="text-center mb-4">
+                    <p class="fs-4 text-uppercase text-muted fw-bold tracking-wider mb-0" style="letter-spacing: 1px;">
+                        Trabajamos con las mejores marcas</p>
+                </div>
+                <div class="owl-carousel owl-theme marcas-slider">
+
+                    <div class="item text-center py-2">
+                        <div class="brand-logo-card p-3 rounded-4 bg-light d-flex align-items-center justify-content-center gap-2"
+                            style="height: 80px;">
+                            <iconify-icon icon="simple-icons:samsung" class="fs-4 text-dark"></iconify-icon>
+                            <span class="fw-bold fs-6 text-dark">SAMSUNG</span>
+                        </div>
+                    </div>
+
+                    <div class="item text-center py-2">
+                        <div class="brand-logo-card p-3 rounded-4 bg-light d-flex align-items-center justify-content-center gap-2"
+                            style="height: 80px;">
+                            <iconify-icon icon="simple-icons:apple" class="fs-4 text-dark"></iconify-icon>
+                            <span class="fw-bold fs-6 text-dark">APPLE</span>
+                        </div>
+                    </div>
+
+                    <div class="item text-center py-2">
+                        <div class="brand-logo-card p-3 rounded-4 bg-light d-flex align-items-center justify-content-center gap-2"
+                            style="height: 80px;">
+                            <iconify-icon icon="simple-icons:sony" class="fs-4 text-dark"></iconify-icon>
+                            <span class="fw-bold fs-6 text-dark">SONY</span>
+                        </div>
+                    </div>
+
+                    <div class="item text-center py-2">
+                        <div class="brand-logo-card p-3 rounded-4 bg-light d-flex align-items-center justify-content-center gap-2"
+                            style="height: 80px;">
+                            <iconify-icon icon="simple-icons:jbl" class="fs-4 text-dark"></iconify-icon>
+                            <span class="fw-bold fs-6 text-dark">JBL</span>
+                        </div>
+                    </div>
+
+                    <div class="item text-center py-2">
+                        <div class="brand-logo-card p-3 rounded-4 bg-light d-flex align-items-center justify-content-center gap-2"
+                            style="height: 80px;">
+                            <iconify-icon icon="simple-icons:xiaomi" class="fs-4 text-dark"></iconify-icon>
+                            <span class="fw-bold fs-6 text-dark">XIAOMI</span>
+                        </div>
+                    </div>
+
+                    <div class="item text-center py-2">
+                        <div class="brand-logo-card p-3 rounded-4 bg-light d-flex align-items-center justify-content-center gap-2"
+                            style="height: 80px;">
+                            <iconify-icon icon="simple-icons:motorola" class="fs-4 text-dark"></iconify-icon>
+                            <span class="fw-bold fs-6 text-dark">MOTOROLA</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Categorías (editorial) -->
+        <section id="categorias" class="py-6 py-lg-9 bg-white">
+            <div class="container">
+                <div class="editorial-wrap" data-aos="fade-up">
+                    <div class="row align-items-end mb-5 gy-4">
+                        <div class="col-lg-7">
+                            <span
+                                class="badge text-bg-primary align-self-start fs-3 px-3 py-2 rounded-pill fw-bold text-dark mb-3 d-inline-block">Nuestras
+                                secciones</span>
+                            <h2 class="mb-0 text-white fw-extrabold"
+                                style="font-size: clamp(28px,3.6vw,44px); letter-spacing: -1px;">
+                                En GRG somos gamers,<br class="d-none d-lg-block"> tecnólogos y fanáticos del buen
+                                precio
+                            </h2>
+                        </div>
+                        <div class="col-lg-5">
+                            <p class="mb-0 fs-5 text-white text-opacity-60" style="line-height:1.6;">
+                                Curamos cada categoría con las marcas líderes del mercado tech: gaming, celulares,
+                                audio y productividad, todo con garantía oficial.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 g-lg-5">
+                        <div class="col-6 col-lg-3" data-aos="zoom-in" data-aos-delay="0">
+                            <a href="#destacados" class="editorial-card"
+                                style="background-image: url('https://loremflickr.com/500/600/smartphone,tech');">
+                                <span class="ed-mark ed-arrow"><iconify-icon
+                                        icon="lucide:arrow-up-right"></iconify-icon></span>
+                                <span class="ed-num">01.</span>
+                                <div>
+                                    <p class="ed-title mb-0">Celulares</p>
+                                    <p class="ed-desc mb-0">Smartphones liberados y accesorios</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-lg-3" data-aos="zoom-in" data-aos-delay="100">
+                            <a href="#destacados" class="editorial-card ec-lime"
+                                style="background-image: url('https://loremflickr.com/500/600/gaming,setup');">
+                                <span class="ed-mark ed-arrow"><iconify-icon
+                                        icon="lucide:arrow-up-right"></iconify-icon></span>
+                                <span class="ed-num">02.</span>
+                                <div>
+                                    <p class="ed-title mb-0">Gaming</p>
+                                    <p class="ed-desc mb-0">Consolas, joysticks y periféricos</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-lg-3" data-aos="zoom-in" data-aos-delay="200">
+                            <a href="#destacados" class="editorial-card"
+                                style="background-image: url('https://loremflickr.com/500/600/headphones,audio');">
+                                <span class="ed-mark ed-arrow"><iconify-icon
+                                        icon="lucide:arrow-up-right"></iconify-icon></span>
+                                <span class="ed-num">03.</span>
+                                <div>
+                                    <p class="ed-title mb-0">Audio</p>
+                                    <p class="ed-desc mb-0">Parlantes y auriculares portátiles</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-lg-3" data-aos="zoom-in" data-aos-delay="300">
+                            <a href="#destacados" class="editorial-card"
+                                style="background-image: url('https://loremflickr.com/500/600/laptop,notebook,workspace');">
+                                <span class="ed-mark ed-arrow"><iconify-icon
+                                        icon="lucide:arrow-up-right"></iconify-icon></span>
+                                <span class="ed-num">04.</span>
+                                <div>
+                                    <p class="ed-title mb-0">Notebooks &amp; Carga</p>
+                                    <p class="ed-desc mb-0">Laptops y cargadores rápidos</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Destacados / Productos -->
+        <section id="destacados" class="py-6 py-lg-9">
+            <div class="container">
+                <div class="d-flex align-items-end justify-content-between mb-5 flex-wrap gap-3 my-3">
+                    <div class="d-flex flex-column gap-2" data-aos="fade-up">
+                        <span
+                            class="badge badge-dark-custom align-self-start px-3 py-1.5 rounded-pill fs-3">Destacados</span>
+                        <h2 class="mb-0 fw-bold display-6" style="letter-spacing: -0.5px;">Tecnología de la semana</h2>
+                    </div>
+                </div>
+
+                <div class="row g-4 g-lg-5">
+
+                    <!-- Tile 1: Teclado -->
+                    <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+                        <div class="tile-product tile-lime">
+                            <button class="tile-close" aria-label="Agregar a favoritos"
+                                onclick="toggleWish(this,'Microsoft Designer Bluetooth Desktop 7N9-00018')">
+                                <iconify-icon icon="lucide:x"></iconify-icon>
+                            </button>
+                            <div class="tile-media">
+                                <img src="https://loremflickr.com/500/500/bluetooth,keyboard"
+                                    alt="Microsoft Designer Bluetooth Desktop" loading="lazy">
+                            </div>
+                            <div class="tile-body">
+                                <span class="tile-label">Teclado</span>
+                                <p class="tile-title mb-0">Microsoft Designer Bluetooth Desktop 7N9-00018</p>
+                                <p class="tile-price mb-0">$74.900</p>
+                            </div>
+                            <button class="tile-add" aria-label="Agregar al carrito"
+                                onclick="addToCart('Microsoft Designer Bluetooth Desktop 7N9-00018', 74900, 'Computación')">
+                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tile 2: Mouse -->
+                    <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="80">
+                        <div class="tile-product tile-gray">
+                            <button class="tile-close" aria-label="Agregar a favoritos"
+                                onclick="toggleWish(this,'Gaming mouse Razer Naga 2014 (Black)')">
+                                <iconify-icon icon="lucide:x"></iconify-icon>
+                            </button>
+                            <div class="tile-media">
+                                <img src="https://loremflickr.com/500/500/gaming-mouse,black"
+                                    alt="Gaming mouse Razer Naga" loading="lazy">
+                            </div>
+                            <div class="tile-body">
+                                <span class="tile-label">Mouse</span>
+                                <p class="tile-title mb-0">Gaming mouse Razer Naga 2014 (Black)</p>
+                                <p class="tile-price mb-0">$59.900</p>
+                            </div>
+                            <button class="tile-add" aria-label="Agregar al carrito"
+                                onclick="addToCart('Gaming mouse Razer Naga 2014 (Black)', 59900, 'Gaming')">
+                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tile 3: Headset -->
+                    <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="160">
+                        <div class="tile-product tile-lime">
+                            <button class="tile-close" aria-label="Agregar a favoritos"
+                                onclick="toggleWish(this,'Onikuma M80 PRO Combatwing Surround 7.1')">
+                                <iconify-icon icon="lucide:x"></iconify-icon>
+                            </button>
+                            <div class="tile-media">
+                                <img src="https://loremflickr.com/500/500/gaming-headset,tech"
+                                    alt="Onikuma M80 PRO Headset" loading="lazy">
+                            </div>
+                            <div class="tile-body">
+                                <span class="tile-label">Headphones</span>
+                                <p class="tile-title mb-0">Onikuma M80 PRO Combatwing Surround 7.1</p>
+                                <p class="tile-price mb-0">$68.500</p>
+                            </div>
+                            <button class="tile-add" aria-label="Agregar al carrito"
+                                onclick="addToCart('Onikuma M80 PRO Combatwing Surround 7.1', 68500, 'Audio')">
+                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tile 4: HDD -->
+                    <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="240">
+                        <div class="tile-product tile-gray">
+                            <button class="tile-close" aria-label="Agregar a favoritos"
+                                onclick="toggleWish(this,'Seagate Enterprise Performance 6TB 15K SAS')">
+                                <iconify-icon icon="lucide:x"></iconify-icon>
+                            </button>
+                            <div class="tile-media">
+                                <img src="https://loremflickr.com/500/500/harddrive,server"
+                                    alt="Seagate Enterprise Performance HDD" loading="lazy">
+                            </div>
+                            <div class="tile-body">
+                                <span class="tile-label">HDD Server</span>
+                                <p class="tile-title mb-0">Seagate Enterprise Performance 6TB 15K SAS</p>
+                                <p class="tile-price mb-0">$210.000</p>
+                            </div>
+                            <button class="tile-add" aria-label="Agregar al carrito"
+                                onclick="addToCart('Seagate Enterprise Performance 6TB 15K SAS', 210000, 'Computación')">
+                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tile 5: Smartphone -->
+                    <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+                        <div class="tile-product tile-gray">
+                            <button class="tile-close" aria-label="Agregar a favoritos"
+                                onclick="toggleWish(this,'Xiaomi Modern Smartphone')">
+                                <iconify-icon icon="lucide:x"></iconify-icon>
+                            </button>
+                            <div class="tile-media">
+                                <img src="https://loremflickr.com/500/500/xiaomi,smartphone"
+                                    alt="Xiaomi Modern Smartphone" loading="lazy">
+                            </div>
+                            <div class="tile-body">
+                                <span class="tile-label">Smartphone</span>
+                                <p class="tile-title mb-0">Xiaomi Modern Smartphone</p>
+                                <p class="tile-price mb-0">$389.900</p>
+                            </div>
+                            <button class="tile-add" aria-label="Agregar al carrito"
+                                onclick="addToCart('Xiaomi Modern Smartphone', 389900, 'Celulares')">
+                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tile 6: Smartwatch -->
+                    <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="80">
+                        <div class="tile-product tile-lime">
+                            <button class="tile-close" aria-label="Agregar a favoritos"
+                                onclick="toggleWish(this,'Apple Watch Series 6 44mm (Gray)')">
+                                <iconify-icon icon="lucide:x"></iconify-icon>
+                            </button>
+                            <div class="tile-media">
+                                <img src="https://loremflickr.com/500/500/smartwatch,black" alt="Apple Watch Series 6"
+                                    loading="lazy">
+                            </div>
+                            <div class="tile-body">
+                                <span class="tile-label">Smart Watch</span>
+                                <p class="tile-title mb-0">Apple Watch Series 6 44mm (Gray)</p>
+                                <p class="tile-price mb-0">$449.900</p>
+                            </div>
+                            <button class="tile-add" aria-label="Agregar al carrito"
+                                onclick="addToCart('Apple Watch Series 6 44mm (Gray)', 449900, 'Wearables')">
+                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tile 7: Joystick -->
+                    <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="160">
+                        <div class="tile-product tile-gray">
+                            <button class="tile-close" aria-label="Agregar a favoritos"
+                                onclick="toggleWish(this,'PlayStation Gaming Controller')">
+                                <iconify-icon icon="lucide:x"></iconify-icon>
+                            </button>
+                            <div class="tile-media">
+                                <img src="https://loremflickr.com/500/500/gamepad,controller"
+                                    alt="PlayStation Gaming Controller" loading="lazy">
+                            </div>
+                            <div class="tile-body">
+                                <span class="tile-label">Joystick</span>
+                                <p class="tile-title mb-0">PlayStation Gaming Controller</p>
+                                <p class="tile-price mb-0">$89.900</p>
+                            </div>
+                            <button class="tile-add" aria-label="Agregar al carrito"
+                                onclick="addToCart('PlayStation Gaming Controller', 89900, 'Gaming')">
+                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tile 8: Consola -->
+                    <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="240">
+                        <div class="tile-product tile-lime">
+                            <button class="tile-close" aria-label="Agregar a favoritos"
+                                onclick="toggleWish(this,'Nintendo Switch Gaming Console (Gray)')">
+                                <iconify-icon icon="lucide:x"></iconify-icon>
+                            </button>
+                            <div class="tile-media">
+                                <img src="https://loremflickr.com/500/500/nintendo-switch,console"
+                                    alt="Nintendo Switch Gaming Console" loading="lazy">
+                            </div>
+                            <div class="tile-body">
+                                <span class="tile-label">Gaming Console</span>
+                                <p class="tile-title mb-0">Nintendo Switch Gaming Console (Gray)</p>
+                                <p class="tile-price mb-0">$399.900</p>
+                            </div>
+                            <button class="tile-add" aria-label="Agregar al carrito"
+                                onclick="addToCart('Nintendo Switch Gaming Console (Gray)', 399900, 'Gaming')">
+                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Banner de oferta (split feature) -->
+        <section id="ofertas" class=" my-3 py-lg-9 bg-light-gray">
+            <div class="container">
+                <div class="row g-4 g-lg-5">
+                    <div class="col-lg-8" data-aos="fade-up">
+                        <div class="split-feature-main h-100"
+                            style="--sf-bg: url('https://loremflickr.com/1000/700/headphones,gaming,dark');">
+                            <div class="sf-glow"></div>
+                            <div class="z-1">
+                                <span
+                                    class="badge text-bg-primary fs-3 px-3 py-2 rounded-pill fw-bold text-dark mb-3 d-inline-block">Cyber
+                                    Weeks</span>
+                                <h2 class="mb-0 text-white fw-extrabold"
+                                    style="font-size: clamp(28px,3.4vw,42px); line-height:1.1; max-width:520px;">
+                                    Hasta 18 cuotas sin interés en Notebooks y Celulares
+                                </h2>
+                                <p class="mb-0 mt-3 fs-5 text-white text-opacity-60" style="max-width:420px;">
+                                    Aprovechá tarjetas seleccionadas y envío gratis a todo el país.
+                                </p>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between z-1 pt-5">
+                                <a href="#destacados"
+                                    class="btn btn-primary text-dark px-4 py-3 fs-6 rounded-pill shadow d-inline-flex align-items-center gap-2">
+                                    <iconify-icon icon="lucide:shopping-cart" class="fs-5"></iconify-icon> Ver todos los
+                                    productos
+                                </a>
+                                <span class="sf-icon-circle" style="background: rgba(255,255,255,0.1); color:#fff;">
+                                    <iconify-icon icon="lucide:arrow-down" class="fs-5"></iconify-icon>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="d-flex flex-column gap-4 h-100">
+                            <a href="#nosotros" class="split-feature-side side-cream" data-aos="fade-up"
+                                data-aos-delay="100">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <p class="mb-0 fw-bold fs-6">Conocé más<br>sobre GRG</p>
+                                    <span class="sf-icon-circle"><iconify-icon
+                                            icon="lucide:arrow-up-right"></iconify-icon></span>
+                                </div>
+                            </a>
+                            <a href="https://wa.me/5493511234567" target="_blank" rel="noopener"
+                                class="split-feature-side side-lime" data-aos="fade-up" data-aos-delay="200">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <p class="mb-1 fs-3 fw-semibold text-dark text-opacity-75">¿Tenés dudas?</p>
+                                        <p class="mb-0 fw-bold fs-6">Contactanos</p>
+                                    </div>
+                                    <span class="sf-icon-circle"><iconify-icon icon="lucide:send"
+                                            class="fs-5"></iconify-icon></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Confianza (mascot cards) -->
+        <section class="py-6 py-lg-9 bg-white">
+            <div class="container">
+                <div class="mascot-wrap" data-aos="fade-up">
+                    <div class="row align-items-end mb-5 gy-4">
+                        <div class="col-lg-8">
+                            <h2 class="mb-0 text-white fw-extrabold"
+                                style="font-size: clamp(26px,3.2vw,40px); letter-spacing: -1px;">
+                                Comprá con total confianza
+                            </h2>
+                            <p class="mb-0 mt-2 fs-5 text-white text-opacity-60" style="max-width:520px;">
+                                Envío, pagos y soporte pensados para que tu compra tech sea simple, rápida y segura.
+                            </p>
+                        </div>
+                        <div class="col-lg-4 text-lg-end">
+                            <a href="#destacados" class="play-pill">
+                                <iconify-icon icon="lucide:arrow-right"></iconify-icon> Ver todos los productos
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row g-4 g-lg-5">
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+                            <div class="mascot-card mc-lime">
+                                <span class="mascot-icon"><iconify-icon icon="lucide:truck"></iconify-icon></span>
+                                <div>
+                                    <p class="mc-chip mb-0">Envíos</p>
+                                    <p class="mc-title mb-0">Envío rápido a todo el país</p>
+                                    <p class="mc-desc mb-0">Recibí tu pedido en 48hs con seguimiento en tiempo real.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                            <div class="mascot-card mc-cream">
+                                <span class="mascot-icon"><iconify-icon icon="lucide:credit-card"></iconify-icon></span>
+                                <div>
+                                    <p class="mc-chip mb-0">Pagos</p>
+                                    <p class="mc-title mb-0">Pagá como quieras</p>
+                                    <p class="mc-desc mb-0">Cuotas sin interés con tarjetas bancarizadas seleccionadas.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                            <div class="mascot-card mc-dark">
+                                <span class="mascot-icon"><iconify-icon icon="lucide:headset"></iconify-icon></span>
+                                <div>
+                                    <p class="mc-chip mb-0">Soporte</p>
+                                    <p class="mc-title mb-0">Soporte experto 24/7</p>
+                                    <p class="mc-desc mb-0">Asesoramiento técnico real antes y después de tu compra.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nuevos ingresos -->
+        <section class=" my-3 py-6 py-lg-9 bg-light-gray">
+            <div class="container">
+                <div class="d-flex flex-column gap-2 mb-5" data-aos="fade-up">
+                    <span class="badge badge-dark-custom align-self-start px-3 py-1.5 rounded-pill fs-3">Accesorios y
+                        más</span>
+                    <h2 class="mb-0 fw-bold display-6" style="letter-spacing: -0.5px;">Cargadores y Computación</h2>
+                </div>
+                <div class="row g-4 g-lg-5">
+
+                    <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+                        <div class="tile-product tile-gray">
+                            <button class="tile-close" aria-label="Agregar a favoritos"
+                                onclick="toggleWish(this,'Notebook Lenovo IdeaPad 3 15.6 Ryzen 5')">
+                                <iconify-icon icon="lucide:x"></iconify-icon>
+                            </button>
+                            <div class="tile-media">
+                                <img src="https://loremflickr.com/500/500/laptop,notebook"
+                                    alt="Notebook Lenovo IdeaPad 3" loading="lazy">
+                            </div>
+                            <div class="tile-body">
+                                <span class="tile-label">Notebooks</span>
+                                <p class="tile-title mb-0">Notebook Lenovo IdeaPad 3 15.6 Ryzen 5</p>
+                                <p class="tile-price mb-0">$749.900</p>
+                            </div>
+                            <button class="tile-add" aria-label="Agregar al carrito"
+                                onclick="addToCart('Notebook Lenovo IdeaPad 3 15.6 Ryzen 5', 749900, 'Notebooks')">
+                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                        <div class="tile-product tile-lime">
+                            <button class="tile-close" aria-label="Agregar a favoritos"
+                                onclick="toggleWish(this,'Cargador Rápido Tipo C 45W Original')">
+                                <iconify-icon icon="lucide:x"></iconify-icon>
+                            </button>
+                            <div class="tile-media">
+                                <img src="https://loremflickr.com/500/500/usb-c,charger"
+                                    alt="Cargador Rápido Tipo C 45W" loading="lazy">
+                            </div>
+                            <div class="tile-body">
+                                <span class="tile-label">Cargadores</span>
+                                <p class="tile-title mb-0">Cargador Rápido Tipo C 45W Original</p>
+                                <p class="tile-price mb-0">$28.900</p>
+                            </div>
+                            <button class="tile-add" aria-label="Agregar al carrito"
+                                onclick="addToCart('Cargador Rápido Tipo C 45W Original', 28900, 'Cargadores')">
+                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                        <div class="tile-product tile-gray">
+                            <button class="tile-close" aria-label="Agregar a favoritos"
+                                onclick="toggleWish(this,'Parlante JBL Charge 5 Bluetooth')">
+                                <iconify-icon icon="lucide:x"></iconify-icon>
+                            </button>
+                            <div class="tile-media">
+                                <img src="https://loremflickr.com/500/500/bluetooth-speaker,portable"
+                                    alt="Parlante JBL Charge 5" loading="lazy">
+                            </div>
+                            <div class="tile-body">
+                                <span class="tile-label">Audio</span>
+                                <p class="tile-title mb-0">Parlante JBL Charge 5 Bluetooth</p>
+                                <p class="tile-price mb-0">$189.000</p>
+                            </div>
+                            <button class="tile-add" aria-label="Agregar al carrito"
+                                onclick="addToCart('Parlante JBL Charge 5 Bluetooth', 189000, 'Audio')">
+                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                        <div class="tile-product tile-lime">
+                            <button class="tile-close" aria-label="Agregar a favoritos"
+                                onclick="toggleWish(this,'Apple iPhone 15 128GB')">
+                                <iconify-icon icon="lucide:x"></iconify-icon>
+                            </button>
+                            <div class="tile-media">
+                                <img src="https://loremflickr.com/500/500/iphone,smartphone" alt="Apple iPhone 15 128GB"
+                                    loading="lazy">
+                            </div>
+                            <div class="tile-body">
+                                <span class="tile-label">Celulares · -15%</span>
+                                <p class="tile-title mb-0">Apple iPhone 15 128GB</p>
+                                <p class="tile-price mb-0">$1.290.000 <span class="price-before">$1.490.000</span></p>
+                            </div>
+                            <button class="tile-add" aria-label="Agregar al carrito"
+                                onclick="addToCart('Apple iPhone 15 128GB', 1290000, 'Celulares')">
+                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonios -->
+        <section class="py-6 py-lg-9">
+            <div class="container">
+                <div class="d-flex flex-column gap-2 mb-5 text-center align-items-center my-3" data-aos="fade-up">
+                    <span class="badge badge-dark-custom px-3 py-1.5 rounded-pill fs-3">Opiniones</span>
+                    <h2 class="mb-0 fw-bold display-6" style="letter-spacing: -0.5px;">Lo que dicen nuestros clientes
+                    </h2>
+                </div>
+                <div class="row g-4 g-lg-5">
+                    <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+                        <div class="testimonial-card d-flex flex-column gap-4">
+                            <span class="testimonial-quote-mark">"</span>
+                            <div class="rating-stars fs-5">★★★★★</div>
+                            <p class="mb-0 fs-5 text-dark lh-base">"Compré la PlayStation 5 y llegó en menos de 48 horas
+                                súper bien empaquetada. Funciona de diez, muy recomendable."</p>
+                            <div class="d-flex align-items-center gap-3 mt-auto pt-3 testimonial-divider">
+                                <img src="https://i.pravatar.cc/100?img=12" alt="Matías Gómez"
+                                    class="testimonial-avatar">
+                                <div>
+                                    <p class="mb-0 fw-bold fs-6">Matías Gómez</p>
+                                    <p class="mb-0 fs-3 text-muted">Compra verificada · Córdoba</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                        <div class="testimonial-card d-flex flex-column gap-4">
+                            <span class="testimonial-quote-mark">"</span>
+                            <div class="rating-stars fs-5">★★★★★</div>
+                            <p class="mb-0 fs-5 text-dark lh-base">"El parlante JBL suena increíble. Tenía dudas sobre
+                                el pago y me asesoraron por WhatsApp al instante."</p>
+                            <div class="d-flex align-items-center gap-3 mt-auto pt-3 testimonial-divider">
+                                <img src="https://i.pravatar.cc/100?img=47" alt="Lucía Ríos" class="testimonial-avatar">
+                                <div>
+                                    <p class="mb-0 fw-bold fs-6">Lucía Ríos</p>
+                                    <p class="mb-0 fs-3 text-muted">Compra verificada · Buenos Aires</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="testimonial-card d-flex flex-column gap-4">
+                            <span class="testimonial-quote-mark">"</span>
+                            <div class="rating-stars fs-5">★★★★<span class="muted-star">★</span></div>
+                            <p class="mb-0 fs-5 text-dark lh-base">"Conseguí mi cargador rápido y un joystick extra para
+                                la PS5 en cuotas sin interés. Excelente atención."</p>
+                            <div class="d-flex align-items-center gap-3 mt-auto pt-3 testimonial-divider">
+                                <img src="https://i.pravatar.cc/100?img=33" alt="Federico Molina"
+                                    class="testimonial-avatar">
+                                <div>
+                                    <p class="mb-0 fw-bold fs-6">Federico Molina</p>
+                                    <p class="mb-0 fs-3 text-muted">Compra verificada · Rosario</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Preguntas Frecuentes -->
+        <section id="contacto" class=" my-3 py-6 py-lg-9 bg-light-gray">
+            <div class="container">
+                <div class="row g-5">
+                    <div class="col-lg-5" data-aos="fade-right">
+                        <span
+                            class="badge badge-dark-custom align-self-start px-3 py-1.5 rounded-pill fs-3 mb-3 d-inline-block">Ayuda</span>
+                        <h2 class="mb-0 fw-bold display-6" style="letter-spacing: -0.5px;">Preguntas frecuentes</h2>
+                        <p class="mb-0 mt-3 fs-5 text-muted" style="max-width: 420px; line-height: 1.6;">
+                            Resolvemos las dudas más comunes sobre envíos, pagos, garantías y devoluciones antes de que
+                            compres.
+                        </p>
+
+                        <div class="faq-cta-card d-flex flex-column gap-3">
+                            <span class="faq-cta-icon"><iconify-icon icon="lucide:message-circle"
+                                    class="fs-5 text-dark"></iconify-icon></span>
+                            <div>
+                                <p class="mb-1 fw-bold fs-6 text-dark">¿No encontraste tu respuesta?</p>
+                                <p class="mb-0 fs-3 text-dark text-opacity-75">Te respondemos en menos de 1 hora hábil.
+                                </p>
+                            </div>
+                            <a href="https://wa.me/5493511234567" target="_blank" rel="noopener"
+                                class="btn btn-dark text-primary fw-bold px-4 py-3 fs-6 rounded-pill align-self-start d-inline-flex align-items-center gap-2">
+                                <iconify-icon icon="mdi:whatsapp" class="fs-5"></iconify-icon> Escribinos por WhatsApp
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-7" data-aos="fade-left">
+                        <div class="accordion faq-wrap" id="faqAccordion">
+
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#faq1">
+                                        ¿Cuánto tarda el envío a todo el país?
+                                        <span class="faq-toggle-icon"><iconify-icon icon="lucide:plus"
+                                                class="fs-6"></iconify-icon></span>
+                                    </button>
+                                </h3>
+                                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Los envíos a CABA y GBA llegan en 24 a 48hs hábiles. Al interior del país el
+                                        tiempo estimado es de 3 a 5 días hábiles según la localidad, con seguimiento en
+                                        tiempo real desde que despachamos tu pedido.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#faq2">
+                                        ¿Qué medios de pago aceptan?
+                                        <span class="faq-toggle-icon"><iconify-icon icon="lucide:plus"
+                                                class="fs-6"></iconify-icon></span>
+                                    </button>
+                                </h3>
+                                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Aceptamos tarjetas de crédito y débito de todos los bancos, transferencia
+                                        bancaria y efectivo en puntos de pago adheridos. Con tarjetas seleccionadas
+                                        ofrecemos hasta 18 cuotas sin interés.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#faq3">
+                                        ¿Los productos tienen garantía oficial?
+                                        <span class="faq-toggle-icon"><iconify-icon icon="lucide:plus"
+                                                class="fs-6"></iconify-icon></span>
+                                    </button>
+                                </h3>
+                                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Sí, todos nuestros productos cuentan con garantía oficial de 12 meses por
+                                        defectos de fábrica. Guardá tu factura de compra: es el único comprobante
+                                        necesario para hacerla válida.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#faq4">
+                                        ¿Puedo cambiar o devolver un producto?
+                                        <span class="faq-toggle-icon"><iconify-icon icon="lucide:plus"
+                                                class="fs-6"></iconify-icon></span>
+                                    </button>
+                                </h3>
+                                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Tenés 10 días corridos desde que recibís tu pedido para solicitar un cambio o
+                                        devolución, siempre que el producto esté sin uso y en su embalaje original.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#faq5">
+                                        ¿Tienen stock físico para retirar en local?
+                                        <span class="faq-toggle-icon"><iconify-icon icon="lucide:plus"
+                                                class="fs-6"></iconify-icon></span>
+                                    </button>
+                                </h3>
+                                <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Sí, podés retirar tu compra sin cargo en nuestro local de Córdoba de lunes a
+                                        sábado de 9 a 20h. Elegí "Retiro en local" al finalizar tu compra.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#faq6">
+                                        ¿Cómo sigo el estado de mi pedido?
+                                        <span class="faq-toggle-icon"><iconify-icon icon="lucide:plus"
+                                                class="fs-6"></iconify-icon></span>
+                                    </button>
+                                </h3>
+                                <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Apenas despachamos tu pedido te enviamos un mail con el código de seguimiento.
+                                        También podés consultarnos el estado en cualquier momento por WhatsApp.
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer id="nosotros" class="bg-dark text-white py-6 py-lg-9">
+        <div class="container">
+            <div class="row gy-5">
+                <div class="col-lg-4">
+                    <div class="d-flex flex-column gap-3">
+                        <span class="fs-3 fw-extrabold text-white"
+                            style="font-size: 2rem; font-weight: 800; letter-spacing: -1px;">GRG<span
+                                class="text-primary">.</span></span>
+                        <p class="mb-0 fs-5 text-white text-opacity-75" style="max-width:320px; line-height: 1.6;">
+                            Tu tienda de confianza en tecnología, gaming, celulares y accesorios con envíos a todo el
+                            país.
+                        </p>
+                        <div class="d-flex gap-3 pt-2">
+                            <a href="#"
+                                class="icon-btn bg-white bg-opacity-10 text-white rounded-circle d-flex align-items-center justify-content-center text-decoration-none"
+                                style="width: 44px; height: 44px;"><iconify-icon icon="mdi:instagram"
+                                    class="fs-5"></iconify-icon></a>
+                            <a href="#"
+                                class="icon-btn bg-white bg-opacity-10 text-white rounded-circle d-flex align-items-center justify-content-center text-decoration-none"
+                                style="width: 44px; height: 44px;"><iconify-icon icon="mdi:facebook"
+                                    class="fs-5"></iconify-icon></a>
+                            <a href="#"
+                                class="icon-btn bg-white bg-opacity-10 text-white rounded-circle d-flex align-items-center justify-content-center text-decoration-none"
+                                style="width: 44px; height: 44px;"><iconify-icon icon="mdi:whatsapp"
+                                    class="fs-5"></iconify-icon></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <p class="mb-3 fw-bold fs-6 text-white">Productos</p>
+                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#destacados">Celulares</a></li>
+                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#destacados">PlayStation 5</a>
+                        </li>
+                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#destacados">Joysticks</a></li>
+                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#destacados">Parlantes JBL</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <p class="mb-3 fw-bold fs-6 text-white">Ayuda</p>
+                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#"
+                                onclick="showToast('Envíos a todo el país disponibles', 'info'); return false;">Envíos</a>
+                        </li>
+                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#"
+                                onclick="showToast('Garantía oficial de 12 meses', 'info'); return false;">Garantía</a>
+                        </li>
+                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#"
+                                onclick="showToast('Preguntas frecuentes', 'info'); return false;">FAQ</a></li>
+                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#"
+                                onclick="showToast('Seguí tu envío', 'info'); return false;">Seguimiento</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <p class="mb-3 fw-bold fs-6 text-white">Contacto</p>
+                    <div class="d-flex flex-column gap-2">
+                        <a href="mailto:ventas@grgstore.com"
+                            class="link-hover fs-5 text-white text-opacity-75 d-flex align-items-center gap-2"><iconify-icon
+                                icon="lucide:mail"></iconify-icon> ventas@grgstore.com</a>
+                        <a href="tel:+5493511234567"
+                            class="link-hover fs-5 text-white text-opacity-75 d-flex align-items-center gap-2"><iconify-icon
+                                icon="lucide:phone"></iconify-icon> +54 9 351 123-4567</a>
+                        <p class="mb-0 fs-5 text-white text-opacity-75 d-flex align-items-center gap-2"><iconify-icon
+                                icon="lucide:clock"></iconify-icon> Lun a Sáb de 9 a 20h</p>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-6 border-white border-opacity-10">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                <p class="mb-0 fs-4 text-white text-opacity-60">© 2026 GRG Store. Todos los derechos reservados.</p>
+                <div class="d-flex gap-4">
+                    <a class="fs-4 text-white text-opacity-60 text-decoration-none link-hover" href="#"
+                        onclick="showToast('Términos y condiciones', 'info'); return false;">Términos y condiciones</a>
+                    <a class="fs-4 text-white text-opacity-60 text-decoration-none link-hover" href="#"
+                        onclick="showToast('Defensa del consumidor', 'info'); return false;">Legales</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTopBtn" aria-label="Volver arriba">
+        <iconify-icon icon="lucide:arrow-up" class="fs-6 text-dark"></iconify-icon>
+    </button>
+
+    <!-- Cart Offcanvas -->
+    <div class="offcanvas offcanvas-end cart-drawer" tabindex="-1" id="cartOffcanvas"
+        aria-labelledby="cartOffcanvasLabel">
+        <div class="offcanvas-header p-4">
+            <h5 class="offcanvas-title fw-bold d-flex align-items-center gap-2" id="cartOffcanvasLabel">
+                <iconify-icon icon="lucide:shopping-bag" class="text-primary"></iconify-icon> Tu Carrito Tech
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                aria-label="Cerrar"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column justify-content-between p-4">
+            <div id="cartItemsContainer" class="d-flex flex-column gap-3">
+                <!-- Ítems del carrito -->
+            </div>
+            <div class="border-top pt-4 mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="fs-5 text-muted">Subtotal:</span>
+                    <span class="fs-4 fw-bold text-dark" id="cartSubtotal">$0</span>
+                </div>
+                <p class="fs-3 text-muted mb-4">Envío calculado en el checkout</p>
+                <button class="btn btn-primary w-100 py-3 fw-bold rounded-pill text-dark shadow-sm"
+                    onclick="checkoutCart()">
+                    Iniciar Compra Segura
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 rounded-4 p-4 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Buscar productos en GRG</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-light border-0"><iconify-icon
+                                icon="lucide:search"></iconify-icon></span>
+                        <input type="text" class="form-control bg-light border-0 fs-5" id="searchInputModal"
+                            placeholder="¿Qué buscás? (ej. PS5, Celular, JBL, Notebook)..."
+                            onkeyup="handleSearchInput(event)">
+                    </div>
+                    <div class="mt-4">
+                        <p class="fs-3 text-muted fw-bold mb-2">Búsquedas populares:</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-light text-dark p-2 rounded-pill fs-3 cursor-pointer"
+                                onclick="quickSearch('PlayStation 5')">PlayStation 5</span>
+                            <span class="badge bg-light text-dark p-2 rounded-pill fs-3 cursor-pointer"
+                                onclick="quickSearch('Joystick')">Joystick DualSense</span>
+                            <span class="badge bg-light text-dark p-2 rounded-pill fs-3 cursor-pointer"
+                                onclick="quickSearch('JBL')">Parlante JBL</span>
+                            <span class="badge bg-light text-dark p-2 rounded-pill fs-3 cursor-pointer"
+                                onclick="quickSearch('Notebook')">Notebooks</span>
+                        </div>
+                    </div>
+                    <div id="searchResultsContainer" class="mt-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+
+    <script>
+        // Shopping Cart State
+        let cart = [
+            { name: 'PlayStation 5 Slim 1TB', price: 899900, qty: 1, category: 'Gaming' },
+            { name: 'Joystick DualSense PS5', price: 89900, qty: 1, category: 'Gaming' },
+            { name: 'Parlante JBL Flip 6', price: 125000, qty: 1, category: 'Audio' }
+        ];
+
+        $(document).ready(function () {
+            AOS.init({ once: true, duration: 800, offset: 50 });
+
+            $('.destacados-slider').owlCarousel({
+                loop: true,
+                margin: 24,
+                nav: false,
+                dots: true,
+                autoplay: true,
+                autoplayTimeout: 5000,
+                autoplayHoverPause: true,
+                responsive: {
+                    0: { items: 1.15 },
+                    576: { items: 2 },
+                    992: { items: 3 },
+                    1200: { items: 4 }
+                }
+            });
+
+            $('.marcas-slider').owlCarousel({
+                loop: true,
+                margin: 20,
+                nav: false,
+                dots: false,
+                autoplay: true,
+                autoplayTimeout: 3000,
+                autoplayHoverPause: true,
+                responsive: {
+                    0: { items: 2 },
+                    576: { items: 3 },
+                    992: { items: 6 }
+                }
+            });
+
+            window.addEventListener('scroll', function () {
+                const header = document.getElementById('mainHeader');
+                if (window.scrollY > 40) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+                const btn = document.getElementById('scrollToTopBtn');
+                btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+
+                // Barra de progreso de scroll
+                const scrollTop = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                const progressBar = document.getElementById('scrollProgress');
+                if (progressBar) progressBar.style.width = progress + '%';
+            });
+
+            // Contadores animados (count-up) al entrar en viewport
+            const countEls = document.querySelectorAll('.count-up');
+            if (countEls.length) {
+                const countObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const el = entry.target;
+                            const target = parseFloat(el.getAttribute('data-count'));
+                            const decimals = parseInt(el.getAttribute('data-decimal') || '0');
+                            const duration = 1400;
+                            const start = performance.now();
+                            function tick(now) {
+                                const p = Math.min((now - start) / duration, 1);
+                                const eased = 1 - Math.pow(1 - p, 3);
+                                const value = target * eased;
+                                el.textContent = decimals ? value.toFixed(decimals) : Math.round(value).toLocaleString('es-AR');
+                                if (p < 1) requestAnimationFrame(tick);
+                            }
+                            requestAnimationFrame(tick);
+                            countObserver.unobserve(el);
+                        }
+                    });
+                }, { threshold: 0.4 });
+                countEls.forEach(el => countObserver.observe(el));
+            }
+
+            document.getElementById('scrollToTopBtn').addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            updateCartUI();
+        });
+
+        function showToast(message, icon = 'success') {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'bottom-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            Toast.fire({ icon: icon, title: message });
+        }
+
+        function addToCart(name, price, category) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ name, price, qty: 1, category });
+            }
+            updateCartUI();
+            showToast(`¡"${name}" agregado al carrito!`, 'success');
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cartItemsContainer');
+            const badge = document.getElementById('cartBadgeCount');
+            const subtotalEl = document.getElementById('cartSubtotal');
+
+            let totalItems = 0;
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+          <div class="text-center py-6 text-muted">
+            <iconify-icon icon="lucide:shopping-bag" class="fs-1 mb-2 text-opacity-50"></iconify-icon>
+            <p class="fs-5 mb-0">Tu carrito está vacío</p>
+          </div>
+        `;
+            } else {
+                container.innerHTML = cart.map((item, index) => `
+          <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-4">
+            <div class="d-flex align-items-center gap-3">
+              <div class="bg-dark text-primary rounded-3 d-flex align-items-center justify-content-center fw-bold" style="width: 50px; height: 50px;">
+                <iconify-icon icon="lucide:package" class="fs-5"></iconify-icon>
+              </div>
+              <div>
+                <p class="mb-0 fw-bold fs-6 text-dark">${item.name}</p>
+                <p class="mb-0 fs-3 text-muted">$${item.price.toLocaleString('es-AR')} x ${item.qty}</p>
+              </div>
+            </div>
+            <button class="btn btn-sm btn-outline-danger border-0" onclick="removeFromCart(${index})" aria-label="Eliminar producto">
+              <iconify-icon icon="lucide:trash-2" class="fs-5"></iconify-icon>
+            </button>
+          </div>
+        `).join('');
+            }
+
+            cart.forEach(item => {
+                totalItems += item.qty;
+                subtotal += item.price * item.qty;
+            });
+
+            if (badge) badge.textContent = totalItems;
+            subtotalEl.textContent = `$${subtotal.toLocaleString('es-AR')}`;
+        }
+
+        function toggleWish(btn, name) {
+            const isActive = btn.classList.toggle('active');
+            const icon = btn.querySelector('iconify-icon');
+            icon.setAttribute('icon', isActive ? 'lucide:heart' : 'lucide:x');
+            showToast(isActive ? `"${name}" agregado a favoritos` : `"${name}" quitado de favoritos`, isActive ? 'success' : 'info');
+        }
+
+        function removeFromCart(index) {
+            const removed = cart[index].name;
+            cart.splice(index, 1);
+            updateCartUI();
+            showToast(`Se removió "${removed}" del carrito`, 'info');
+        }
+
+        function checkoutCart() {
+            if (cart.length === 0) {
+                showToast('Tu carrito está vacío', 'warning');
+                return;
+            }
+            Swal.fire({
+                title: '¡Procesando Compra!',
+                text: 'Redirigiéndote a la pasarela de pago segura...',
+                icon: 'success',
+                timer: 2500,
+                showConfirmButton: false
+            }).then(() => {
+                cart = [];
+                updateCartUI();
+                const offcanvasEl = document.getElementById('cartOffcanvas');
+                const offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+                if (offcanvas) offcanvas.hide();
+            });
+        }
+
+        function quickSearch(term) {
+            document.getElementById('searchInputModal').value = term;
+            handleSearchInput({ target: { value: term } });
+        }
+
+        function handleSearchInput(e) {
+            const query = e.target.value.toLowerCase();
+            const resultsContainer = document.getElementById('searchResultsContainer');
+            if (!query) {
+                resultsContainer.innerHTML = '';
+                return;
+            }
+
+            const mockProducts = [
+                { name: 'PlayStation 5 Slim 1TB', price: '$899.900', cat: 'Gaming' },
+                { name: 'Joystick DualSense PS5', price: '$89.900', cat: 'Gaming' },
+                { name: 'Parlante JBL Flip 6', price: '$125.000', cat: 'Audio' },
+                { name: 'Samsung Galaxy S24 Ultra', price: '$1.450.000', cat: 'Celulares' },
+                { name: 'Notebook Lenovo Ryzen 5', price: '$749.900', cat: 'Notebooks' },
+                { name: 'Cargador Rápido Tipo C 45W', price: '$28.900', cat: 'Cargadores' },
+                { name: 'Parlante JBL Charge 5', price: '$189.000', cat: 'Audio' },
+                { name: 'Apple iPhone 15 128GB', price: '$1.290.000', cat: 'Celulares' }
+            ];
+
+            const filtered = mockProducts.filter(p => p.name.toLowerCase().includes(query) || p.cat.toLowerCase().includes(query));
+
+            if (filtered.length === 0) {
+                resultsContainer.innerHTML = `<p class="text-muted fs-5">No se encontraron productos para "${query}".</p>`;
+            } else {
+                resultsContainer.innerHTML = `
+          <p class="fs-3 fw-bold text-muted mb-3">Resultados (${filtered.length}):</p>
+          <div class="d-flex flex-column gap-2">
+            ${filtered.map(p => `
+              <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3">
+                <div>
+                  <p class="mb-0 fw-bold text-dark">${p.name}</p>
+                  <span class="fs-3 text-muted">${p.cat} · <strong class="text-dark">${p.price}</strong></span>
+                </div>
+                <button class="btn btn-sm btn-primary text-dark fw-bold px-3 py-1.5 rounded-pill" onclick="addToCart('${p.name}', ${parseInt(p.price.replace(/[^0-9]/g, ''))}, '${p.cat}')">Comprar</button>
+              </div>
+            `).join('')}
+          </div>
+        `;
+            }
+        }
+    </script>
+</body>
+
+</html>

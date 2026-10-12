@@ -63,3 +63,10 @@
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.75rem;
 }
+
+/* Cuando estamos en la vista Configuración, ocultamos el resto de los links */
+body.page-config .admin-sidebar .nav-link[href="/index.html"],
+body.page-config .admin-sidebar .nav-link[href="/views/Categorias/categorias.html"],
+body.page-config .admin-sidebar .nav-link[href="/views/Productos/productos.html"] {
+  display: none;
+}

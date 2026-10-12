@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRG SERVICIO TECNICO | Perfil</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/configuracion.css">
+</head>
+
+<body class="page-config">
+    <div id="navbar-placeholder"></div>
+
+    <div class="admin-main">
+        <main class="container-fluid px-4 py-4">
+            <div class="page-head">
+                <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                    <a href="/index.html" class="breadcrumb-link">Inicio</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="/views/Usuarios/configuration.html" class="breadcrumb-link">Configuración</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-current">Perfil</span>
+                </nav>
+            </div>
+
+            <div class="container">
+                <div class="row justify-content-start">
+                    <div class="col-md-6">
+                        <form id="form-perfil" class="perfil-form">
+
+                            <div class="mb-3">
+                                <label for="email-actual" class="form-label">Email actual</label>
+                                <input type="email" class="form-control" id="email-actual" disabled>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email-nuevo" class="form-label">Nuevo email</label>
+                                <input type="email" class="form-control" id="email-nuevo" placeholder="nuevo@gmail.com"
+                                    required>
+                            </div>
+
+                            <hr>
+
+                            <div class="mb-3">
+                                <label for="password-nueva" class="form-label">Nueva contraseña</label>
+                                <input type="password" class="form-control" id="password-nueva" minlength="8" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password-confirmar" class="form-label">Confirmar contraseña</label>
+                                <input type="password" class="form-control" id="password-confirmar" minlength="8"
+                                    required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password-actual" class="form-label">Contraseña actual</label>
+                                <input type="password" class="form-control" id="password-actual" required>
+                                <small class="text-muted">Necesaria para confirmar los cambios</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/sesion-usuario.js"></script>
+    <script src="/js/layout.js"></script>
+    <script src="/js/perfil.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+.breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.breadcrumb-link {
+  color: var(--admin-sidebar-text, #6c63ff);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-separator {
+  color: #b0aed6;
+}
+
+.breadcrumb-current {
+  color: #8a8a8a;
+  font-weight: 500;
+}
