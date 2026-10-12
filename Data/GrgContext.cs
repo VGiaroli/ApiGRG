@@ -13,6 +13,7 @@ public class GrgContext : IdentityDbContext<ApplicationUser>
     public DbSet<Categoria> Categorias {get; set;}
 
     public DbSet<Producto> Productos {get; set;}
+public DbSet<Servicio> Servicios { get; set; }
 
     public DbSet<ProductoColor> ProductoColores {get; set;}
 
