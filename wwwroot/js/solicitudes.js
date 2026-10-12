@@ -96,6 +96,9 @@ function botonesFila(s) {
     if (estado === 'Pendiente' || estado === 'Enviado' || estado === 'NoRecibido') {
         html += "<button class='btn-action btn-whatsapp' title='Enviar por WhatsApp' onclick='enviarWhatsapp(" + s.servicioID + ")'><i class='bi bi-whatsapp'></i></button>";
     }
+    if (estado === 'Pendiente' || estado === 'NoRecibido') {
+        html += "<button class='btn-action btn-confirm' title='Marcar mensaje como enviado' onclick='cambiarConfirmacion(" + s.servicioID + ", \"Enviado\")'><i class='bi bi-check2'></i></button>";
+    }
     if (estado === 'Enviado') {
         html += "<button class='btn-action btn-confirm' title='Confirmar que llegó el mensaje' onclick='cambiarConfirmacion(" + s.servicioID + ", \"Confirmado\")'><i class='bi bi-check-lg'></i></button>";
         html += "<button class='btn-action btn-delete' title='Marcar como no recibido' onclick='cambiarConfirmacion(" + s.servicioID + ", \"NoRecibido\")'><i class='bi bi-x-lg'></i></button>";
@@ -140,31 +143,38 @@ function enviarWhatsapp(id) {
         ? 'https://wa.me/' + tel + '?text=' + texto
         : 'https://web.whatsapp.com/send?phone=' + tel + '&text=' + texto;
 
-    // 1) Abrir SIEMPRE primero y síncrono (si no, el navegador bloquea la pestaña).
+    // Abrir primero y de forma síncrona para evitar que el navegador bloquee la pestaña.
     window.open(url, '_blank', 'noopener');
-
-    // 2) Recién después marcar "Enviado".
-    authFetch('/servicios/' + id + '/confirmacion', {
-        method: 'PUT',
-        body: JSON.stringify({ confirmacion: 'Enviado' })
-    })
-        .then(r => { if (!r.ok) throw new Error(`Error ${r.status}`); obtenerSolicitudes(); })
-        .catch(error => {
-            console.error("Error al marcar como enviado: ", error);
-            avisarError("Se abrió WhatsApp pero no se pudo actualizar el estado.");
-        });
 }
 
 function cambiarConfirmacion(id, estado) {
+    const configuracion = {
+        Enviado: {
+            title: '¿Marcar el mensaje como enviado?',
+            icon: 'question',
+            confirmButtonText: 'Sí, marcar enviado'
+        },
+        Confirmado: {
+            title: '¿Confirmás que llegó el mensaje?',
+            icon: 'question',
+            confirmButtonText: 'Sí, confirmar'
+        },
+        NoRecibido: {
+            title: '¿Marcar como no recibido?',
+            icon: 'warning',
+            confirmButtonText: 'Sí, marcar no recibido'
+        }
+    }[estado];
+
+    if (!configuracion) return;
+
     Swal.fire({
-        title: estado === 'Confirmado'
-            ? '¿Confirmás que llegó el mensaje?'
-            : '¿Marcar como no recibido?',
-        icon: estado === 'Confirmado' ? 'question' : 'warning',
+        title: configuracion.title,
+        icon: configuracion.icon,
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Sí, confirmar",
+        confirmButtonText: configuracion.confirmButtonText,
         cancelButtonText: "Cancelar"
     }).then((result) => {
         if (!result.isConfirmed) return;

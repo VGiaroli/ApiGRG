@@ -3,32 +3,31 @@
 
 var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 0 ni 15
 
-  // Contenido del panel de cada servicio. Los "[completar]" son placeholders:
-  // reemplazalos por tus tiempos/condiciones reales antes de publicar.
+  // Contenido del panel de cada servicio.
   var SERVICE_INFO = {
     diagnostico: {
       color: '#2F6F76',
       title: 'Diagnóstico',
       text: 'Antes de tocar nada, revisamos el equipo y te contamos qué tiene. Así sabés qué esperar antes de decidir si seguís con la reparación.',
-      items: ['Evaluación sin compromiso', 'Presupuesto antes de intervenir el equipo', 'Tiempo estimado: [completar]']
+      items: ['Evaluación sin compromiso', 'Presupuesto antes de intervenir el equipo', 'Consultar disponibilidad y condiciones']
     },
     reparacion: {
       color: '#B0432B',
       title: 'Reparación',
       text: 'Solucionamos la falla con los repuestos que el equipo necesite, acordes a la marca y el modelo.',
-      items: ['Repuestos según marca y modelo', 'Garantía sobre el trabajo: [completar]', 'Tiempo estimado: [completar]']
+      items: ['Repuestos según marca y modelo', 'Consultar disponibilidad y condiciones', 'Consultar disponibilidad y condiciones']
     },
     inspeccion: {
       color: '#5C7A3D',
       title: 'Inspección técnica',
       text: 'Un chequeo completo del equipo para saber si sigue en condiciones de uso, antes de que la falla aparezca.',
-      items: ['Revisión de los componentes principales', 'Informe con el estado del equipo', 'Recomendado cada: [completar]']
+      items: ['Revisión de los componentes principales', 'Informe con el estado del equipo', 'Consultar disponibilidad y condiciones']
     },
     mantenimiento: {
       color: '#C98A3E',
       title: 'Mantenimiento',
       text: 'Limpieza y ajustes preventivos para que la falla no vuelva y el equipo rinda como el primer día.',
-      items: ['Limpieza interna y externa', 'Ajustes preventivos', 'Frecuencia recomendada: [completar]']
+      items: ['Limpieza interna y externa', 'Ajustes preventivos', 'Consultar disponibilidad y condiciones']
     }
   };
 
@@ -51,6 +50,9 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
     var openFormBtn = document.getElementById('openForm');
     var closeFormBtn = document.getElementById('closeForm');
     var resetBtn = document.getElementById('resetForm');
+    var submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+    var submitError = document.getElementById('serviceSubmitError');
+    var envioEnCurso = false;
     var cards = document.querySelectorAll('.service-card[data-service]');
     var panel = document.getElementById('servicePanel');
     var panelIcon = document.getElementById('servicePanelIcon');
@@ -187,22 +189,6 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
       if (input) input.addEventListener('input', function () { limpiarError(input); });
     });
 
-    /* ---------- Guardado local ---------- */
-
-    function guardar(solicitud) {
-      try {
-        var previas = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]');
-        if (!Array.isArray(previas)) previas = [];
-        previas.push(solicitud);
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(previas));
-        return true;
-      } catch (error) {
-        // localStorage puede fallar en modo privado o si está lleno.
-        console.warn('No se pudo guardar la solicitud localmente:', error);
-        return false;
-      }
-    }
-
     /* ---------- Tarjetas de servicio + panel ---------- */
 
     function seleccionarServicio(nombreServicio) {
@@ -253,6 +239,8 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
     form.addEventListener('submit', function (evento) {
       evento.preventDefault();
 
+      if (envioEnCurso) return;
+
       if (!validar()) return;
 
       var telInput = document.getElementById('numero');
@@ -260,6 +248,17 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
         mostrarError(telInput, 'Escribí el teléfono con 10 dígitos, sin 0 ni 15 (ej: 11 4444-5555).');
         telInput.focus();
         return;
+      }
+
+      envioEnCurso = true;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-busy', 'true');
+        submitBtn.textContent = 'Enviando solicitud…';
+      }
+      if (submitError) {
+        submitError.hidden = true;
+        submitError.textContent = '';
       }
 
       var arreglo = !!(document.getElementById('arreglo') || {}).checked;
@@ -281,8 +280,8 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
       texto('confirmTipo', 'Tipo de atención: ' + (tipos.length ? tipos.join(' y ') : 'sin especificar'));
       texto('confirmDescripcion', 'Descripción: ' + (descripcion || 'sin detalles'));
 
-      // Respaldo local (se guarda siempre que se pueda)
-      var solicitudLocal = {
+      // Payload público para la API. El servidor asigna ID, fecha, baja y confirmación.
+      var payload = {
         nombre: valor('nombre'),
         apellido: valor('apellido'),
         numero: valor('numero'),
@@ -294,24 +293,7 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
         modelo: modelo,
         tipoArreglo: arreglo,
         tipoInspeccion: inspeccion,
-        descripcion: descripcion,
-        fechaCreacion: new Date().toISOString()
-      };
-
-      // Payload para la API (ojo: el campo del modelo se llama "gmail")
-      var payload = {
-        nombre: solicitudLocal.nombre,
-        apellido: solicitudLocal.apellido,
-        numero: solicitudLocal.numero,
-        dni: solicitudLocal.dni,
-        gmail: solicitudLocal.email,
-        localidad: solicitudLocal.localidad,
-        nombreDispositivo: solicitudLocal.nombreDispositivo,
-        marca: solicitudLocal.marca,
-        modelo: solicitudLocal.modelo,
-        tipoArreglo: solicitudLocal.tipoArreglo,
-        tipoInspeccion: solicitudLocal.tipoInspeccion,
-        descripcion: solicitudLocal.descripcion
+        descripcion: descripcion
       };
 
       function armarLinkWhatsapp() {
@@ -340,7 +322,6 @@ if (!linkWsp) {
   confirmBox.appendChild(linkWsp);
 }
 linkWsp.href = armarLinkWhatsapp();
-        guardar(solicitudLocal); // siempre deja respaldo local
         form.hidden = true;
         confirmBox.hidden = false;
         formSection.scrollTop = 0;
@@ -358,9 +339,18 @@ linkWsp.href = armarLinkWhatsapp();
         })
         .catch(function (error) {
           console.warn('No se pudo enviar al servidor:', error);
-          mostrarConfirmacion(
-            'No pudimos enviarlo al servidor; se guardó localmente como respaldo.'
-          );
+          if (submitError) {
+            submitError.textContent = 'No pudimos enviar la solicitud. Revisá la conexión e intentá nuevamente.';
+            submitError.hidden = false;
+          }
+        })
+        .finally(function () {
+          envioEnCurso = false;
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.removeAttribute('aria-busy');
+            submitBtn.textContent = 'Enviar solicitud';
+          }
         });
     });
 
@@ -368,6 +358,10 @@ linkWsp.href = armarLinkWhatsapp();
       resetBtn.addEventListener('click', function () {
         form.reset();
         limpiarTodosLosErrores();
+        if (submitError) {
+          submitError.hidden = true;
+          submitError.textContent = '';
+        }
         volverAlFormulario();
         var primero = document.getElementById('nombreDispositivo');
         if (primero) primero.focus();

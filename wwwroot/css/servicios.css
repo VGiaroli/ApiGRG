@@ -44,6 +44,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body.public-service-page {
+  padding-top: 88px;
+}
+
 .mono {
   font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
@@ -560,6 +564,12 @@ button {
 
 .submit-wrap {
   margin-top: 4px;
+}
+
+.submit-error {
+  margin: 12px 0 0;
+  color: var(--error);
+  font-size: 13px;
 }
 
 .btn-submit {

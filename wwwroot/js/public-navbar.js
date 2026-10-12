@@ -10,6 +10,10 @@
         return ruta === '/catalogo.html';
     }
 
+    function esServicios(ruta) {
+        return ruta === '/servicios.html';
+    }
+
     function cerrarMenuMovil(contenedor) {
         var toggle = contenedor.querySelector('[data-bs-toggle="dropdown"]');
         if (toggle && window.bootstrap && bootstrap.Dropdown) {
@@ -39,6 +43,7 @@
 
         var rutaActual = normalizarRuta(window.location.pathname);
         var catalogoActivo = esCatalogo(rutaActual);
+        var serviciosActivo = esServicios(rutaActual);
         var menuToggle = contenedor.querySelector('[data-bs-toggle="dropdown"]');
 
         inicializarComportamientoScroll(contenedor);
@@ -49,7 +54,9 @@
 
         contenedor.querySelectorAll('[data-public-nav]').forEach(function (enlace) {
             var tipo = enlace.getAttribute('data-public-nav');
-            var activo = (tipo === 'catalog' && catalogoActivo) || (tipo === 'home' && !catalogoActivo);
+            var activo = (tipo === 'catalog' && catalogoActivo)
+                || (tipo === 'services' && serviciosActivo)
+                || (tipo === 'home' && !catalogoActivo && !serviciosActivo);
 
             enlace.classList.toggle('active', activo);
             if (activo) {
@@ -65,7 +72,7 @@
 
         contenedor.querySelectorAll('[data-public-section]').forEach(function (enlace) {
             var seccion = enlace.getAttribute('data-public-section');
-            enlace.setAttribute('href', catalogoActivo ? '/#' + seccion : '#' + seccion);
+            enlace.setAttribute('href', (catalogoActivo || serviciosActivo) ? '/#' + seccion : '#' + seccion);
             enlace.addEventListener('click', function () {
                 cerrarMenuMovil(contenedor);
             });

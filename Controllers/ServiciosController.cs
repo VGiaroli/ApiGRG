@@ -39,18 +39,35 @@ namespace ApiGRG.Controllers
         // POST: api/servicios -> anónimo: lo usa el formulario público
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<Servicio>> PostServicio(Servicio servicio)
+        public async Task<IActionResult> PostServicio([FromBody] CrearSolicitudServicioDto solicitud)
         {
-            // El servidor decide estos valores, no el cliente.
-            servicio.ServicioID = 0;
-            servicio.FechaCreacion = DateTime.Now;
-            servicio.Eliminado = false;
-            servicio.Confirmacion = EstadoConfirmacion.Pendiente;
+            var servicio = new Servicio
+            {
+                Nombre = solicitud.Nombre,
+                Apellido = solicitud.Apellido,
+                Numero = solicitud.Numero,
+                Dni = solicitud.Dni,
+                Gmail = solicitud.Email,
+                Localidad = solicitud.Localidad,
+                NombreDispositivo = solicitud.NombreDispositivo,
+                Marca = solicitud.Marca,
+                Modelo = solicitud.Modelo,
+                TipoArreglo = solicitud.TipoArreglo,
+                TipoInspeccion = solicitud.TipoInspeccion,
+                Descripcion = solicitud.Descripcion,
+                FechaCreacion = DateTime.Now,
+                Eliminado = false,
+                Confirmacion = EstadoConfirmacion.Pendiente
+            };
 
             _context.Servicios.Add(servicio);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetServicio), new { id = servicio.ServicioID }, servicio);
+            return CreatedAtAction(nameof(GetServicio), new { id = servicio.ServicioID }, new
+            {
+                servicioID = servicio.ServicioID,
+                confirmacion = servicio.Confirmacion
+            });
         }
 
         // PUT: api/servicios/5
