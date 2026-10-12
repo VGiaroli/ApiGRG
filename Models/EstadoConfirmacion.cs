@@ -1,5 +1,8 @@
+using System.Text.Json.Serialization;
+
 namespace ApiGRG.Models
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum EstadoConfirmacion
     {
         Pendiente = 0,
