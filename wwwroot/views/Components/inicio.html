@@ -19,11 +19,40 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
     <!-- Enlace al CSS externo separado -->
     <link rel="stylesheet" href="/wwwroot/css/inicio.css">
 </head>
 
-<body>
+<body class="is-loading">
+
+    <!-- Loader -->
+    <div id="preloader" role="status" aria-live="polite" aria-label="Cargando">
+        <div class="pl-blob b1"></div>
+        <div class="pl-blob b2"></div>
+
+        <div class="pl-logo">
+            <span>G</span><span>R</span><span>G</span><span class="pl-dot">.</span>
+        </div>
+
+        <div class="pl-progress">
+            <div class="pl-bar">
+                <div class="pl-bar-fill" id="plFill"></div>
+            </div>
+            <div class="pl-meta">
+                <span id="plText">Cargando tecnología...</span>
+                <span class="pl-percent" id="plPercent">0%</span>
+            </div>
+        </div>
+    </div>
 
     <!-- Barra de progreso de scroll -->
     <div id="scrollProgress"></div>
@@ -240,55 +269,36 @@
                         Trabajamos con las mejores marcas</p>
                 </div>
                 <div class="owl-carousel owl-theme marcas-slider">
-
                     <div class="item text-center py-2">
-                        <div class="brand-logo-card p-3 rounded-4 bg-light d-flex align-items-center justify-content-center gap-2"
-                            style="height: 80px;">
-                            <iconify-icon icon="simple-icons:samsung" class="fs-4 text-dark"></iconify-icon>
-                            <span class="fw-bold fs-6 text-dark">SAMSUNG</span>
+                        <div class="brand-logo-card" style="--brand:#1428A0;">
+                            <iconify-icon icon="simple-icons:samsung"></iconify-icon><span>SAMSUNG</span>
                         </div>
                     </div>
-
                     <div class="item text-center py-2">
-                        <div class="brand-logo-card p-3 rounded-4 bg-light d-flex align-items-center justify-content-center gap-2"
-                            style="height: 80px;">
-                            <iconify-icon icon="simple-icons:apple" class="fs-4 text-dark"></iconify-icon>
-                            <span class="fw-bold fs-6 text-dark">APPLE</span>
+                        <div class="brand-logo-card" style="--brand:#000000;">
+                            <iconify-icon icon="simple-icons:apple"></iconify-icon><span>APPLE</span>
                         </div>
                     </div>
-
                     <div class="item text-center py-2">
-                        <div class="brand-logo-card p-3 rounded-4 bg-light d-flex align-items-center justify-content-center gap-2"
-                            style="height: 80px;">
-                            <iconify-icon icon="simple-icons:sony" class="fs-4 text-dark"></iconify-icon>
-                            <span class="fw-bold fs-6 text-dark">SONY</span>
+                        <div class="brand-logo-card" style="--brand:#003087;">
+                            <iconify-icon icon="simple-icons:sony"></iconify-icon><span>SONY</span>
                         </div>
                     </div>
-
                     <div class="item text-center py-2">
-                        <div class="brand-logo-card p-3 rounded-4 bg-light d-flex align-items-center justify-content-center gap-2"
-                            style="height: 80px;">
-                            <iconify-icon icon="simple-icons:jbl" class="fs-4 text-dark"></iconify-icon>
-                            <span class="fw-bold fs-6 text-dark">JBL</span>
+                        <div class="brand-logo-card" style="--brand:#FF3300;">
+                            <iconify-icon icon="simple-icons:jbl"></iconify-icon><span>JBL</span>
                         </div>
                     </div>
-
                     <div class="item text-center py-2">
-                        <div class="brand-logo-card p-3 rounded-4 bg-light d-flex align-items-center justify-content-center gap-2"
-                            style="height: 80px;">
-                            <iconify-icon icon="simple-icons:xiaomi" class="fs-4 text-dark"></iconify-icon>
-                            <span class="fw-bold fs-6 text-dark">XIAOMI</span>
+                        <div class="brand-logo-card" style="--brand:#FF6900;">
+                            <iconify-icon icon="simple-icons:xiaomi"></iconify-icon><span>XIAOMI</span>
                         </div>
                     </div>
-
                     <div class="item text-center py-2">
-                        <div class="brand-logo-card p-3 rounded-4 bg-light d-flex align-items-center justify-content-center gap-2"
-                            style="height: 80px;">
-                            <iconify-icon icon="simple-icons:motorola" class="fs-4 text-dark"></iconify-icon>
-                            <span class="fw-bold fs-6 text-dark">MOTOROLA</span>
+                        <div class="brand-logo-card" style="--brand:#5C92FA;">
+                            <iconify-icon icon="simple-icons:motorola"></iconify-icon><span>MOTOROLA</span>
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
@@ -399,9 +409,10 @@
                                 <p class="tile-title mb-0">Microsoft Designer Bluetooth Desktop 7N9-00018</p>
                                 <p class="tile-price mb-0">$74.900</p>
                             </div>
-                            <button class="tile-add" aria-label="Agregar al carrito"
-                                onclick="addToCart('Microsoft Designer Bluetooth Desktop 7N9-00018', 74900, 'Computación')">
-                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            <button class="tile-add" aria-label="Ir a WhatsApp" title="Ir a WhatsApp"
+                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Ir a WhatsApp"
+                                onclick="contactWhatsApp('Microsoft Designer Bluetooth Desktop 7N9-00018', 74900)">
+                                <iconify-icon icon="ic:baseline-whatsapp" class="fs-6"></iconify-icon>
                             </button>
                         </div>
                     </div>
@@ -422,9 +433,10 @@
                                 <p class="tile-title mb-0">Gaming mouse Razer Naga 2014 (Black)</p>
                                 <p class="tile-price mb-0">$59.900</p>
                             </div>
-                            <button class="tile-add" aria-label="Agregar al carrito"
-                                onclick="addToCart('Gaming mouse Razer Naga 2014 (Black)', 59900, 'Gaming')">
-                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            <button class="tile-add" aria-label="Ir a WhatsApp" title="Ir a WhatsApp"
+                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Ir a WhatsApp"
+                                onclick="contactWhatsApp('Gaming mouse Razer Naga 2014 (Black)', 59900)">
+                                <iconify-icon icon="ic:baseline-whatsapp" class="fs-6"></iconify-icon>
                             </button>
                         </div>
                     </div>
@@ -445,9 +457,10 @@
                                 <p class="tile-title mb-0">Onikuma M80 PRO Combatwing Surround 7.1</p>
                                 <p class="tile-price mb-0">$68.500</p>
                             </div>
-                            <button class="tile-add" aria-label="Agregar al carrito"
-                                onclick="addToCart('Onikuma M80 PRO Combatwing Surround 7.1', 68500, 'Audio')">
-                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            <button class="tile-add" aria-label="Ir a WhatsApp" title="Ir a WhatsApp"
+                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Ir a WhatsApp"
+                                onclick="contactWhatsApp('Onikuma M80 PRO Combatwing Surround 7.1', 68500)">
+                                <iconify-icon icon="ic:baseline-whatsapp" class="fs-6"></iconify-icon>
                             </button>
                         </div>
                     </div>
@@ -468,9 +481,10 @@
                                 <p class="tile-title mb-0">Seagate Enterprise Performance 6TB 15K SAS</p>
                                 <p class="tile-price mb-0">$210.000</p>
                             </div>
-                            <button class="tile-add" aria-label="Agregar al carrito"
-                                onclick="addToCart('Seagate Enterprise Performance 6TB 15K SAS', 210000, 'Computación')">
-                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            <button class="tile-add" aria-label="Ir a WhatsApp" title="Ir a WhatsApp"
+                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Ir a WhatsApp"
+                                onclick="contactWhatsApp('Seagate Enterprise Performance 6TB 15K SAS', 210000)">
+                                <iconify-icon icon="ic:baseline-whatsapp" class="fs-6"></iconify-icon>
                             </button>
                         </div>
                     </div>
@@ -491,9 +505,10 @@
                                 <p class="tile-title mb-0">Xiaomi Modern Smartphone</p>
                                 <p class="tile-price mb-0">$389.900</p>
                             </div>
-                            <button class="tile-add" aria-label="Agregar al carrito"
-                                onclick="addToCart('Xiaomi Modern Smartphone', 389900, 'Celulares')">
-                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            <button class="tile-add" aria-label="Ir a WhatsApp" title="Ir a WhatsApp"
+                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Ir a WhatsApp"
+                                onclick="contactWhatsApp('Xiaomi Modern Smartphone', 389900)">
+                                <iconify-icon icon="ic:baseline-whatsapp" class="fs-6"></iconify-icon>
                             </button>
                         </div>
                     </div>
@@ -514,9 +529,10 @@
                                 <p class="tile-title mb-0">Apple Watch Series 6 44mm (Gray)</p>
                                 <p class="tile-price mb-0">$449.900</p>
                             </div>
-                            <button class="tile-add" aria-label="Agregar al carrito"
-                                onclick="addToCart('Apple Watch Series 6 44mm (Gray)', 449900, 'Wearables')">
-                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            <button class="tile-add" aria-label="Ir a WhatsApp" title="Ir a WhatsApp"
+                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Ir a WhatsApp"
+                                onclick="contactWhatsApp('Apple Watch Series 6 44mm (Gray)', 449900)">
+                                <iconify-icon icon="ic:baseline-whatsapp" class="fs-6"></iconify-icon>
                             </button>
                         </div>
                     </div>
@@ -537,9 +553,10 @@
                                 <p class="tile-title mb-0">PlayStation Gaming Controller</p>
                                 <p class="tile-price mb-0">$89.900</p>
                             </div>
-                            <button class="tile-add" aria-label="Agregar al carrito"
-                                onclick="addToCart('PlayStation Gaming Controller', 89900, 'Gaming')">
-                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            <button class="tile-add" aria-label="Ir a WhatsApp" title="Ir a WhatsApp"
+                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Ir a WhatsApp"
+                                onclick="contactWhatsApp('PlayStation Gaming Controller', 89900)">
+                                <iconify-icon icon="ic:baseline-whatsapp" class="fs-6"></iconify-icon>
                             </button>
                         </div>
                     </div>
@@ -560,9 +577,10 @@
                                 <p class="tile-title mb-0">Nintendo Switch Gaming Console (Gray)</p>
                                 <p class="tile-price mb-0">$399.900</p>
                             </div>
-                            <button class="tile-add" aria-label="Agregar al carrito"
-                                onclick="addToCart('Nintendo Switch Gaming Console (Gray)', 399900, 'Gaming')">
-                                <iconify-icon icon="lucide:shopping-bag" class="fs-6"></iconify-icon>
+                            <button class="tile-add" aria-label="Ir a WhatsApp" title="Ir a WhatsApp"
+                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Ir a WhatsApp"
+                                onclick="contactWhatsApp('Nintendo Switch Gaming Console (Gray)', 399900)">
+                                <iconify-icon icon="ic:baseline-whatsapp" class="fs-6"></iconify-icon>
                             </button>
                         </div>
                     </div>
@@ -849,6 +867,40 @@
             </div>
         </section>
 
+        <!-- Nuestros locales -->
+        <section id="locales" class="pt-6 pt-lg-9 my-3 bg-white">
+            <div class="container">
+                <div class="row align-items-end mb-5 gy-4" data-aos="fade-up">
+                    <div class="col-lg-8">
+                        <span class="badge badge-dark-custom px-3 py-1.5 rounded-pill fs-3 mb-3 d-inline-block">Nuestros
+                            locales</span>
+                        <h2 class="mb-0 fw-extrabold"
+                            style="font-size: clamp(34px, 5vw, 64px); letter-spacing: -2px; line-height: 1.02;">
+                            Vení a <span class="hl-lime">conocernos</span>,<br>tenemos todo a mano.
+                        </h2>
+                    </div>
+                    <div class="col-lg-4">
+                        <div id="storeChips" class="d-flex flex-wrap gap-2 justify-content-lg-end"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa full-bleed -->
+            <div class="map-stage" data-aos="fade-up" data-aos-delay="100">
+                <div id="storesMap" aria-label="Mapa de locales GRG"></div>
+
+                <span class="map-tag d-none d-md-inline-flex">
+                    <iconify-icon icon="lucide:package-check"></iconify-icon> Retiro en local sin cargo
+                </span>
+
+                <div class="map-overlay">
+                    <div class="container">
+                        <div class="store-panel" id="storePanel"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Preguntas Frecuentes -->
         <section id="contacto" class=" my-3 py-6 py-lg-9 bg-light-gray">
             <div class="container">
@@ -1062,6 +1114,23 @@
                     </div>
                 </div>
             </div>
+            <div class="pay-row">
+                <p class="pay-title mb-0">Medios de pago</p>
+                <div class="pay-methods">
+                    <span class="pay-chip" title="Visa"><iconify-icon icon="logos:visa"></iconify-icon></span>
+                    <span class="pay-chip" title="Mastercard"><iconify-icon icon="logos:mastercard"></iconify-icon></span>
+                    <span class="pay-chip" title="American Express"><iconify-icon icon="logos:amex"></iconify-icon></span>
+                    <span class="pay-chip" title="Mercado Pago" style="color:#009EE3;">
+                        <iconify-icon icon="simple-icons:mercadopago"></iconify-icon> Mercado Pago
+                    </span>
+                    <span class="pay-chip" title="Transferencia bancaria">
+                        <iconify-icon icon="lucide:landmark"></iconify-icon> Transferencia
+                    </span>
+                    <span class="pay-chip" title="Efectivo">
+                        <iconify-icon icon="lucide:banknote"></iconify-icon> Efectivo
+                    </span>
+                </div>
+            </div>
             <hr class="my-6 border-white border-opacity-10">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
                 <p class="mb-0 fs-4 text-white text-opacity-60">© 2026 GRG Store. Todos los derechos reservados.</p>
@@ -1146,10 +1215,101 @@
     <!-- JavaScript Dependencies -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+
+    <!-- LOADER -->
+    <script>
+        (function () {
+            const pre = document.getElementById('preloader');
+            const fill = document.getElementById('plFill');
+            const pct = document.getElementById('plPercent');
+            const txt = document.getElementById('plText');
+            if (!pre) return;
+
+            const MIN_TIME = 1200;   // tiempo mínimo visible (ms), para que se luzca
+            const MAX_TIME = 8000;   // seguridad: si algo tarda de más, se cierra igual
+            const messages = [
+                [0, 'Cargando tecnología...'],
+                [35, 'Preparando productos...'],
+                [65, 'Armando las ofertas...'],
+                [90, 'Casi listo...']
+            ];
+
+            const startTime = performance.now();
+            let progress = 0, pageLoaded = false, finished = false;
+
+            function paint() {
+                const p = Math.min(100, Math.round(progress));
+                fill.style.width = progress + '%';
+                pct.textContent = p + '%';
+                for (let i = messages.length - 1; i >= 0; i--) {
+                    if (p >= messages[i][0]) { txt.textContent = messages[i][1]; break; }
+                }
+            }
+
+            function tick() {
+                if (finished) return;
+                // Avanza rápido al principio y se frena en 90% hasta que la web cargue de verdad
+                progress += pageLoaded ? (100 - progress) * 0.15 : (90 - progress) * 0.03;
+                paint();
+                if (pageLoaded && progress > 99.4) { progress = 100; paint(); return finish(); }
+                requestAnimationFrame(tick);
+            }
+
+            function finish() {
+                finished = true;
+                setTimeout(() => {
+                    pre.classList.add('hidden');
+                    document.body.classList.remove('is-loading');
+                    // Dispara las animaciones AOS una vez que se ve la página
+                    if (window.AOS) setTimeout(() => AOS.refreshHard(), 300);
+                    setTimeout(() => pre.remove(), 1000);
+                }, 300);
+            }
+
+            function markLoaded() {
+                const wait = Math.max(0, MIN_TIME - (performance.now() - startTime));
+                setTimeout(() => { pageLoaded = true; }, wait);
+            }
+
+            if (document.readyState === 'complete') markLoaded();
+            else window.addEventListener('load', markLoaded);
+
+            setTimeout(() => { pageLoaded = true; }, MAX_TIME);
+            requestAnimationFrame(tick);
+        })();
+    </script>
+
+    <!-- script para el botón que aparece en las cards, simula una carga al carrito
+     pero en realidad te dirije al wpp web -->
+    <script>
+        // Número en formato internacional, sin "+", espacios ni guiones.
+        // Argentina celular: 54 9 + código de área + número. Ej: 5493562123456
+        const WHATSAPP_NUMBER = '5493562000000'; // <-- CAMBIALO por tu número
+
+        function contactWhatsApp(nombre, precio) {
+            const precioFmt = '$' + Number(precio).toLocaleString('es-AR');
+            const mensaje = `Hola! Me interesa este producto: ${nombre} (${precioFmt}). ¿Está disponible?`;
+            const url = `https://web.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank', 'noopener');
+        }
+
+        // Activa los tooltips de Bootstrap (si no está Bootstrap JS, queda el atributo title nativo)
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.bootstrap && bootstrap.Tooltip) {
+                document.querySelectorAll('.tile-add[data-bs-toggle="tooltip"]').forEach(el => {
+                    el.removeAttribute('title'); // evita que se muestren dos tooltips a la vez
+                    new bootstrap.Tooltip(el);
+                });
+            }
+        });
+    </script>
 
     <script>
         // Shopping Cart State
@@ -1388,6 +1548,164 @@
         `;
             }
         }
+    </script>
+
+
+    <script>
+        // EDITÁ ACÁ tus locales (coordenadas: clic derecho en Google Maps y copiá los dos números)
+        const stores = [
+            {
+                name: 'GRG Córdoba Centro',
+                address: 'Av. Colón 1234, Córdoba Capital',
+                hoursText: 'Lun a Sáb de 9 a 20h',
+                days: [1, 2, 3, 4, 5, 6],   // 0 = domingo ... 6 = sábado
+                open: 9, close: 20,
+                phone: '+54 9 351 123-4567',
+                wa: '5493511234567',
+                lat: -31.4167, lng: -64.1833
+            },
+            {
+                name: 'GRG Nueva Córdoba',
+                address: 'Bv. Illia 567, Córdoba Capital',
+                hoursText: 'Lun a Sáb de 10 a 21h',
+                days: [1, 2, 3, 4, 5, 6],
+                open: 10, close: 21,
+                phone: '+54 9 351 123-4567',
+                wa: '5493511234567',
+                lat: -31.4235, lng: -64.1896
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const panel = document.getElementById('storePanel');
+            const chipsEl = document.getElementById('storeChips');
+            if (!panel || typeof L === 'undefined') return;
+
+            const isDesktop = () => window.innerWidth >= 992;
+            const panelOffset = () => (isDesktop() ? 210 : 0);   // desplaza el mapa para que el pin no quede tapado
+
+            // ¿Está abierto ahora? (hora de Argentina)
+            function isOpenNow(s) {
+                const parts = new Intl.DateTimeFormat('en-US', {
+                    timeZone: 'America/Argentina/Cordoba', weekday: 'short', hour: 'numeric', hour12: false
+                }).formatToParts(new Date());
+                const wd = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[parts.find(p => p.type === 'weekday').value];
+                const h = parseInt(parts.find(p => p.type === 'hour').value, 10) % 24;
+                return s.days.includes(wd) && h >= s.open && h < s.close;
+            }
+
+            // Mapa claro y minimalista
+            const map = L.map('storesMap', { scrollWheelZoom: false, zoomControl: false });
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+            // Base: OpenFreeMap "Positron" (vectorial, gratis, sin API key)
+            let baseOk = false;
+            if (window.maplibregl && typeof L.maplibreGL === 'function') {
+                try {
+                    L.maplibreGL({
+                        style: 'https://tiles.openfreemap.org/styles/positron',
+                        attribution: '&copy; <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> Datos de <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+                    }).addTo(map);
+                    baseOk = true;
+                } catch (err) { console.warn('MapLibre no disponible, uso mapa de respaldo', err); }
+            }
+            // Respaldo si el dispositivo no soporta WebGL o falló la carga
+            if (!baseOk) {
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }).addTo(map);
+            }
+
+            let current = 0;
+            const markers = [];
+            const chips = [];
+
+            stores.forEach((s, i) => {
+                // Chip del encabezado
+                const chip = document.createElement('button');
+                chip.className = 'store-chip';
+                chip.innerHTML = `<iconify-icon icon="lucide:map-pin"></iconify-icon>${s.name.replace('GRG ', '')}`;
+                chip.addEventListener('click', () => select(i));
+                chipsEl.appendChild(chip);
+                chips.push(chip);
+
+                // Pin
+                const icon = L.divIcon({
+                    className: '',
+                    html: `<div class="map-pin" id="pin-${i}">${i + 1}</div>`,
+                    iconSize: [40, 40], iconAnchor: [20, 20]
+                });
+                const m = L.marker([s.lat, s.lng], { icon }).addTo(map);
+                m.on('click', () => select(i));
+                markers.push(m);
+            });
+
+            function renderPanel() {
+                const s = stores[current];
+                const open = isOpenNow(s);
+                const num = String(current + 1).padStart(2, '0');
+                const total = String(stores.length).padStart(2, '0');
+                panel.innerHTML = `
+                <div class="panel-top">
+                    <span class="panel-count">${num} / ${total}</span>
+                    <div class="panel-arrows">
+                        <button class="panel-arrow" id="prevStore" aria-label="Local anterior"><iconify-icon icon="lucide:arrow-left"></iconify-icon></button>
+                        <button class="panel-arrow" id="nextStore" aria-label="Local siguiente"><iconify-icon icon="lucide:arrow-right"></iconify-icon></button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <span class="panel-status ${open ? '' : 'closed'}"><span class="dot"></span>${open ? 'Abierto ahora' : 'Cerrado ahora'}</span>
+                    <h3 class="panel-name">${s.name}</h3>
+                    <div class="panel-row"><span class="ico"><iconify-icon icon="lucide:map-pin"></iconify-icon></span><span>${s.address}</span></div>
+                    <div class="panel-row"><span class="ico"><iconify-icon icon="lucide:clock"></iconify-icon></span><span>${s.hoursText}</span></div>
+                    <div class="panel-row"><span class="ico"><iconify-icon icon="lucide:phone"></iconify-icon></span><span>${s.phone}</span></div>
+                    <div class="panel-actions">
+                        <a class="panel-btn primary" target="_blank" rel="noopener"
+                           href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}">
+                           Cómo llegar <iconify-icon icon="lucide:arrow-up-right"></iconify-icon></a>
+                        <a class="panel-btn ghost" target="_blank" rel="noopener"
+                           href="https://web.whatsapp.com/send?phone=${s.wa}&text=${encodeURIComponent('Hola! Quería consultar por el local ' + s.name)}">
+                           <iconify-icon icon="ic:baseline-whatsapp"></iconify-icon> WhatsApp</a>
+                    </div>
+                </div>`;
+                document.getElementById('prevStore').onclick = () => select((current - 1 + stores.length) % stores.length);
+                document.getElementById('nextStore').onclick = () => select((current + 1) % stores.length);
+            }
+
+            function paintActive() {
+                chips.forEach((c, i) => c.classList.toggle('active', i === current));
+                stores.forEach((_, i) => {
+                    const pin = document.getElementById('pin-' + i);
+                    if (pin) pin.classList.toggle('active', i === current);
+                });
+            }
+
+            function select(i, fly = true) {
+                current = i;
+                renderPanel();
+                paintActive();
+                if (fly) {
+                    const s = stores[i], z = 16;
+                    const target = map.unproject(map.project([s.lat, s.lng], z).subtract([panelOffset(), 0]), z);
+                    map.flyTo(target, z, { duration: 1.1 });
+                }
+            }
+
+            // Vista inicial: todos los locales, dejando lugar al panel
+            map.fitBounds(L.featureGroup(markers).getBounds(), {
+                paddingTopLeft: [isDesktop() ? 440 : 40, 60],
+                paddingBottomRight: [60, 60],
+                maxZoom: 15
+            });
+            select(0, false);
+
+            // Zoom con scroll solo después de hacer clic en el mapa
+            map.on('click', () => map.scrollWheelZoom.enable());
+            map.on('mouseout', () => map.scrollWheelZoom.disable());
+
+            setTimeout(() => map.invalidateSize(), 600);
+            window.addEventListener('resize', () => map.invalidateSize());
+        });
     </script>
 </body>
 
