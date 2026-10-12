@@ -9,6 +9,12 @@
     let productos = [];
     let modalNuevoProducto;
     let mediosPago = [];
+    let modoFormulario = 'crear';
+    let productoEditandoId = null;
+    let solicitudProductoEdicion = 0;
+    let formularioProductoCargando = false;
+    let categoriasFormularioPromise = Promise.resolve(false);
+    let mediosPagoPromise = Promise.resolve(false);
 
     document.addEventListener('DOMContentLoaded', function () {
         const buscador = document.getElementById('buscador-productos');
@@ -25,6 +31,7 @@
         filtroCategoria.addEventListener('change', renderizarProductos);
         filtroEstado.addEventListener('change', renderizarProductos);
         filtroDisponibilidad.addEventListener('change', renderizarProductos);
+        document.getElementById('tabla-productos').addEventListener('click', manejarAccionesTabla);
         limpiarFiltros.addEventListener('click', function () {
             buscador.value = '';
             filtroCategoria.value = '';
@@ -49,12 +56,12 @@
         formulario.addEventListener('submit', guardarProducto);
         modalElement.addEventListener('hidden.bs.modal', limpiarFormularioProducto);
 
-        cargarCategoriasFormulario();
-        cargarMediosPago();
+        categoriasFormularioPromise = cargarCategoriasFormulario();
+        mediosPagoPromise = cargarMediosPago();
     }
 
     function cargarCategoriasFormulario() {
-        fetch(`${linkApi}/categorias`)
+        return fetch(`${linkApi}/categorias`)
             .then(function (response) {
                 if (!response.ok) {
                     throw new Error('No se pudieron cargar las categorías');
@@ -74,14 +81,16 @@
                         option.textContent = categoria.nombreProducto;
                         select.appendChild(option);
                     });
+                return true;
             })
             .catch(function () {
                 mostrarFormMensaje('No se pudieron cargar las categorías disponibles.');
+                return false;
             });
     }
 
     function cargarMediosPago() {
-        fetch(`${linkApi}/mediospagos`)
+        return fetch(`${linkApi}/mediospagos`)
             .then(function (response) {
                 if (!response.ok) {
                     throw new Error('No se pudieron cargar los medios de pago');
@@ -91,11 +100,13 @@
             .then(function (listaMediosPago) {
                 mediosPago = Array.isArray(listaMediosPago) ? listaMediosPago : [];
                 actualizarOpcionesMediosPago();
+                return true;
             })
             .catch(function () {
                 mediosPago = [];
                 actualizarOpcionesMediosPago();
                 mostrarFormMensaje('No se pudieron cargar los medios de pago.');
+                return false;
             });
     }
 
@@ -105,6 +116,103 @@
         agregarColorFila();
         actualizarPreviewImagen();
         modalNuevoProducto.show();
+    }
+
+    function manejarAccionesTabla(event) {
+        const botonEditar = event.target.closest('[data-producto-id]');
+        if (!botonEditar || !event.currentTarget.contains(botonEditar)) {
+            return;
+        }
+
+        abrirModalEditarProducto(Number(botonEditar.dataset.productoId));
+    }
+
+    function abrirModalEditarProducto(productoID) {
+        if (!Number.isInteger(productoID) || productoID <= 0) {
+            return;
+        }
+
+        const solicitudActual = ++solicitudProductoEdicion;
+        prepararFormularioProductoLimpio();
+        modoFormulario = 'editar';
+        productoEditandoId = productoID;
+        actualizarModalFormulario();
+        ocultarFormMensaje();
+        alternarCargaFormulario(true);
+        modalNuevoProducto.show();
+
+        Promise.all([categoriasFormularioPromise, mediosPagoPromise])
+            .then(function (resultados) {
+                if (!esSolicitudEdicionActiva(solicitudActual, productoID)) {
+                    return null;
+                }
+
+                if (resultados.some(function (resultado) { return !resultado; })) {
+                    throw new Error('No se pudieron cargar los datos necesarios para editar el producto.');
+                }
+
+                return fetch(`${linkApi}/productos/${productoID}`, {
+                    headers: { 'Accept': 'application/json' }
+                });
+            })
+            .then(function (response) {
+                if (!response) {
+                    return null;
+                }
+
+                if (!response.ok) {
+                    throw new Error(response.status === 404
+                        ? 'El producto ya no existe.'
+                        : 'No se pudo obtener el producto para editar.');
+                }
+
+                return response.json();
+            })
+            .then(function (producto) {
+                if (!producto || !esSolicitudEdicionActiva(solicitudActual, productoID)) {
+                    return;
+                }
+
+                completarFormularioProducto(producto);
+                alternarCargaFormulario(false);
+            })
+            .catch(function (error) {
+                if (!esSolicitudEdicionActiva(solicitudActual, productoID)) {
+                    return;
+                }
+
+                alternarCargaFormulario(false);
+                mostrarFormMensaje(error.message || 'No se pudo cargar el producto para editar.');
+            });
+    }
+
+    function esSolicitudEdicionActiva(solicitud, productoID) {
+        return solicitud === solicitudProductoEdicion
+            && modoFormulario === 'editar'
+            && productoEditandoId === productoID;
+    }
+
+    function completarFormularioProducto(producto) {
+        document.getElementById('producto-nombre').value = producto.nombre || '';
+        document.getElementById('producto-categoria').value = String(producto.categoriaID || '');
+        document.getElementById('producto-estado').value = String(producto.estado || '');
+        document.getElementById('producto-precio-ars').value = producto.precioARS ?? '';
+        document.getElementById('producto-precio-usd').value = producto.precioUSD ?? '';
+        document.getElementById('producto-disponible').checked = Boolean(producto.disponible);
+        document.getElementById('producto-imagen-url').value = producto.imagenUrl || '';
+
+        document.getElementById('producto-colores').innerHTML = '';
+        (Array.isArray(producto.colores) ? producto.colores : []).forEach(function (color) {
+            agregarColorFila(color.color);
+        });
+
+        document.getElementById('producto-cuotas').innerHTML = '';
+        (Array.isArray(producto.cuotas) ? producto.cuotas : []).forEach(function (cuota) {
+            agregarCuotaFila(cuota);
+        });
+
+        document.getElementById('form-nuevo-producto').classList.remove('was-validated');
+        actualizarPreviewImagen();
     }
 
     function agregarColorFila(valor) {
@@ -123,7 +231,7 @@
         lista.appendChild(fila);
     }
 
-    function agregarCuotaFila() {
+    function agregarCuotaFila(datosIniciales) {
         const lista = document.getElementById('producto-cuotas');
         const fila = document.createElement('div');
         fila.className = 'dynamic-row financing-row';
@@ -139,6 +247,12 @@
         fila.querySelector('.btn-remove-row').addEventListener('click', function () {
             fila.remove();
         });
+
+        fila.querySelector('[data-cantidad-cuotas]').value = datosIniciales?.cantidadCuotas ?? '';
+        fila.querySelector('[data-monto-cuota]').value = datosIniciales?.montoCuota ?? '';
+        fila.querySelector('[data-medio-pago]').value = datosIniciales?.medioPagoID
+            ? String(datosIniciales.medioPagoID)
+            : '';
         lista.appendChild(fila);
     }
 
@@ -185,6 +299,10 @@
     async function guardarProducto(event) {
         event.preventDefault();
 
+        if (formularioProductoCargando) {
+            return;
+        }
+
         const formulario = event.currentTarget;
         if (!formulario.checkValidity()) {
             formulario.classList.add('was-validated');
@@ -217,9 +335,15 @@
             cuotas: cuotasResultado.cuotas
         };
 
+        const estaEditando = modoFormulario === 'editar';
+        const idProducto = productoEditandoId;
+        const url = estaEditando
+            ? `${linkApi}/productos/${idProducto}`
+            : `${linkApi}/productos`;
+
         try {
-            const response = await fetch(`${linkApi}/productos`, {
-                method: 'POST',
+            const response = await fetch(url, {
+                method: estaEditando ? 'PUT' : 'POST',
                 headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
@@ -231,12 +355,12 @@
 
             modalNuevoProducto.hide();
             obtenerProductos();
-            mostrarConfirmacionProducto();
+            mostrarConfirmacionProducto(estaEditando);
         } catch (error) {
             mostrarFormMensaje(error.message);
         } finally {
             botonGuardar.disabled = false;
-            botonGuardar.innerHTML = '<i class="bi bi-check2" aria-hidden="true"></i> Guardar producto';
+            actualizarTextoBotonGuardar();
         }
     }
 
@@ -270,6 +394,16 @@
     }
 
     function limpiarFormularioProducto() {
+        solicitudProductoEdicion += 1;
+        modoFormulario = 'crear';
+        productoEditandoId = null;
+        prepararFormularioProductoLimpio();
+        ocultarFormMensaje();
+        alternarCargaFormulario(false);
+        actualizarModalFormulario();
+    }
+
+    function prepararFormularioProductoLimpio() {
         const formulario = document.getElementById('form-nuevo-producto');
         if (!formulario) {
             return;
@@ -283,9 +417,33 @@
             <i class="bi bi-image" aria-hidden="true"></i>
             <span>La vista previa aparecerá aquí</span>
         </div>`;
+        document.getElementById('producto-form-contenido').hidden = false;
+    }
+
+    function alternarCargaFormulario(cargando) {
+        formularioProductoCargando = cargando;
+        document.getElementById('producto-form-carga').hidden = !cargando;
+        document.getElementById('producto-form-contenido').hidden = cargando;
+        document.getElementById('form-nuevo-producto').setAttribute('aria-busy', String(cargando));
+
         const botonGuardar = document.getElementById('guardar-producto');
-        botonGuardar.disabled = false;
-        botonGuardar.innerHTML = '<i class="bi bi-check2" aria-hidden="true"></i> Guardar producto';
+        botonGuardar.disabled = cargando;
+        botonGuardar.innerHTML = cargando
+            ? '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> Cargando...'
+            : '<i class="bi bi-check2" aria-hidden="true"></i> ' + (modoFormulario === 'editar' ? 'Guardar cambios' : 'Guardar producto');
+    }
+
+    function actualizarModalFormulario() {
+        document.getElementById('modalNuevoProductoTitulo').textContent = modoFormulario === 'editar'
+            ? 'Editar producto'
+            : 'Nuevo producto';
+        actualizarTextoBotonGuardar();
+    }
+
+    function actualizarTextoBotonGuardar() {
+        const botonGuardar = document.getElementById('guardar-producto');
+        botonGuardar.innerHTML = '<i class="bi bi-check2" aria-hidden="true"></i> '
+            + (modoFormulario === 'editar' ? 'Guardar cambios' : 'Guardar producto');
     }
 
     function mostrarFormMensaje(mensaje) {
@@ -300,10 +458,12 @@
         contenedor.textContent = '';
     }
 
-    function mostrarConfirmacionProducto() {
+    function mostrarConfirmacionProducto(estaEditando) {
         if (window.Swal) {
             Swal.fire({
-                text: 'El producto fue creado correctamente.',
+                text: estaEditando
+                    ? 'Producto actualizado correctamente.'
+                    : 'Producto creado correctamente.',
                 icon: 'success',
                 position: 'top-end',
                 toast: true,
@@ -329,7 +489,7 @@
             })
             .catch(function () {
                 const cuerpo = document.getElementById('tabla-productos');
-                cuerpo.innerHTML = '<tr><td colspan="6" class="table-message error-message">No se pudo cargar el inventario.</td></tr>';
+                cuerpo.innerHTML = '<tr><td colspan="7" class="table-message error-message">No se pudo cargar el inventario.</td></tr>';
                 document.getElementById('contador-productos').textContent = 'Error al cargar los productos';
             });
     }
@@ -372,7 +532,7 @@
 
         cuerpo.innerHTML = filtrados.length
             ? filtrados.map(crearFilaProducto).join('')
-            : '<tr><td colspan="6" class="table-message">No hay productos que coincidan con los filtros.</td></tr>';
+            : '<tr><td colspan="7" class="table-message">No hay productos que coincidan con los filtros.</td></tr>';
 
         document.getElementById('contador-productos').textContent = `${filtrados.length} de ${productos.length} productos`;
     }
@@ -396,6 +556,12 @@
             <td><span class="availability-pill ${disponibilidad ? 'is-available' : 'is-unavailable'}">
                 <span class="availability-dot" aria-hidden="true"></span>${disponibilidad ? 'Disponible' : 'No disponible'}
             </span></td>
+            <td>
+                <button type="button" class="btn-action btn-edit-product" data-producto-id="${producto.productoID}" aria-label="Editar ${escaparHtml(producto.nombre)}">
+                    <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                    <span>Editar</span>
+                </button>
+            </td>
         </tr>`;
     }
 

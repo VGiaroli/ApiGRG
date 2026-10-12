@@ -25,7 +25,7 @@ function imprimir() {
 
     cabeceras.forEach((th, i) => {
         const texto = th.textContent.trim().toLowerCase();
-        if (texto === 'action' || texto === 'acción') {
+        if (texto === 'action' || texto === 'actions' || texto === 'acción' || texto === 'acciones') {
             indiceAccion = i;
         }
     });

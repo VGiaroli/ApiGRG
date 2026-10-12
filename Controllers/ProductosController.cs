@@ -128,11 +128,32 @@ namespace ApiGRG.Models
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Producto>> GetProducto(int id)
+        public async Task<ActionResult<ProductoEdicionDto>> GetProducto(int id)
         {
             var producto = await _context.Productos
-                .Include(p => p.Categoria)
-                .FirstOrDefaultAsync(p => p.ProductoID == id);
+                .AsNoTracking()
+                .Where(p => p.ProductoID == id)
+                .Select(p => new ProductoEdicionDto(
+                    p.ProductoID,
+                    p.Nombre,
+                    p.CategoriaID,
+                    p.Estado,
+                    p.PrecioARS,
+                    p.PrecioUSD,
+                    p.Disponible,
+                    p.ImagenUrl,
+                    p.ProductoColores
+                        .OrderBy(c => c.Color)
+                        .Select(c => new ProductoEdicionColorDto(c.Color))
+                        .ToList(),
+                    p.ProductoCuotas
+                        .OrderBy(c => c.CantidadCuotas)
+                        .Select(c => new ProductoEdicionCuotaDto(
+                            c.MedioPagoID,
+                            c.CantidadCuotas,
+                            c.MontoCuota))
+                        .ToList()))
+                .FirstOrDefaultAsync();
 
             if (producto == null)
             {
@@ -140,6 +161,116 @@ namespace ApiGRG.Models
             }
 
             return producto;
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> EditarProducto(int id, CrearProductoDto solicitud)
+        {
+            var producto = await _context.Productos
+                .Include(p => p.ProductoColores)
+                .Include(p => p.ProductoCuotas)
+                .FirstOrDefaultAsync(p => p.ProductoID == id);
+
+            if (producto == null)
+            {
+                return NotFound();
+            }
+
+            if (string.IsNullOrWhiteSpace(solicitud.Nombre))
+            {
+                return BadRequest(new { message = "El nombre del producto es requerido." });
+            }
+
+            if (!Enum.IsDefined(typeof(EstadoProducto), solicitud.Estado))
+            {
+                return BadRequest(new { message = "El estado del producto no es válido." });
+            }
+
+            if (solicitud.PrecioARS < 0 || solicitud.PrecioUSD < 0)
+            {
+                return BadRequest(new { message = "Los precios no pueden ser negativos." });
+            }
+
+            var categoriaExiste = await _context.Categorias
+                .AnyAsync(c => c.CategoriaID == solicitud.CategoriaID && !c.Eliminado);
+
+            if (!categoriaExiste)
+            {
+                return BadRequest(new { message = "La categoría seleccionada no existe o está inactiva." });
+            }
+
+            var colores = (solicitud.Colores ?? new List<CrearProductoColorDto>())
+                .Select(color => color.Color?.Trim())
+                .Where(color => !string.IsNullOrWhiteSpace(color))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var cuotas = solicitud.Cuotas ?? new List<CrearProductoCuotaDto>();
+            if (cuotas.Any(cuota => cuota.MedioPagoID <= 0 || cuota.CantidadCuotas <= 0 || cuota.MontoCuota < 0))
+            {
+                return BadRequest(new { message = "Los datos de financiación no son válidos." });
+            }
+
+            var mediosPagoSolicitados = cuotas
+                .Select(cuota => cuota.MedioPagoID)
+                .Distinct()
+                .ToList();
+
+            var mediosPagoValidos = await _context.MedioPagos
+                .Where(medioPago => mediosPagoSolicitados.Contains(medioPago.MedioPagoID))
+                .Select(medioPago => medioPago.MedioPagoID)
+                .ToListAsync();
+
+            if (mediosPagoValidos.Count != mediosPagoSolicitados.Count)
+            {
+                return BadRequest(new { message = "Uno o más medios de pago no existen." });
+            }
+
+            await using var transaccion = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                producto.Nombre = solicitud.Nombre.Trim();
+                producto.CategoriaID = solicitud.CategoriaID;
+                producto.Estado = solicitud.Estado;
+                producto.PrecioARS = solicitud.PrecioARS;
+                producto.PrecioUSD = solicitud.PrecioUSD;
+                producto.Disponible = solicitud.Disponible;
+                producto.ImagenUrl = string.IsNullOrWhiteSpace(solicitud.ImagenUrl) ? null : solicitud.ImagenUrl.Trim();
+                producto.FechaActualizacion = DateTime.UtcNow;
+
+                _context.ProductoColores.RemoveRange(producto.ProductoColores);
+                foreach (var color in colores)
+                {
+                    producto.ProductoColores.Add(new ProductoColor
+                    {
+                        ProductoID = producto.ProductoID,
+                        Color = color
+                    });
+                }
+
+                _context.ProductoCuotas.RemoveRange(producto.ProductoCuotas);
+                foreach (var cuota in cuotas)
+                {
+                    producto.ProductoCuotas.Add(new ProductoCuota
+                    {
+                        ProductoID = producto.ProductoID,
+                        MedioPagoID = cuota.MedioPagoID,
+                        CantidadCuotas = cuota.CantidadCuotas,
+                        MontoCuota = cuota.MontoCuota
+                    });
+                }
+
+                await _context.SaveChangesAsync();
+                await transaccion.CommitAsync();
+            }
+            catch
+            {
+                await transaccion.RollbackAsync();
+                throw;
+            }
+
+            return NoContent();
         }
 
     }
@@ -161,6 +292,25 @@ namespace ApiGRG.Models
         int CantidadCuotas,
         decimal MontoCuota,
         string MedioPago);
+
+    public sealed record ProductoEdicionDto(
+        int ProductoID,
+        string Nombre,
+        int CategoriaID,
+        EstadoProducto Estado,
+        decimal PrecioARS,
+        decimal PrecioUSD,
+        bool Disponible,
+        string? ImagenUrl,
+        List<ProductoEdicionColorDto> Colores,
+        List<ProductoEdicionCuotaDto> Cuotas);
+
+    public sealed record ProductoEdicionColorDto(string Color);
+
+    public sealed record ProductoEdicionCuotaDto(
+        int MedioPagoID,
+        int CantidadCuotas,
+        decimal MontoCuota);
 
     public sealed class CrearProductoDto
     {

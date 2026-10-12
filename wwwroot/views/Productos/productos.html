@@ -90,6 +90,7 @@
                                 <th scope="col">Precio USD</th>
                                 <th scope="col">Estado</th>
                                 <th scope="col">Disponibilidad</th>
+                                <th scope="col">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-productos"></tbody>
@@ -112,7 +113,12 @@
                         <div class="modal-body">
                             <div id="producto-form-mensaje" class="product-form-message" role="alert" hidden></div>
 
-                            <div class="product-form-layout">
+                            <div id="producto-form-carga" class="product-form-loading" role="status" aria-live="polite" hidden>
+                                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                <span>Cargando datos del producto...</span>
+                            </div>
+
+                            <div class="product-form-layout" id="producto-form-contenido">
                                 <section class="product-form-section" aria-labelledby="producto-info-titulo">
                                     <div class="form-section-heading">
                                         <span class="form-section-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></span>
