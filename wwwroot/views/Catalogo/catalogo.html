@@ -98,6 +98,23 @@
             </section>
 
             <section id="catalogo-grid" class="catalog-grid" aria-live="polite" aria-busy="true" aria-label="Productos del catálogo"></section>
+
+            <div id="catalogo-modal-planes" class="catalog-modal" hidden aria-hidden="true">
+                <div class="catalog-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="catalogo-modal-titulo" aria-describedby="catalogo-modal-descripcion">
+                    <div class="catalog-modal-header">
+                        <div>
+                            <p class="catalog-modal-kicker">Financiación disponible</p>
+                            <h2 id="catalogo-modal-titulo">Planes del equipo</h2>
+                            <p id="catalogo-modal-descripcion" class="catalog-modal-description">Elegí una alternativa para tu consulta.</p>
+                        </div>
+                        <button type="button" class="catalog-modal-close" data-action="close-plans" aria-label="Cerrar planes">
+                            <i class="bi bi-x-lg" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div id="catalogo-modal-lista" class="catalog-modal-list" role="radiogroup" aria-label="Planes de cuotas"></div>
+                    <p id="catalogo-modal-estado" class="catalog-modal-status" aria-live="polite"></p>
+                </div>
+            </div>
         </main>
     </div>
 
