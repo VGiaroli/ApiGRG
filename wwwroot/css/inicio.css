@@ -15,10 +15,8 @@ h4,
 h5,
 h6,
 .fw-extrabold,
-.nav-link-custom,
 .btn,
 .badge,
-.logo span,
 .tile-title,
 .tile-price,
 .tile-label,
@@ -197,66 +195,6 @@ h3 {
 .badge-dark-custom {
   background-color: var(--nido-dark);
   color: #fff;
-}
-
-/* Header & Navigation */
-.header {
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-  z-index: 1030;
-}
-
-.header.scrolled {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
-}
-
-.nav-link-custom {
-  position: relative;
-  font-weight: 600;
-  color: var(--nido-dark) !important;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.nav-link-custom::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -4px;
-  left: 0;
-  background-color: var(--nido-dark);
-  transition: width 0.3s ease;
-}
-
-.nav-link-custom:hover::after,
-.nav-link-custom.active::after {
-  width: 100%;
-}
-
-.shop-header-actions .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f8f9fa;
-  border: 1px solid var(--nido-line);
-  color: var(--nido-dark);
-  position: relative;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.shop-header-actions .icon-btn:hover {
-  background: var(--nido-dark);
-  color: var(--nido-primary);
-  border-color: var(--nido-dark);
-  transform: translateY(-2px);
 }
 
 /* Hero Section Styles */

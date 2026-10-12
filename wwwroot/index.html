@@ -28,6 +28,7 @@
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
         rel="stylesheet">
 
+    <link rel="stylesheet" href="/css/public-navbar.css">
     <!-- Enlace al CSS externo separado -->
     <link rel="stylesheet" href="/css/inicio.css">
 </head>
@@ -57,59 +58,7 @@
     <!-- Barra de progreso de scroll -->
     <div id="scrollProgress"></div>
 
-    <!-- Header -->
-    <header id="mainHeader"
-        class="header border-4 border-primary border-top position-fixed start-0 top-0 w-100 bg-white">
-        <div class="container">
-            <div class="header-wrapper d-flex align-items-center justify-content-between py-3">
-
-                <div class="logo">
-                    <a href="/" class="text-decoration-none d-flex align-items-center gap-2">
-                        <span class="fs-4 fw-extrabold tracking-tight text-dark"
-                            style="letter-spacing: -1px; font-weight: 800; font-size: 1.8rem;">GRG<span
-                                class="text-primary">.</span></span>
-                    </a>
-                </div>
-
-                <nav class="d-none d-xl-flex align-items-center gap-5">
-                    <a href="/"
-                        class="fs-6 fw-bold nav-link-custom active">Inicio</a>
-                    <a href="/views/Catalogo/catalogo.html" class="fs-6 fw-bold nav-link-custom">Ver catálogo</a>
-                    <a href="#categorias" class="fs-6 fw-bold nav-link-custom">Categorías</a>
-                    <a href="#destacados" class="fs-6 fw-bold nav-link-custom">Tecnología</a>
-                    <a href="#ofertas" class="fs-6 fw-bold nav-link-custom">Ofertas</a>
-                    <a href="#nosotros" class="fs-6 fw-bold nav-link-custom">Nosotros</a>
-                    <a href="#contacto" class="fs-6 fw-bold nav-link-custom">Servicios</a>
-                </nav>
-
-                <div class="d-flex align-items-center gap-2 gap-md-3 shop-header-actions">
-                    <button class="btn btn-secondary icon-btn d-xl-none" type="button" data-bs-toggle="dropdown"
-                        data-bs-auto-close="true" aria-expanded="false" aria-label="Menú móvil">
-                        <iconify-icon icon="lucide:menu" class="fs-5"></iconify-icon>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end p-4 shadow-lg border-0 rounded-4"
-                        style="min-width: 220px;">
-                        <div class="d-flex flex-column gap-3">
-                            <li><a class="fs-6 fw-bold text-dark text-decoration-none"
-                                    href="/">Inicio</a></li>
-                            <li><a class="fs-6 fw-bold text-dark text-decoration-none"
-                                    href="/views/Catalogo/catalogo.html">Ver catálogo</a></li>
-                            <li><a class="fs-6 fw-bold text-dark text-decoration-none" href="#categorias">Categorías</a>
-                            </li>
-                            <li><a class="fs-6 fw-bold text-dark text-decoration-none" href="#destacados">Tecnología</a>
-                            </li>
-                            <li><a class="fs-6 fw-bold text-dark text-decoration-none" href="#ofertas">Ofertas</a></li>
-                            <li><a class="fs-6 fw-bold text-dark text-decoration-none" href="#nosotros">Nosotros</a>
-                            </li>
-                            <li><a class="fs-6 fw-bold text-dark text-decoration-none" href="#contacto">Contacto</a>
-                            </li>
-                        </div>
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-    </header>
+    <div id="public-navbar-placeholder"></div>
 
 
     <div class="page-wrapper overflow-hidden" style="padding-top:88px;">
@@ -153,7 +102,7 @@
                                 JBL y accesorios originales con garantía oficial.
                             </p>
                             <div class="d-flex flex-wrap gap-3 pt-2">
-                                <a href="/views/Catalogo/catalogo.html"
+                                <a href="/catalogo.html"
                                     class="btn btn-primary text-dark px-4 py-3 fs-6 rounded-pill shadow">Ver
                                     catálogo</a>
                                 <a href="#categorias" class="btn btn-outline-light px-4 py-3 fs-6 rounded-pill">Explorar
@@ -600,7 +549,7 @@
                                 </p>
                             </div>
                             <div class="d-flex align-items-center justify-content-between z-1 pt-5">
-                                <a href="/views/Catalogo/catalogo.html"
+                                <a href="/catalogo.html"
                                     class="btn btn-primary text-dark px-4 py-3 fs-6 rounded-pill shadow d-inline-flex align-items-center gap-2">
                                     <iconify-icon icon="lucide:arrow-up-right" class="fs-5"></iconify-icon> Ver todos los
                                     productos
@@ -1184,6 +1133,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+    <script src="/js/public-navbar.js"></script>
 
     <!-- LOADER -->
     <script>
@@ -1308,12 +1258,6 @@
             });
 
             window.addEventListener('scroll', function () {
-                const header = document.getElementById('mainHeader');
-                if (window.scrollY > 40) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
                 const btn = document.getElementById('scrollToTopBtn');
                 btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
 

@@ -1,0 +1,103 @@
+:root {
+    --public-navbar-dark: #1F2A2E;
+    --public-navbar-primary: #C1FF72;
+    --public-navbar-line: rgba(31, 42, 46, 0.12);
+    --public-navbar-display: 'Space Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+.public-navbar {
+    position: fixed;
+    z-index: 1030;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    transition: box-shadow 0.3s ease, padding 0.3s ease;
+}
+
+.public-navbar.scrolled {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+}
+
+.public-navbar .logo span,
+.public-navbar .nav-link-custom,
+.public-navbar .dropdown-menu a {
+    font-family: var(--public-navbar-display);
+}
+
+.public-navbar .nav-link-custom {
+    position: relative;
+    color: var(--public-navbar-dark) !important;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.public-navbar .nav-link-custom::after {
+    position: absolute;
+    right: 0;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--public-navbar-dark);
+    content: '';
+    transition: width 0.3s ease;
+}
+
+.public-navbar .nav-link-custom:hover::after,
+.public-navbar .nav-link-custom:focus-visible::after,
+.public-navbar .nav-link-custom.active::after {
+    width: 100%;
+}
+
+.public-navbar .nav-link-custom:focus-visible,
+.public-navbar .dropdown-menu a:focus-visible,
+.public-navbar .icon-btn:focus-visible {
+    outline: 3px solid rgba(193, 255, 114, 0.75);
+    outline-offset: 3px;
+}
+
+.public-navbar .shop-header-actions .icon-btn {
+    display: flex;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--public-navbar-line);
+    border-radius: 50%;
+    background: #f8f9fa;
+    color: var(--public-navbar-dark);
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.public-navbar .shop-header-actions .icon-btn:hover {
+    border-color: var(--public-navbar-dark);
+    background: var(--public-navbar-dark);
+    color: var(--public-navbar-primary);
+    transform: translateY(-2px);
+}
+
+.public-navbar .dropdown-menu {
+    min-width: 220px;
+}
+
+.public-navbar .dropdown-menu a {
+    display: block;
+    min-height: 44px;
+    padding: 0.35rem 0.25rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .public-navbar,
+    .public-navbar .nav-link-custom,
+    .public-navbar .nav-link-custom::after,
+    .public-navbar .shop-header-actions .icon-btn {
+        transition: none;
+    }
+}
