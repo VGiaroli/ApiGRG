@@ -1,5 +1,5 @@
 // layout.js
-// Se encarga de insertar el sidebar (Components/sidebar.html) en cualquier
+// Se encarga de insertar la navegación administrativa compartida en cualquier
 // vista que tenga un <div id="navbar-placeholder"></div>.
 // Así evitamos copiar el mismo bloque de fetch + createElement en cada HTML:
 // cada vista solo necesita incluir <script src="/js/layout.js"></script>.
@@ -21,12 +21,15 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(function (html) {
       placeholder.innerHTML = html;
 
-      // sidebar.html trae un <script src="/wwwroot/js/sidebar.js">, pero al insertarlo
-      // con innerHTML el navegador NO lo ejecuta (restricción de seguridad del DOM).
-      // Por eso hace falta agregarlo a mano con createElement.
+      // sidebar.html se inserta con innerHTML y sus scripts no se ejecutan.
+      // Por eso se carga sidebar.js después de insertar el componente.
       var script = document.createElement('script');
       script.src = '/js/sidebar.js';
       document.body.appendChild(script);
+
+      if (typeof verificarUsuario === 'function') {
+        verificarUsuario();
+      }
     })
     .catch(function (error) {
       console.error('Error cargando sidebar:', error);

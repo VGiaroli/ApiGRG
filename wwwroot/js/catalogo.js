@@ -60,6 +60,8 @@
             document.getElementById('catalogo-disponibilidad')
         ];
 
+        inicializarNavegacionPublica();
+
         filtros.forEach(function (filtro) {
             filtro.addEventListener(filtro.tagName === 'INPUT' ? 'input' : 'change', renderizarCatalogo);
         });
@@ -498,6 +500,29 @@
         document.getElementById('catalogo-estado').value = '';
         document.getElementById('catalogo-disponibilidad').value = '';
         renderizarCatalogo();
+    }
+
+    function inicializarNavegacionPublica() {
+        const toggle = document.getElementById('public-nav-toggle');
+        const nav = document.getElementById('public-site-nav');
+
+        if (!toggle || !nav) {
+            return;
+        }
+
+        toggle.addEventListener('click', function () {
+            const abierto = nav.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', String(abierto));
+            toggle.setAttribute('aria-label', abierto ? 'Cerrar navegación' : 'Abrir navegación');
+        });
+
+        nav.querySelectorAll('a').forEach(function (enlace) {
+            enlace.addEventListener('click', function () {
+                nav.classList.remove('is-open');
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.setAttribute('aria-label', 'Abrir navegación');
+            });
+        });
     }
 
     function mostrarEstado(estado) {

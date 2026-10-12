@@ -211,9 +211,11 @@ a { text-decoration: none; }
   position: sticky;
   top: 0;
   z-index: 1020;
+    margin-left: var(--sidebar-width);
   min-height: 72px;
   border-bottom: 1px solid var(--admin-border);
   box-shadow: var(--admin-shadow-sm);
+    transition: margin-left 0.2s ease;
 }
 
 .admin-navbar.bg-white {
@@ -399,6 +401,7 @@ html[data-theme="dark"] .sidebar-toggle {
 @media (min-width: 992px) {
   body.sidebar-mini .admin-sidebar { width: var(--sidebar-mini-width); }
   body.sidebar-mini .admin-main { margin-left: var(--sidebar-mini-width); }
+  body.sidebar-mini .admin-navbar { margin-left: var(--sidebar-mini-width); }
 
   body.sidebar-mini .brand-copy,
   body.sidebar-mini .nav-text,
@@ -430,6 +433,7 @@ html[data-theme="dark"] .sidebar-toggle {
   }
 
   .admin-main { margin-left: 0; }
+  .admin-navbar { margin-left: 0; }
 
   body.sidebar-open { overflow: hidden; }
 

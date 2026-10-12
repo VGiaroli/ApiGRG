@@ -1146,19 +1146,6 @@ footer a.link-hover:hover {
   justify-content: center;
 }
 
-/* Cart Offcanvas Drawer */
-.cart-drawer .offcanvas-header {
-  background: var(--nido-dark);
-  color: #fff;
-}
-
-.cart-item-img {
-  width: 70px;
-  height: 70px;
-  border-radius: 14px;
-  object-fit: cover;
-}
-
 /* ---------- Encabezado ---------- */
 .hl-lime {
   background: linear-gradient(transparent 60%, #C1FF72 60%);

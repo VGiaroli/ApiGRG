@@ -11,7 +11,7 @@
 <aside class="admin-sidebar" id="adminSidebar" aria-label="Main navigation">
 
   <div class="sidebar-header">
-    <a class="brand-mark" aria-label="adminHMD dashboard">
+    <a class="brand-mark" href="/views/Productos/productos.html" aria-label="GRG administración de productos">
       <img src="/img/logoGRG.jpg" class="brand-icon" alt="Logo Sistema Global">
 
       <span class="brand-copy">
@@ -22,16 +22,6 @@
   </div>
 
   <nav class="sidebar-nav">
-    <a class="nav-link" href="/index.html">
-      <span class="nav-icon"><i class="bi bi-house"></i></span>
-      <span class="nav-text">Inicio</span>
-    </a>
-
-    <a class="nav-link" href="/views/Catalogo/catalogo.html">
-      <span class="nav-icon"><i class="bi bi-shop"></i></span>
-      <span class="nav-text">Catálogo</span>
-    </a>
-
     <a class="nav-link" href="/views/Categorias/categorias.html">
       <span class="nav-icon"><i class="bi bi-grid-1x2"></i></span>
       <span class="nav-text">Categorias</span>
@@ -42,25 +32,14 @@
       <span class="nav-text">Equipos</span>
     </a>
 
-    <!-- SOLAMENTE VISIBLE EN CONFIGURACION-- -->
     <a class="nav-link nav-link-sub" href="/views/Perfil/perfil.html">
       <span class="nav-icon"><i class="bi bi-person-circle"></i></span>
       <span class="nav-text">Perfil</span>
     </a>
-    <!-- <a class="nav-link" href="/views/Productos/productos.html">
-      <span class="nav-icon"><i class="bi bi-tools"></i></span>
-      <span class="nav-text">Servicios</span>
+    <a class="nav-link nav-link-public" href="/">
+      <span class="nav-icon"><i class="bi bi-globe2" aria-hidden="true"></i></span>
+      <span class="nav-text">Ver sitio público</span>
     </a>
-
-    <a class="nav-link" href="/views/Productos/productos.html">
-      <span class="nav-icon"><i class="bi bi-graph-up-arrow"></i></span>
-      <span class="nav-text">Reportes</span>
-    </a> -->
-
-    <!-- <a class="nav-link">
-      <span class="nav-icon"><i class="bi bi-person-circle" aria-hidden="true"></i></span>
-      <span class="nav-text" id="email-usuario"></span>
-    </a> -->
 
   </nav>
 
@@ -105,8 +84,7 @@
 </aside>
 
 <div class="sidebar-backdrop" data-sidebar-close></div>
-<div class="admin-main">
-  <nav class="navbar admin-navbar navbar-expand bg-white">
+<nav class="navbar admin-navbar navbar-expand bg-white">
     <div class="container-fluid px-3 px-lg-4">
 
 
@@ -125,7 +103,7 @@
           </button>
           <ul class="dropdown-menu dropdown-menu-end nav-list secondary-nav">
             <li>
-              <a href="#" class="dropdown-item d-flex align-items-center gap-2">
+              <a href="/views/Perfil/perfil.html" class="dropdown-item d-flex align-items-center gap-2">
                 <span class="nav-icon material-symbols-rounded">account_circle</span>
                 <span class="nav-label" id="email-usuario">Perfil</span>
               </a>
@@ -141,10 +119,4 @@
         </div>
       </div>
     </div>
-  </nav>
-
-</div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/js/sidebar.js"></script>
+</nav>
