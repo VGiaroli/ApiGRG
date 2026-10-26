@@ -31,15 +31,9 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
     }
   };
 
-  // Reglas de validación: "req" = obligatorio, "test" = formato si el campo se completó.
-  var REGLAS = {
-    nombreDispositivo: { req: true, msg: 'Escribí qué equipo es para poder seguir.' },
-    nombre: { req: true, msg: 'Escribí tu nombre.' },
-    apellido: { req: true, msg: 'Escribí tu apellido.' },
-    numero: { req: true, test: /^[\d\s()+-]{8,}$/, msg: 'Escribí un teléfono válido, con característica (sin 0 ni 15).' },
-    dni: { test: /^\d{7,8}$/, msg: 'El DNI tiene 7 u 8 números, sin puntos.' },
-    email: { test: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, msg: 'Revisá el email, parece incompleto.' }
-  };
+  // Las reglas de validación viven en /js/validaciones-servicio.js (compartidas con la vista de administración).
+var CAMPOS = ['nombre', 'numero', 'dni', 'email', 'localidad'];
+var REGLA_DE = { nombre: 'nombreCompleto' };
 
   document.addEventListener('DOMContentLoaded', init);
 
@@ -63,6 +57,12 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
     // Si falta algo del HTML, cortamos acá en vez de tirar un error en consola.
     if (!form || !confirmBox || !formSection) return;
 
+    var V = window.ValidacionesServicio;
+    if (!V) {
+      console.error('Falta cargar /js/validaciones-servicio.js antes de servicios.js');
+      return;
+    }
+
     /* ---------- Helpers ---------- */
 
     function valor(id) {
@@ -77,11 +77,11 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
 
     /* ---------- Modal del formulario ---------- */
 
-    function volverAlFormulario() {
+      function volverAlFormulario() {
       form.hidden = false;
       confirmBox.hidden = true;
+      mostrarPaso(1);
     }
-
     function abrirFormulario() {
       // Si quedó la confirmación de un envío anterior, arrancamos de cero.
       if (!confirmBox.hidden) {
@@ -90,12 +90,13 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
         volverAlFormulario();
       }
       formSection.hidden = false;
-      formSection.classList.add('modal-open');
+      formSection.classList.add('modal-open'); 
       formSection.scrollTop = 0;
       document.body.style.overflow = 'hidden';
       if (openFormBtn) openFormBtn.setAttribute('aria-expanded', 'true');
-      var primero = document.getElementById('nombreDispositivo');
-      if (primero) primero.focus({ preventScroll: true });
+      var primero = document.getElementById('marca');
+var esTactil = window.matchMedia('(hover: none)').matches;
+if (primero && !esTactil) primero.focus({ preventScroll: true });
     }
 
     function cerrarFormulario() {
@@ -154,26 +155,44 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
     }
 
     function limpiarTodosLosErrores() {
-      Object.keys(REGLAS).forEach(function (id) {
+      CAMPOS.forEach(function (id) {
         var input = document.getElementById(id);
         if (input) limpiarError(input);
       });
+      mostrarErrorTipo('');
+    }
+
+    var tipoError = document.getElementById('tipoAtencionError');
+
+    function mostrarErrorTipo(mensaje) {
+      if (!tipoError) return;
+      tipoError.textContent = mensaje;
+      tipoError.hidden = !mensaje;
+    }
+
+    function hayTipoElegido() {
+      return !!((document.getElementById('arreglo') || {}).checked ||
+                (document.getElementById('inspeccion') || {}).checked);
     }
 
     // Valida todos los campos y enfoca el primero que falle.
     function validar() {
       var primerInvalido = null;
 
-      Object.keys(REGLAS).forEach(function (id) {
+      if (!hayTipoElegido()) {
+        mostrarErrorTipo('Elegí al menos un tipo de atención.');
+        primerInvalido = document.getElementById('arreglo');
+      } else {
+        mostrarErrorTipo('');
+      }
+
+      CAMPOS.forEach(function (id) {
         var input = document.getElementById(id);
         if (!input) return;
 
-        var regla = REGLAS[id];
-        var v = input.value.trim();
-        var falla = (regla.req && !v) || (v && regla.test && !regla.test.test(v));
-
-        if (falla) {
-          mostrarError(input, regla.msg);
+     var mensaje = V.validarCampo(REGLA_DE[id] || id, input.value);
+        if (mensaje) {
+          mostrarError(input, mensaje);
           if (!primerInvalido) primerInvalido = input;
         } else {
           limpiarError(input);
@@ -184,9 +203,89 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
       return !primerInvalido;
     }
 
-    Object.keys(REGLAS).forEach(function (id) {
+    CAMPOS.forEach(function (id) {
       var input = document.getElementById(id);
-      if (input) input.addEventListener('input', function () { limpiarError(input); });
+      if (!input) return;
+
+      input.addEventListener('input', function () { limpiarError(input); });
+
+      // Al salir del campo avisamos solo si lo completó mal (lo obligatorio se avisa al enviar).
+      input.addEventListener('blur', function () {
+        if (!input.value.trim()) return;
+        var mensaje = V.validarCampo(REGLA_DE[id] || id, input.value);
+        if (mensaje) mostrarError(input, mensaje);
+      });
+    });
+
+    // Mantenimiento e Inspección son excluyentes: al marcar uno se desmarca el otro.
+    ['arreglo', 'inspeccion'].forEach(function (id) {
+      var check = document.getElementById(id);
+      if (!check) return;
+      check.addEventListener('change', function () {
+        if (check.checked) {
+          var otro = document.getElementById(id === 'arreglo' ? 'inspeccion' : 'arreglo');
+          if (otro) otro.checked = false;
+        }
+        if (hayTipoElegido()) mostrarErrorTipo('');
+      });
+    });
+
+        /* ---------- Pasos (solo celular) ---------- */
+
+    var TOTAL_PASOS = 2;
+    var paso = 1;
+    var movil = window.matchMedia('(max-width: 520px)');
+    var pasos = form.querySelectorAll('.form-step');
+    var puntos = form.querySelectorAll('.steps-item');
+    var btnSiguiente = document.getElementById('stepNext');
+    var btnAtras = document.getElementById('stepBack');
+
+    function modoPasos() {
+      return form.classList.contains('is-stepper');
+    }
+
+    function mostrarPaso(n) {
+      paso = n;
+      form.setAttribute('data-paso', n);
+      Array.prototype.forEach.call(pasos, function (p) {
+        p.classList.toggle('is-current', Number(p.getAttribute('data-step')) === n);
+      });
+      Array.prototype.forEach.call(puntos, function (d, i) {
+        d.classList.toggle('is-current', i + 1 === n);
+      });
+      formSection.scrollTop = 0;
+    }
+
+    function aplicarModo() {
+      form.classList.toggle('is-stepper', movil.matches);
+      mostrarPaso(1);
+    }
+
+    // En el paso 1 solo es obligatorio el tipo de atención.
+    function validarPaso1() {
+      if (!hayTipoElegido()) {
+        mostrarErrorTipo('Elegí al menos un tipo de atención.');
+        var check = document.getElementById('arreglo');
+        if (check) check.focus();
+        return false;
+      }
+      mostrarErrorTipo('');
+      return true;
+    }
+
+    if (btnSiguiente) btnSiguiente.addEventListener('click', function () {
+      if (validarPaso1()) mostrarPaso(2);
+    });
+    if (btnAtras) btnAtras.addEventListener('click', function () { mostrarPaso(1); });
+
+    if (movil.addEventListener) movil.addEventListener('change', aplicarModo);
+    else movil.addListener(aplicarModo);
+    aplicarModo();
+
+    // El DNI solo admite números.
+    var dniInput = document.getElementById('dni');
+    if (dniInput) dniInput.addEventListener('input', function () {
+      dniInput.value = dniInput.value.replace(/\D/g, '');
     });
 
     /* ---------- Tarjetas de servicio + panel ---------- */
@@ -225,30 +324,16 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
 
     /* ---------- Envío ---------- */
 
-   // ¿El teléfono puede formar un link válido de WhatsApp?
-    function telefonoValido(valorTel) {
-      var d = String(valorTel || '').replace(/\D/g, '');
-      if (d.indexOf('54') === 0) return true;           // ya tiene el país
-      if (d.charAt(0) === '0') d = d.slice(1);           // quitar 0 inicial
-      if (d.length === 12 && d.slice(d.length - 10, d.length - 8) === '15') {
-        d = d.slice(0, d.length - 10) + d.slice(d.length - 8); // quitar el 15
-      }
-      return d.length === 10;
-    }
-
     form.addEventListener('submit', function (evento) {
       evento.preventDefault();
 
+  if (modoPasos() && paso < TOTAL_PASOS) {
+        if (validarPaso1()) mostrarPaso(2);
+        return;
+      }
       if (envioEnCurso) return;
 
       if (!validar()) return;
-
-      var telInput = document.getElementById('numero');
-      if (!telefonoValido(telInput.value)) {
-        mostrarError(telInput, 'Escribí el teléfono con 10 dígitos, sin 0 ni 15 (ej: 11 4444-5555).');
-        telInput.focus();
-        return;
-      }
 
       envioEnCurso = true;
       if (submitBtn) {
@@ -268,38 +353,36 @@ var WHATSAPP_NEGOCIO = '5493562453598'; // 549 + característica + número, sin 
       var descripcion = valor('descripcion');
 
       var tipos = [];
-      if (arreglo) tipos.push('Arreglo');
+      if (arreglo) tipos.push('Mantenimiento');
       if (inspeccion) tipos.push('Inspección');
 
-      var equipo = [marca, modelo].filter(Boolean).join(' ');
-      var solicitante = [valor('nombre'), valor('apellido')].filter(Boolean).join(' ');
+       var equipo = [marca, modelo].filter(Boolean).join(' ');
+
+      var persona = V.partirNombre(valor('nombre'));
+      var solicitante = [persona.nombre, persona.apellido].filter(Boolean).join(' ');
 
       texto('confirmSolicitante', 'Solicitante: ' + solicitante + ' · Tel: ' + valor('numero'));
-      texto('confirmDispositivo', 'Dispositivo: ' + valor('nombreDispositivo'));
       texto('confirmMarcaModelo', 'Equipo: ' + (equipo || 'sin especificar'));
       texto('confirmTipo', 'Tipo de atención: ' + (tipos.length ? tipos.join(' y ') : 'sin especificar'));
       texto('confirmDescripcion', 'Descripción: ' + (descripcion || 'sin detalles'));
 
       // Payload público para la API. El servidor asigna ID, fecha, baja y confirmación.
       var payload = {
-        nombre: valor('nombre'),
-        apellido: valor('apellido'),
+        nombre: persona.nombre,
+        apellido: persona.apellido,
         numero: valor('numero'),
         dni: valor('dni'),
         email: valor('email'),
         localidad: valor('localidad'),
-        nombreDispositivo: valor('nombreDispositivo'),
         marca: marca,
         modelo: modelo,
         tipoArreglo: arreglo,
         tipoInspeccion: inspeccion,
         descripcion: descripcion
       };
-
       function armarLinkWhatsapp() {
   var lineas = [
     'Hola, quiero solicitar un servicio técnico:',
-    '*Dispositivo:* ' + valor('nombreDispositivo'),
     '*Equipo:* ' + (equipo || 'sin especificar'),
     '*Tipo:* ' + (tipos.length ? tipos.join(' y ') : 'sin especificar'),
     '*Detalle:* ' + (descripcion || 'sin detalles'),
@@ -333,10 +416,14 @@ linkWsp.href = armarLinkWhatsapp();
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(payload)
       })
-        .then(function (res) {
-          if (!res.ok) throw new Error('HTTP ' + res.status);
-          mostrarConfirmacion('¡Solicitud enviada! Pronto nos comunicamos con vos.');
-        })
+       .then(function (res) {
+  if (!res.ok) {
+    return res.text().then(function (cuerpo) {
+      throw new Error('HTTP ' + res.status + ' ' + cuerpo);
+    });
+  }
+  mostrarConfirmacion('¡Solicitud enviada! Pronto nos comunicamos con vos.');
+})
         .catch(function (error) {
           console.warn('No se pudo enviar al servidor:', error);
           if (submitError) {
@@ -363,7 +450,7 @@ linkWsp.href = armarLinkWhatsapp();
           submitError.textContent = '';
         }
         volverAlFormulario();
-        var primero = document.getElementById('nombreDispositivo');
+        var primero = document.getElementById('marca');
         if (primero) primero.focus();
       });
     }

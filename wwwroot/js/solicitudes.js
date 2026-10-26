@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    configurarFiltros();
     obtenerSolicitudes();
 })
 
@@ -6,12 +7,20 @@ document.addEventListener('DOMContentLoaded', function () {
 // (pasar objetos rompería el HTML por las comillas).
 let solicitudes = [];
 
+// Solicitud que se está viendo en el modal (null cuando el modal está en modo "agregar").
+let solicitudActual = null;
+
+
+let cargando = false;
+
+
+// Si es true, al abrir una solicitud con el ojo queda marcada como "Visto".
+const MARCAR_VISTO_AL_ABRIR = true;
+
 // Debe coincidir con el enum EstadoConfirmacion del backend.
 const ESTADOS_CONFIRMACION = {
-    Pendiente:  { cls: 'bg-secondary', label: 'Pendiente' },
-    Enviado:    { cls: 'bg-primary',   label: 'Enviado', title: 'Enviado (a confirmar)' },
-    Confirmado: { cls: 'bg-success',   label: 'Confirmado' },
-    NoRecibido: { cls: 'bg-danger',    label: 'No recibido' }
+    EnProceso: { cls: 'bg-warning text-dark', label: 'En proceso' },
+    Terminado: { cls: 'bg-success',           label: 'Terminado' }
 };
 
 // Los datos vienen del formulario público, así que se escapan antes de insertarlos en el HTML.
@@ -25,9 +34,39 @@ function avisarError(texto) {
     Swal.fire({ icon: 'error', text: texto });
 }
 
+function avisarOk(texto) {
+    Swal.fire({
+        text: texto,
+        icon: "success",
+        position: 'top-end',
+        toast: true,
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false
+    });
+}
+
+function entregaDe(s) {
+    return ESTADOS_CONFIRMACION[s.confirmacion] ? s.confirmacion : 'EnProceso';
+}
+
 /* ---------------- Carga ---------------- */
 
-function obtenerSolicitudes() {
+function mostrarCargando() {
+    cargando = true;
+    const anchos = ['70px', '120px', '140px', '100px', '90px', '70px', '80px', '32px'];
+    const fila = '<tr>' + anchos.map(w =>
+        "<td><span class='skeleton' style='width:" + w + "'></span></td>"
+    ).join('') + '</tr>';
+
+    $("#tabla-solicitudes").html(fila.repeat(5));
+    document.getElementById('contador-solicitudes').textContent = 'Cargando solicitudes...';
+}
+
+// mostrarEsqueleto = false para recargas silenciosas (por ejemplo después de guardar)
+function obtenerSolicitudes(mostrarEsqueleto = true) {
+    if (mostrarEsqueleto) mostrarCargando();
+
     authFetch('/servicios')
         .then(response => {
             if (!response.ok) throw new Error(`Error ${response.status}`);
@@ -35,9 +74,70 @@ function obtenerSolicitudes() {
         })
         .then(lista => {
             solicitudes = lista;
-            mostrarSolicitudes(lista);
+            cargando = false;
+            aplicarFiltros();
         })
-        .catch(error => console.error("Error al obtener las solicitudes: ", error))
+        .catch(error => {
+            cargando = false;
+            console.error("Error al obtener las solicitudes: ", error);
+            $("#tabla-solicitudes").html(
+                "<tr><td colspan='8' class='table-message'>No se pudieron cargar las solicitudes. Revisá tu sesión e intentá de nuevo.</td></tr>"
+            );
+            document.getElementById('contador-solicitudes').textContent = 'No se pudieron cargar las solicitudes';
+        });
+}
+
+
+/* ---------------- Buscador y filtros ---------------- */
+
+function configurarFiltros() {
+    document.getElementById('buscador').addEventListener('input', aplicarFiltros);
+    document.getElementById('filtro-entrega').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtro-visto').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtro-tipo').addEventListener('change', aplicarFiltros);
+
+    // Limpiar vuelve a la vista inicial: solo las que están en proceso.
+    document.getElementById('limpiar-filtros').addEventListener('click', function () {
+        document.getElementById('buscador').value = '';
+        document.getElementById('filtro-entrega').value = 'EnProceso';
+        document.getElementById('filtro-visto').value = '';
+        document.getElementById('filtro-tipo').value = '';
+        aplicarFiltros();
+    });
+}
+
+// Minúsculas y sin tildes, para que "perez" encuentre "Pérez".
+function normalizarTexto(t) {
+    return String(t ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function aplicarFiltros() {
+      if (cargando) return; // <- nueva
+    const texto = normalizarTexto(document.getElementById('buscador').value.trim());
+    const entrega = document.getElementById('filtro-entrega').value; // '' = todas
+    const visto = document.getElementById('filtro-visto').value;     // '' | 'true' | 'false'
+    const tipo = document.getElementById('filtro-tipo').value;       // '' | 'mantenimiento' | 'inspeccion'
+
+    // Las bajas anteriores (eliminado) siguen ocultas.
+    const vigentes = solicitudes.filter(s => !s.eliminado);
+
+    const lista = vigentes.filter(s => {
+        if (entrega && entregaDe(s) !== entrega) return false;
+        if (visto && String(!!s.visto) !== visto) return false;
+        if (tipo === 'mantenimiento' && !s.tipoArreglo) return false;
+        if (tipo === 'inspeccion' && !s.tipoInspeccion) return false;
+
+        if (!texto) return true;
+        const contenido = normalizarTexto([
+            s.nombre, s.apellido, s.numero, s.dni, s.gmail,
+            s.localidad, s.marca, s.modelo, s.descripcion
+        ].join(' '));
+        return contenido.includes(texto);
+    });
+
+    mostrarSolicitudes(lista);
+    document.getElementById('contador-solicitudes').textContent =
+        lista.length + ' de ' + vigentes.length + ' solicitudes';
 }
 
 /* ---------------- Tabla ---------------- */
@@ -45,28 +145,34 @@ function obtenerSolicitudes() {
 function mostrarSolicitudes(listaSolicitudes) {
     $("#tabla-solicitudes").empty();
 
+    if (listaSolicitudes.length === 0) {
+        $("#tabla-solicitudes").append(
+            "<tr><td colspan='8' class='table-message'>No hay solicitudes que coincidan con los filtros.</td></tr>"
+        );
+        return;
+    }
+
     $.each(listaSolicitudes, function (index, s) {
         let fecha = s.fechaCreacion ? new Date(s.fechaCreacion).toLocaleDateString('es-AR') : '';
         let equipo = [s.marca, s.modelo].filter(Boolean).join(' ');
 
         let tipos = '';
-        if (s.tipoArreglo) tipos += "<span class='badge bg-warning text-dark me-1'>Arreglo</span>";
+        if (s.tipoArreglo) tipos += "<span class='badge bg-warning text-dark me-1'>Mantenimiento</span>";
         if (s.tipoInspeccion) tipos += "<span class='badge bg-info text-dark'>Inspección</span>";
         if (!tipos) tipos = '-';
 
-        let estado = s.eliminado
-            ? "<span class='badge bg-secondary'>Inactivo</span>"
-            : "<span class='badge bg-success'>Activo</span>";
-
+        let estado = badgeVisto(s.visto);
         let confirmacion = badgeConfirmacion(s.confirmacion);
-        let acciones = botonesFila(s);
+
+        let acciones =
+            "<button class='btn-action' title='Ver solicitud' onclick='verSolicitud(" + s.servicioID + ")'><i class='bi bi-eye'></i></button>";
 
         $("#tabla-solicitudes").append(
-            "<tr>" +
+            "<tr" + (s.visto ? "" : " class='fw-semibold'") + ">" +
             "<td>" + fecha + "</td>" +
             "<td>" + esc(s.nombre) + " " + esc(s.apellido) + "</td>" +
             "<td>" + esc(s.numero) + (s.gmail ? "<br><small>" + esc(s.gmail) + "</small>" : "") + "</td>" +
-            "<td>" + esc(s.nombreDispositivo) + (equipo ? "<br><small>" + esc(equipo) + "</small>" : "") + "</td>" +
+            "<td>" + (equipo ? esc(equipo) : '-') + "</td>" +
             "<td>" + tipos + "</td>" +
             "<td>" + estado + "</td>" +
             "<td>" + confirmacion + "</td>" +
@@ -76,48 +182,190 @@ function mostrarSolicitudes(listaSolicitudes) {
     })
 }
 
-function badgeConfirmacion(estado) {
-    let e = ESTADOS_CONFIRMACION[estado] || ESTADOS_CONFIRMACION.Pendiente;
-    let title = e.title ? " title='" + e.title + "'" : "";
-    return "<span class='badge " + e.cls + "'" + title + ">" + e.label + "</span>";
+function badgeVisto(visto) {
+    return visto
+        ? "<span class='badge bg-success'><i class='bi bi-eye'></i> Visto</span>"
+        : "<span class='badge bg-secondary'><i class='bi bi-eye-slash'></i> No visto</span>";
 }
 
-// Reglas: WhatsApp en Pendiente/Enviado/No recibido; ✓ y ✗ solo en Enviado;
-// inactivos sin botones de WhatsApp.
-function botonesFila(s) {
-    let html =
-        "<button class='btn-action' title='Editar' onclick='buscarSolicitud(" + s.servicioID + ")'><i class='bi bi-pencil-square'></i></button>" +
-        "<button class='btn-action btn-delete' title='Eliminar' onclick='confirmarEliminar(" + s.servicioID + ")'><i class='bi bi-trash'></i></button>";
+function badgeConfirmacion(estado) {
+    let e = ESTADOS_CONFIRMACION[estado] || ESTADOS_CONFIRMACION.EnProceso;
+    return "<span class='badge " + e.cls + "'>" + e.label + "</span>";
+}
 
-    if (s.eliminado) return html;
+/* ---------------- Modal ---------------- */
 
-    let estado = ESTADOS_CONFIRMACION[s.confirmacion] ? s.confirmacion : 'Pendiente';
+// modoVer = true: campos en solo lectura + acciones. false: formulario para agregar.
+function configurarModal(modoVer) {
+    document.getElementById('camposSolicitud').disabled = modoVer;
+    document.getElementById('modalTitulo').textContent = modoVer ? 'Solicitud de servicio' : 'Agregar Solicitud';
+    document.getElementById('resumenVer').classList.toggle('d-none', !modoVer);
+    document.getElementById('accionesVer').classList.toggle('d-none', !modoVer);
+    document.getElementById('btnGuardar').classList.toggle('d-none', modoVer);
+    if (modoVer) refrescarModal();
+}
 
-    if (estado === 'Pendiente' || estado === 'Enviado' || estado === 'NoRecibido') {
-        html += "<button class='btn-action btn-whatsapp' title='Enviar por WhatsApp' onclick='enviarWhatsapp(" + s.servicioID + ")'><i class='bi bi-whatsapp'></i></button>";
+// Actualiza los badges y los textos de los botones según el estado actual.
+function refrescarModal() {
+    const s = solicitudActual;
+    if (!s) return;
+
+    const fecha = s.fechaCreacion ? new Date(s.fechaCreacion).toLocaleDateString('es-AR') : '';
+    document.getElementById('resumenVer').innerHTML =
+        badgeVisto(s.visto) + badgeConfirmacion(s.confirmacion) +
+        (fecha ? "<span class='text-muted small ms-1'>Recibida el " + fecha + "</span>" : '');
+
+    document.getElementById('btnVisto').innerHTML = s.visto
+        ? "<i class='bi bi-eye-slash'></i> Marcar como no visto"
+        : "<i class='bi bi-eye'></i> Marcar como visto";
+
+    const btnEntrega = document.getElementById('btnEntrega');
+    if (entregaDe(s) === 'EnProceso') {
+        btnEntrega.className = 'btn btn-success';
+        btnEntrega.innerHTML = "<i class='bi bi-check-lg'></i> Marcar como terminado";
+    } else {
+        btnEntrega.className = 'btn btn-outline-secondary';
+        btnEntrega.innerHTML = "<i class='bi bi-arrow-counterclockwise'></i> Volver a en proceso";
     }
-    if (estado === 'Pendiente' || estado === 'NoRecibido') {
-        html += "<button class='btn-action btn-confirm' title='Marcar mensaje como enviado' onclick='cambiarConfirmacion(" + s.servicioID + ", \"Enviado\")'><i class='bi bi-check2'></i></button>";
-    }
-    if (estado === 'Enviado') {
-        html += "<button class='btn-action btn-confirm' title='Confirmar que llegó el mensaje' onclick='cambiarConfirmacion(" + s.servicioID + ", \"Confirmado\")'><i class='bi bi-check-lg'></i></button>";
-        html += "<button class='btn-action btn-delete' title='Marcar como no recibido' onclick='cambiarConfirmacion(" + s.servicioID + ", \"NoRecibido\")'><i class='bi bi-x-lg'></i></button>";
-    }
-    return html;
+}
+
+function llenarFormulario(s) {
+    document.getElementById("nombre").value = s.nombre ?? '';
+    document.getElementById("apellido").value = s.apellido ?? '';
+    document.getElementById("numero").value = s.numero ?? '';
+    document.getElementById("dni").value = s.dni ?? '';
+    document.getElementById("gmail").value = s.gmail ?? '';
+    document.getElementById("localidad").value = s.localidad ?? '';
+    document.getElementById("marca").value = s.marca ?? '';
+    document.getElementById("modelo").value = s.modelo ?? '';
+    document.getElementById("tipoArreglo").checked = !!s.tipoArreglo;
+    document.getElementById("tipoInspeccion").checked = !!s.tipoInspeccion;
+    document.getElementById("descripcion").value = s.descripcion ?? '';
+}
+
+function limpiarFormulario() {
+    ['nombre', 'apellido', 'numero', 'dni', 'gmail', 'localidad',
+        'marca', 'modelo', 'descripcion'].forEach(function (id) {
+            document.getElementById(id).value = "";
+        });
+    document.getElementById('tipoArreglo').checked = false;
+    document.getElementById('tipoInspeccion').checked = false;
+}
+
+// Ojo de la fila: abre la solicitud en solo lectura.
+function verSolicitud(id) {
+    const s = solicitudes.find(x => x.servicioID === id);
+    if (!s) return;
+
+    solicitudActual = s;
+    llenarFormulario(s);
+    configurarModal(true);
+    $("#modalRegistroServicio").modal('show');
+
+    if (MARCAR_VISTO_AL_ABRIR && !s.visto) cambiarVisto(id, true);
+}
+
+function abrirModalCrear() {
+    solicitudActual = null;
+    limpiarFormulario();
+    configurarModal(false);
+    $("#modalRegistroServicio").modal('show');
+}
+
+/* ---------------- Acciones de la solicitud ---------------- */
+
+function alternarVisto() {
+    if (solicitudActual) cambiarVisto(solicitudActual.servicioID, !solicitudActual.visto);
+}
+
+function alternarEntrega() {
+    if (!solicitudActual) return;
+    const nuevo = entregaDe(solicitudActual) === 'EnProceso' ? 'Terminado' : 'EnProceso';
+    cambiarConfirmacion(solicitudActual.servicioID, nuevo);
+}
+
+function enviarWhatsappActual() {
+    if (solicitudActual) enviarWhatsapp(solicitudActual.servicioID);
+}
+
+function cambiarVisto(id, visto) {
+    authFetch('/servicios/' + id + '/visto', {
+        method: 'PUT',
+        body: JSON.stringify({ visto: visto })
+    })
+        .then(r => {
+            if (!r.ok) throw new Error(`Error ${r.status}`);
+
+            const s = solicitudes.find(x => x.servicioID === id);
+            if (s) s.visto = visto;
+
+            aplicarFiltros();
+            if (solicitudActual && solicitudActual.servicioID === id) refrescarModal();
+        })
+        .catch(error => {
+            console.error("Error al cambiar visto: ", error);
+            avisarError("No se pudo actualizar el estado.");
+        });
+}
+
+// Terminada = se oculta de la tabla (no se elimina). Se ve con el filtro "Terminados".
+function cambiarConfirmacion(id, estado) {
+    const configuracion = {
+        Terminado: {
+            title: '¿Marcar la solicitud como terminada?',
+            text: 'Se va a ocultar de la tabla. La encontrás con el filtro "Terminados".',
+            icon: 'question',
+            confirmButtonText: 'Sí, terminada'
+        },
+        EnProceso: {
+            title: '¿Volver la solicitud a "En proceso"?',
+            icon: 'question',
+            confirmButtonText: 'Sí, volver a en proceso'
+        }
+    }[estado];
+
+    if (!configuracion) return;
+
+    Swal.fire({
+        title: configuracion.title,
+        text: configuracion.text,
+        icon: configuracion.icon,
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: configuracion.confirmButtonText,
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        authFetch('/servicios/' + id + '/confirmacion', {
+            method: 'PUT',
+            body: JSON.stringify({ confirmacion: estado })
+        })
+            .then(r => {
+                if (!r.ok) throw new Error(`Error ${r.status}`);
+
+                const s = solicitudes.find(x => x.servicioID === id);
+                if (s) s.confirmacion = estado;
+
+                $('#modalRegistroServicio').modal('hide');
+                aplicarFiltros();
+                avisarOk(estado === 'Terminado'
+                    ? 'Solicitud terminada'
+                    : 'La solicitud volvió a "En proceso"');
+            })
+            .catch(error => {
+                console.error("Error al cambiar la confirmación: ", error);
+                avisarError("No se pudo actualizar la confirmación.");
+            });
+    });
 }
 
 /* ---------------- WhatsApp ---------------- */
 
 // Formatos argentinos -> "549" + 10 dígitos. Devuelve null si no se puede armar.
 function normalizarTelefono(raw) {
-    let d = String(raw || '').replace(/\D/g, '');
-    if (d.startsWith('54')) return d.startsWith('549') ? d : '549' + d.slice(2);
-    if (d.startsWith('0')) d = d.slice(1);                                  // quitar 0 inicial
-    if (d.length === 12 && d.slice(d.length - 10, d.length - 8) === '15') { // quitar el 15
-        d = d.slice(0, d.length - 10) + d.slice(d.length - 8);
-    }
-    if (d.length !== 10) return null;
-    return '549' + d;
+    return ValidacionesServicio.normalizarTelefono(raw);
 }
 
 function enviarWhatsapp(id) {
@@ -132,8 +380,7 @@ function enviarWhatsapp(id) {
 
     const equipo = [s.marca, s.modelo].filter(Boolean).join(' ');
     const resumen = 'Hola ' + s.nombre + ' ' + s.apellido +
-        ', recibimos tu solicitud para *' + (s.nombreDispositivo || 'tu equipo') + '*' +
-        (equipo ? ' (' + equipo + ')' : '') +
+        ', recibimos tu solicitud para *' + (equipo || 'tu equipo') + '*' +
         (s.descripcion ? '. Detalle: ' + s.descripcion : '') +
         '. ¡Gracias!';
     const texto = encodeURIComponent(resumen);
@@ -147,202 +394,58 @@ function enviarWhatsapp(id) {
     window.open(url, '_blank', 'noopener');
 }
 
-function cambiarConfirmacion(id, estado) {
-    const configuracion = {
-        Enviado: {
-            title: '¿Marcar el mensaje como enviado?',
-            icon: 'question',
-            confirmButtonText: 'Sí, marcar enviado'
-        },
-        Confirmado: {
-            title: '¿Confirmás que llegó el mensaje?',
-            icon: 'question',
-            confirmButtonText: 'Sí, confirmar'
-        },
-        NoRecibido: {
-            title: '¿Marcar como no recibido?',
-            icon: 'warning',
-            confirmButtonText: 'Sí, marcar no recibido'
-        }
-    }[estado];
-
-    if (!configuracion) return;
-
-    Swal.fire({
-        title: configuracion.title,
-        icon: configuracion.icon,
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: configuracion.confirmButtonText,
-        cancelButtonText: "Cancelar"
-    }).then((result) => {
-        if (!result.isConfirmed) return;
-
-        authFetch('/servicios/' + id + '/confirmacion', {
-            method: 'PUT',
-            body: JSON.stringify({ confirmacion: estado })
-        })
-            .then(r => { if (!r.ok) throw new Error(`Error ${r.status}`); obtenerSolicitudes(); })
-            .catch(error => {
-                console.error("Error al cambiar la confirmación: ", error);
-                avisarError("No se pudo actualizar la confirmación.");
-            });
-    });
-}
-
-/* ---------------- ABM ---------------- */
+/* ---------------- Agregar ---------------- */
 
 function valor(id) {
     return document.getElementById(id).value.trim();
 }
 
 function guardarRegistro() {
-    let servicioID = document.getElementById("servicioID").value;
-
-    let guardarServicio = {
-        servicioID: parseInt(servicioID),
+    let nuevaSolicitud = {
         nombre: valor("nombre"),
         apellido: valor("apellido"),
         numero: valor("numero"),
         dni: valor("dni"),
         gmail: valor("gmail"),
         localidad: valor("localidad"),
-        nombreDispositivo: valor("nombreDispositivo"),
         marca: valor("marca"),
         modelo: valor("modelo"),
         tipoArreglo: document.getElementById("tipoArreglo").checked,
         tipoInspeccion: document.getElementById("tipoInspeccion").checked,
-        descripcion: valor("descripcion"),
-        eliminado: document.getElementById("eliminado").value === "true"
-        // La confirmación NO se manda: el backend la preserva en el PUT.
+        descripcion: valor("descripcion")
     }
 
-    // Validación mínima antes de llamar a la API
-    if (!guardarServicio.nombre || !guardarServicio.apellido || !guardarServicio.numero || !guardarServicio.nombreDispositivo) {
-        Swal.fire({ icon: 'warning', text: 'Completá nombre, apellido, teléfono y dispositivo.' });
-        return;
-    }
-    if (guardarServicio.dni && !/^\d{7,8}$/.test(guardarServicio.dni)) {
-        Swal.fire({ icon: 'warning', text: 'El DNI tiene 7 u 8 números, sin puntos.' });
-        return;
-    }
-
-    if (servicioID > 0) {
-        authFetch('/servicios/' + servicioID, {
-            method: 'PUT',
-            body: JSON.stringify(guardarServicio)
-        })
-            .then(response => {
-                if (!response.ok) throw new Error(`Error ${response.status}`);
-                $('#modalRegistroServicio').modal('hide');
-                obtenerSolicitudes();
-            })
-            .catch(error => {
-                console.error("Error al editar la solicitud", error);
-                avisarError("No se pudo guardar la solicitud.");
-            })
-    }
-    else {
-        fetch(`${linkApi}/servicios`, {
-            method: 'POST',
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-            body: JSON.stringify(guardarServicio)
-        })
-            .then(async response => {
-                if (!response.ok) {
-                    const text = await response.text();
-                    throw new Error(text || `Error ${response.status}`);
-                }
-                $('#modalRegistroServicio').modal('hide');
-                obtenerSolicitudes();
-            })
-            .catch(error => {
-                console.error("Error al crear una solicitud: ", error);
-                avisarError("No se pudo crear la solicitud.");
-            });
-    }
-}
-
-function buscarSolicitud(id) {
-    authFetch('/servicios/' + id, { method: 'GET' })
-        .then(response => {
-            if (!response.ok) throw new Error("Error al obtener la solicitud");
-            return response.json();
-        })
-        .then(s => {
-            document.getElementById("servicioID").value = s.servicioID;
-            document.getElementById("nombre").value = s.nombre ?? '';
-            document.getElementById("apellido").value = s.apellido ?? '';
-            document.getElementById("numero").value = s.numero ?? '';
-            document.getElementById("dni").value = s.dni ?? '';
-            document.getElementById("gmail").value = s.gmail ?? '';
-            document.getElementById("localidad").value = s.localidad ?? '';
-            document.getElementById("nombreDispositivo").value = s.nombreDispositivo ?? '';
-            document.getElementById("marca").value = s.marca ?? '';
-            document.getElementById("modelo").value = s.modelo ?? '';
-            document.getElementById("tipoArreglo").checked = !!s.tipoArreglo;
-            document.getElementById("tipoInspeccion").checked = !!s.tipoInspeccion;
-            document.getElementById("descripcion").value = s.descripcion ?? '';
-            document.getElementById("eliminado").value = s.eliminado.toString();
-            document.getElementById("contenedorEstado").style.display = 'block';
-            document.getElementById('modalTitulo').textContent = "Editar Solicitud";
-
-            $("#modalRegistroServicio").modal("show");
-        })
-        .catch(error => console.error("Error al obtener la solicitud", error))
-}
-
-function confirmarEliminar(id) {
-    Swal.fire({
-        title: "Está seguro de Eliminar la Solicitud?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Si, Eliminar!"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            eliminarSolicitud(id);
-        }
+    // Mismas reglas que el formulario público (/js/validaciones-servicio.js)
+    const errores = ValidacionesServicio.validarTodo({
+        nombre: nuevaSolicitud.nombre,
+        apellido: nuevaSolicitud.apellido,
+        numero: nuevaSolicitud.numero,
+        dni: nuevaSolicitud.dni,
+        email: nuevaSolicitud.gmail,
+        localidad: nuevaSolicitud.localidad
     });
-}
+    const primerError = Object.values(errores)[0];
+    if (primerError) {
+        Swal.fire({ icon: 'warning', text: primerError });
+        return;
+    }
 
-function eliminarSolicitud(id) {
-    authFetch('/servicios/' + id, { method: 'DELETE' })
-        .then(response => {
-            if (!response.ok) throw new Error(`Error ${response.status}`);
-            Swal.fire({
-                text: "La solicitud fue eliminada correctamente",
-                icon: "success",
-                position: 'top-end',
-                toast: true,
-                timer: 3000,
-                timerProgressBar: true,
-                showConfirmButton: false
-            });
-            obtenerSolicitudes();
+    fetch(`${linkApi}/servicios`, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        // El endpoint público espera "email" (el formulario de administración lo llama "gmail").
+        body: JSON.stringify({ ...nuevaSolicitud, email: nuevaSolicitud.gmail })
+    })
+        .then(async response => {
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(text || `Error ${response.status}`);
+            }
+            $('#modalRegistroServicio').modal('hide');
+           obtenerSolicitudes(false); // ahora
         })
         .catch(error => {
-            console.error("Error al eliminar la solicitud: ", error);
-            avisarError("No se pudo eliminar la solicitud.");
-        })
-}
-
-function abrirModalCrear() {
-    limpiarFormulario();
-    $("#modalRegistroServicio").modal('show');
-}
-
-function limpiarFormulario() {
-    document.getElementById('servicioID').value = "0";
-    ['nombre', 'apellido', 'numero', 'dni', 'gmail', 'localidad',
-        'nombreDispositivo', 'marca', 'modelo', 'descripcion'].forEach(function (id) {
-            document.getElementById(id).value = "";
+            console.error("Error al crear una solicitud: ", error);
+            avisarError("No se pudo crear la solicitud.");
         });
-    document.getElementById('tipoArreglo').checked = false;
-    document.getElementById('tipoInspeccion').checked = false;
-    document.getElementById('eliminado').value = "false";
-    document.getElementById('contenedorEstado').style.display = 'none';
-    document.getElementById('modalTitulo').textContent = "Agregar Solicitud";
 }

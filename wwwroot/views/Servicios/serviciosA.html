@@ -27,13 +27,57 @@
                     <h1>Solicitudes de servicio</h1>
                     <h4 class="subTitle">Gestioná las solicitudes de servicio técnico</h4>
                 </div>
-                <button class="btn-agregar" type="button" onclick="abrirModalCrear()">
+                <!-- <button class="btn-agregar" type="button" onclick="abrirModalCrear()">
                     <i class="bi bi-plus-lg" aria-hidden="true"></i>
                     Agregar
-                </button>
+                </button> -->
             </div>
 
             <hr class="hr-abajoTitulo">
+
+            <!-- Buscador y filtros (mismo estilo que productos) -->
+            <section class="product-toolbar" aria-label="Filtros de solicitudes">
+                <div class="product-search">
+                    <label for="buscador">Buscar solicitud</label>
+                    <div class="search-control">
+                        <i class="bi bi-search" aria-hidden="true"></i>
+                        <input type="search" id="buscador" placeholder="Nombre, teléfono, equipo o localidad"
+                            autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="product-filter">
+                    <label for="filtro-entrega">Confirmación</label>
+                    <select id="filtro-entrega" class="form-select">
+                        <option value="EnProceso" selected>En proceso</option>
+                        <option value="Terminado">Terminados</option>
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+
+                <div class="product-filter">
+                    <label for="filtro-visto">Estado</label>
+                    <select id="filtro-visto" class="form-select">
+                        <option value="">Todos los estados</option>
+                        <option value="false">No visto</option>
+                        <option value="true">Visto</option>
+                    </select>
+                </div>
+
+                <div class="product-filter">
+                    <label for="filtro-tipo">Tipo</label>
+                    <select id="filtro-tipo" class="form-select">
+                        <option value="">Todos los tipos</option>
+                        <option value="mantenimiento">Mantenimiento</option>
+                        <option value="inspeccion">Inspección</option>
+                    </select>
+                </div>
+            </section>
+
+            <div class="product-list-meta">
+                <span id="contador-solicitudes" aria-live="polite">Cargando solicitudes...</span>
+                <button type="button" class="btn-clear-filters" id="limpiar-filtros">Limpiar filtros</button>
+            </div>
 
             <div class="table-custom-container my-4">
                 <div class="table-responsive">
@@ -47,7 +91,7 @@
                                 <th scope="col">Tipo</th>
                                 <th scope="col">Estado</th>
                                 <th scope="col">Confirmación</th>
-                                <th scope="col" class="text-center">Action</th>
+                                <th scope="col" class="text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-solicitudes">
@@ -56,7 +100,7 @@
                 </div>
             </div>
 
-            <!-- Modal -->
+            <!-- Modal: sirve para agregar (campos editables) y para ver (solo lectura + acciones) -->
             <div class="modal fade" id="modalRegistroServicio" data-bs-backdrop="static" data-bs-keyboard="false"
                 tabindex="-1" aria-labelledby="modalTitulo" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -66,95 +110,101 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <input type="hidden" id="servicioID" value="0">
 
-                            <p class="fw-semibold mb-2">Solicitante</p>
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-6">
-                                    <label for="nombre" class="form-label">Nombre</label>
-                                    <input type="text" id="nombre" class="form-control" maxlength="60"
-                                        placeholder="Ej: Juan">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="apellido" class="form-label">Apellido</label>
-                                    <input type="text" id="apellido" class="form-control" maxlength="60"
-                                        placeholder="Ej: Pérez">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="numero" class="form-label">Teléfono</label>
-                                    <input type="tel" id="numero" class="form-control" maxlength="20"
-                                        placeholder="Ej: 11-4444-5555">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="dni" class="form-label">DNI</label>
-                                    <input type="text" id="dni" class="form-control" inputmode="numeric" maxlength="8"
-                                        placeholder="Ej: 32111122">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="gmail" class="form-label">Gmail</label>
-                                    <input type="email" id="gmail" class="form-control" maxlength="100"
-                                        placeholder="Ej: juan.perez@gmail.com">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="localidad" class="form-label">Localidad</label>
-                                    <input type="text" id="localidad" class="form-control" maxlength="80"
-                                        placeholder="Ej: CABA">
-                                </div>
-                            </div>
+                            <!-- Solo en modo ver: estados actuales y fecha -->
+                            <div id="resumenVer" class="d-flex flex-wrap align-items-center gap-2 mb-3 d-none"></div>
 
-                            <p class="fw-semibold mb-2">Equipo</p>
-                            <div class="row g-3 mb-4">
-                                <div class="col-12">
-                                    <label for="nombreDispositivo" class="form-label">Nombre del dispositivo</label>
-                                    <input type="text" id="nombreDispositivo" class="form-control"
-                                        placeholder="Ej: heladera, notebook, celular">
+                            <!-- Al deshabilitar el fieldset quedan todos los campos en solo lectura -->
+                            <fieldset id="camposSolicitud">
+                                <p class="fw-semibold mb-2">Solicitante</p>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label for="nombre" class="form-label">Nombre</label>
+                                        <input type="text" id="nombre" class="form-control" maxlength="60"
+                                            placeholder="Ej: Juan">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="apellido" class="form-label">Apellido</label>
+                                        <input type="text" id="apellido" class="form-control" maxlength="60"
+                                            placeholder="Ej: Pérez">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="numero" class="form-label">Teléfono</label>
+                                        <input type="tel" id="numero" class="form-control" maxlength="20"
+                                            placeholder="Ej: 11-4444-5555">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="dni" class="form-label">DNI</label>
+                                        <input type="text" id="dni" class="form-control" inputmode="numeric"
+                                            maxlength="8" placeholder="Ej: 32111122">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="gmail" class="form-label">Gmail</label>
+                                        <input type="email" id="gmail" class="form-control" maxlength="100"
+                                            placeholder="Ej: juan.perez@gmail.com">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="localidad" class="form-label">Localidad</label>
+                                        <input type="text" id="localidad" class="form-control" maxlength="80"
+                                            placeholder="Ej: CABA">
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="marca" class="form-label">Marca</label>
-                                    <input type="text" id="marca" class="form-control" list="listaMarcas"
-                                        placeholder="Ej: Samsung">
-                                    <datalist id="listaMarcas">
-                                        <option value="Samsung"></option>
-                                        <option value="LG"></option>
-                                        <option value="Apple"></option>
-                                        <option value="Otro"></option>
-                                    </datalist>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="modelo" class="form-label">Modelo</label>
-                                    <input type="text" id="modelo" class="form-control" placeholder="Ej: RT38">
-                                </div>
-                            </div>
 
-                            <p class="fw-semibold mb-2">Tipo de atención</p>
-                            <div class="mb-4">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="tipoArreglo">
-                                    <label class="form-check-label" for="tipoArreglo">Mantenimiento</label>
+                                <p class="fw-semibold mb-2">Equipo</p>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label for="marca" class="form-label">Marca</label>
+                                        <input type="text" id="marca" class="form-control" list="listaMarcas"
+                                            placeholder="Ej: Samsung">
+                                        <datalist id="listaMarcas">
+                                            <option value="Samsung"></option>
+                                            <option value="LG"></option>
+                                            <option value="Apple"></option>
+                                            <option value="Otro"></option>
+                                        </datalist>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="modelo" class="form-label">Modelo</label>
+                                        <input type="text" id="modelo" class="form-control" placeholder="Ej: RT38">
+                                    </div>
                                 </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="tipoInspeccion">
-                                    <label class="form-check-label" for="tipoInspeccion">Inspección</label>
+
+                                <p class="fw-semibold mb-2">Tipo de atención</p>
+                                <div class="mb-4">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="tipoArreglo">
+                                        <label class="form-check-label" for="tipoArreglo">Mantenimiento</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="tipoInspeccion">
+                                        <label class="form-check-label" for="tipoInspeccion">Inspección</label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="mb-1">
-                                <label for="descripcion" class="form-label">Descripción</label>
-                                <textarea id="descripcion" class="form-control" rows="3"
-                                    placeholder="Qué le pasa al equipo"></textarea>
-                            </div>
-
-                            <div class="mt-3" id="contenedorEstado" style="display: none;">
-                                <label for="eliminado" class="form-label">Estado</label>
-                                <select id="eliminado" class="form-select">
-                                    <option value="false">Activo</option>
-                                    <option value="true">Inactivo</option>
-                                </select>
-                            </div>
+                                <div class="mb-1">
+                                    <label for="descripcion" class="form-label">Descripción</label>
+                                    <textarea id="descripcion" class="form-control" rows="3"
+                                        placeholder="Qué le pasa al equipo"></textarea>
+                                </div>
+                            </fieldset>
                         </div>
+
                         <div class="modal-footer">
+                            <!-- Solo en modo ver: todas las acciones de la solicitud -->
+                            <div id="accionesVer" class="d-flex flex-wrap gap-2 me-auto d-none">
+                                <button type="button" id="btnVisto" class="btn btn-outline-secondary"
+                                    onclick="alternarVisto()"></button>
+                                <button type="button" id="btnWhatsapp" class="btn btn-outline-success"
+                                    onclick="enviarWhatsappActual()">
+                                    <i class="bi bi-whatsapp"></i> WhatsApp
+                                </button>
+                                <button type="button" id="btnEntrega" class="btn btn-success"
+                                    onclick="alternarEntrega()"></button>
+                            </div>
+
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-primary" onclick="guardarRegistro();">Guardar</button>
+                            <button type="button" id="btnGuardar" class="btn btn-primary"
+                                onclick="guardarRegistro();">Guardar</button>
                         </div>
                     </div>
                 </div>
@@ -169,6 +219,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="/js/config.js"></script>
+    <script src="/js/validaciones-servicio.js"></script>
     <script src="/js/solicitudes.js"></script>
     <script src="/js/layout.js"></script>
     <script src="/js/sesion-usuario.js"></script>

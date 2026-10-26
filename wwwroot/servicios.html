@@ -170,8 +170,13 @@
       <span class="form-tag mono">Formulario de servicio</span>
 
       <form id="serviceForm" novalidate>
+<ol class="steps" aria-label="Progreso del formulario">
+  <li class="steps-item is-current"><span>1</span> Tu equipo</li>
+  <li class="steps-item"><span>2</span> Tus datos</li>
+</ol>
 
-        <div class="form-group">
+<div class="form-step is-current" data-step="1">  
+ <div class="form-group">
           <div class="form-group-head">
             <span class="form-group-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
@@ -181,13 +186,6 @@
               </svg>
             </span>
             <span class="form-group-label">Tu equipo</span>
-          </div>
-
-          <div class="field">
-            <label for="nombreDispositivo">Nombre del dispositivo</label>
-            <input type="text" id="nombreDispositivo" name="nombreDispositivo" required
-              aria-describedby="nombreDispositivoError" placeholder="Ej: heladera, notebook, celular">
-            <span class="field-error" id="nombreDispositivoError" hidden></span>
           </div>
 
           <div class="field-row">
@@ -228,13 +226,14 @@
             <div class="checks">
               <div class="check-item">
                 <input type="checkbox" id="arreglo" name="arreglo">
-                <label for="arreglo">Arreglo</label>
+                <label for="arreglo">Mantenimiento</label>
               </div>
               <div class="check-item">
                 <input type="checkbox" id="inspeccion" name="inspeccion">
                 <label for="inspeccion">Inspección</label>
               </div>
             </div>
+            <span class="field-error" id="tipoAtencionError" role="alert" hidden></span>
           </fieldset>
         </div>
 
@@ -256,8 +255,10 @@
             <textarea id="descripcion" name="descripcion" placeholder="Contanos qué pasa"></textarea>
           </div>
         </div>
-
-        <div class="form-group">
+</div>
+       
+<div class="form-step" data-step="2">
+ <div class="form-group">
           <div class="form-group-head">
             <span class="form-group-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
@@ -271,29 +272,33 @@
 
           <div class="field-row">
             <div class="field">
+  <label for="nombre">Nombre y apellido</label>
+  <input type="text" id="nombre" name="nombre" required maxlength="100" autocomplete="name" placeholder="Ej: Juan Pérez">
+</div>
+            <!-- <div class="field">
               <label for="nombre">Nombre</label>
               <input type="text" id="nombre" name="nombre" required maxlength="60" autocomplete="given-name" placeholder="Ej: Juan">
-            </div>
-            <div class="field">
+            </div> -->
+            <!-- <div class="field">
               <label for="apellido">Apellido</label>
               <input type="text" id="apellido" name="apellido" required maxlength="60" autocomplete="family-name" placeholder="Ej: Pérez">
-            </div>
+            </div> -->
           </div>
 
           <div class="field-row">
             <div class="field">
               <label for="numero">Teléfono</label>
-              <input type="tel" id="numero" name="numero" required maxlength="20" autocomplete="tel" placeholder="Ej: 11 4444-5555 (sin 0 ni 15)">
+              <input type="tel" id="numero" inputmode="tel" name="numero" required maxlength="20" autocomplete="tel" placeholder="Ej: 11 4444-5555 (sin 0 ni 15)">
             </div>
             <div class="field">
               <label for="dni">DNI</label>
-              <input type="text" id="dni" name="dni" inputmode="numeric" maxlength="8" placeholder="Ej: 32111122">
+              <input type="text" id="dni" inputmode="numeric" autocomplete="off" name="dni" inputmode="numeric" maxlength="8" placeholder="Ej: 32111122">
             </div>
           </div>
 
           <div class="field">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" maxlength="100" autocomplete="email" placeholder="Ej: juan.perez@gmail.com">
+            <input type="email" id="email" inputmode="email" name="email" maxlength="100" autocomplete="email" placeholder="Ej: juan.perez@gmail.com">
           </div>
 
           <div class="field">
@@ -301,11 +306,17 @@
             <input type="text" id="localidad" name="localidad" maxlength="80" autocomplete="address-level2" placeholder="Ej: CABA">
           </div>
         </div>
+</div>
+       
 
-        <div class="submit-wrap">
-          <button type="submit" class="btn-submit">Enviar solicitud</button>
-          <p id="serviceSubmitError" class="submit-error" role="alert" hidden></p>
-        </div>
+       <div class="submit-wrap">
+  <div class="form-actions">
+    <button type="button" class="btn-back" id="stepBack">Atrás</button>
+    <button type="button" class="btn-next" id="stepNext">Siguiente</button>
+    <button type="submit" class="btn-submit">Enviar solicitud</button>
+  </div>
+  <p id="serviceSubmitError" class="submit-error" role="alert" hidden></p>
+</div>
       </form>
 
       <div id="confirm" role="status" aria-live="polite" tabindex="-1" hidden>
@@ -318,7 +329,6 @@
         </span>
         <h2>Solicitud recibida</h2>
         <p id="confirmSolicitante"></p>
-        <p id="confirmDispositivo"></p>
         <p id="confirmMarcaModelo"></p>
         <p id="confirmTipo"></p>
         <p id="confirmDescripcion"></p>
@@ -332,6 +342,7 @@
   <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
   <script src="/js/public-navbar.js"></script>
   <script src="/js/config.js"></script>
+  <script src="/js/validaciones-servicio.js"></script>
   <script src="/js/servicios.js" defer></script>
 </body>
 
