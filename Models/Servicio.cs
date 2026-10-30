@@ -27,7 +27,6 @@ namespace ApiGRG.Models
         public string? Localidad { get; set; }
 
         // ----- Datos del equipo -----
-        public string? NombreDispositivo { get; set; }
         public string? Marca { get; set; }
         public string? Modelo { get; set; }
         public bool TipoArreglo { get; set; }
@@ -35,10 +34,15 @@ namespace ApiGRG.Models
         public string? Descripcion { get; set; }
         public DateTime FechaCreacion { get; set; }
 
-        // Baja lógica (false = Activo, true = Inactivo), igual que en Categoria
+        // Ya no se usa desde el panel (solo queda para no hacer otra migración).
+        // Las solicitudes con Eliminado = true siguen ocultas.
         public bool Eliminado { get; set; }
 
-        // Confirmación del mensaje de WhatsApp (lo pone/actualiza el admin)
+        // Si el admin ya vio la solicitud (false = No visto, true = Visto)
+        public bool Visto { get; set; }
+
+        // Estado de la entrega (En proceso / Terminado).
+        // Terminado = se oculta de la tabla, pero no se borra.
         public EstadoConfirmacion Confirmacion { get; set; }
     }
 }

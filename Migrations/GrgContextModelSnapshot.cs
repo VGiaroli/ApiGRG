@@ -209,9 +209,6 @@ namespace ApiGRG.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
-                    b.Property<string>("NombreDispositivo")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Numero")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -221,6 +218,9 @@ namespace ApiGRG.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("TipoInspeccion")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Visto")
                         .HasColumnType("bit");
 
                     b.HasKey("ServicioID");
