@@ -541,15 +541,6 @@ h3 {
   color: var(--nido-primary) !important;
 }
 
-/* Footer styling */
-footer a.link-hover {
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-footer a.link-hover:hover {
-  color: var(--nido-primary) !important;
-}
 
 /* ============================================
    CREATIVE / EDITORIAL BLOCKS
@@ -1592,21 +1583,155 @@ body.is-loading {
   }
 }
 
-/* ====== MEDIOS DE PAGO (footer) ====== */
-.pay-row {
+/* ============================================
+   FOOTER
+   (no depende de utilidades fs-* / py-6 / py-lg-9)
+   ============================================ */
+.site-footer {
+  --ft-text: rgba(255, 255, 255, 0.72);
+  --ft-muted: rgba(255, 255, 255, 0.5);
+  --ft-line: rgba(255, 255, 255, 0.1);
+  background: var(--nido-dark);
+  color: #fff;
+  padding: 88px 0 32px;
+  margin-top: 0;
+  scroll-margin-top: 96px;
+}
+
+.footer-main {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr 1fr 1.4fr;
+  gap: 48px 56px;
+}
+
+/* Marca */
+.footer-logo {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: #fff;
+  text-decoration: none;
+}
+
+.footer-logo span {
+  color: var(--nido-primary);
+}
+
+.footer-about {
+  margin: 18px 0 24px;
+  max-width: 320px;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--ft-text);
+}
+
+.footer-social {
+  display: flex;
+  gap: 10px;
+}
+
+.footer-social a {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 1.15rem;
+  text-decoration: none;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.footer-social a:hover {
+  background: var(--nido-primary);
+  color: var(--nido-dark);
+  transform: translateY(-3px);
+}
+
+/* Columnas */
+.footer-title {
+  margin: 0 0 20px;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.footer-links,
+.footer-contact {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-links a,
+.footer-contact a {
+  font-size: 0.95rem;
+  color: var(--ft-text);
+  text-decoration: none;
+  transition: color 0.2s ease, padding-left 0.2s ease;
+}
+
+.footer-links a:hover,
+.footer-contact a:hover {
+  color: var(--nido-primary);
+}
+
+.footer-links a:hover {
+  padding-left: 4px;
+}
+
+.footer-contact li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+  color: var(--ft-text);
+}
+
+.fc-ico {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--nido-primary);
+  font-size: 1rem;
+}
+
+/* Medios de pago */
+.footer-pay {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin-top: 3rem;
+  gap: 16px 24px;
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--ft-line);
 }
 
-.pay-title {
+.footer-pay-title {
+  margin: 0;
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: .95rem;
-  color: rgba(255, 255, 255, .7);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--ft-muted);
 }
 
 .pay-methods {
@@ -1616,18 +1741,142 @@ body.is-loading {
 }
 
 .pay-chip {
-  height: 40px;
+  height: 36px;
   padding: 0 14px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   background: #fff;
   border-radius: 10px;
-  font-size: 13px;
+  font-size: 0.8rem;
   font-weight: 700;
-  color: #1F2A2E;
+  color: var(--nido-dark);
 }
 
 .pay-chip iconify-icon {
-  font-size: 26px;
+  font-size: 1.4rem;
+}
+
+/* Barra inferior */
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--ft-line);
+}
+
+.footer-copy {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ft-muted);
+}
+
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+}
+
+.footer-legal a {
+  font-size: 0.85rem;
+  color: var(--ft-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-legal a:hover {
+  color: var(--nido-primary);
+}
+
+/* Footer responsive */
+@media (max-width: 991.98px) {
+  .site-footer {
+    padding: 64px 0 28px;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px 32px;
+  }
+
+  .footer-brand,
+  .footer-col-contact {
+    grid-column: 1 / -1;
+  }
+
+  .footer-about {
+    max-width: 440px;
+  }
+
+  .footer-pay {
+    margin-top: 48px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .site-footer {
+    padding: 56px 0 96px;
+    /* espacio extra abajo para que el botón "volver arriba" no tape nada */
+  }
+
+  .footer-pay,
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ============================================
+   MEJORAS GENERALES
+   ============================================ */
+html {
+  scroll-behavior: smooth;
+}
+
+section[id] {
+  scroll-margin-top: 96px;
+}
+
+::selection {
+  background: var(--nido-primary);
+  color: var(--nido-dark);
+}
+
+:focus-visible {
+  outline: 2px solid var(--nido-dark);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.site-footer :focus-visible {
+  outline-color: var(--nido-primary);
+}
+
+/* El ticker se pausa al pasar el mouse */
+.ticker-strip:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+/* Respeta a quienes prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .ticker-track,
+  .blob,
+  .hero-visual .float-card {
+    animation: none !important;
+  }
+
+  .tile-product,
+  .mascot-card,
+  .editorial-card,
+  .testimonial-card {
+    transition: none !important;
+  }
 }

@@ -44,7 +44,9 @@
                     <table class="table table-custom">
                         <thead>
                             <tr>
-                                <th scope="col">Descripcion</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Descripción</th>
+                                <th scope="col">Imagen</th>
                                 <th scope="col">Estado</th>
                                 <th scope="col" class="text-center">Action</th>
                             </tr>
@@ -71,6 +73,20 @@
                             <div class="mb-3">
                                 <label for="nombreProducto" class="form-label">Nombre Producto</label>
                                 <input type="text" id="nombreProducto" class="form-control" style="text-transform: uppercase;">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="descripcion" class="form-label">Descripción corta</label>
+                                <input type="text" id="descripcion" class="form-control" maxlength="80">
+                            </div>
+
+                            <!-- selector de imagen. onchange llama a seleccionarImagen() del JS -->
+                            <div class="mb-3">
+                                <label for="imagenUrl" class="form-label">Imagen</label>
+                                <input type="file" id="imagenUrl" class="form-control"
+                                    accept="image/jpeg,image/png,image/webp" onchange="seleccionarImagen(this)">
+                                <img id="imagenPreview" class="img-fluid rounded mt-2" alt="Vista previa"
+                                    style="display: none; max-height: 150px;">
                             </div>
 
                             <div class="mb-3" id="contenedorEstado" style="display: none;">

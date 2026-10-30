@@ -9,6 +9,9 @@ namespace ApiGRG.Models
 
         public string NombreProducto { get; set; }
 
+        public string? Descripcion { get; set; }
+        public string? ImagenUrl { get; set; }
+
         public bool Eliminado { get; set; }
 
         public ICollection<Producto>? Productos { get; set; } = new List<Producto>();
