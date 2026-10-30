@@ -147,79 +147,17 @@
 
     function crearCardProducto(producto) {
         const productoId = obtenerIdProducto(producto);
-        const nombre = String(producto.nombre || 'Equipo');
-        const estado = estadoNombres[producto.estado] || 'Sin definir';
-        const colores = obtenerColores(producto);
-        const cuotas = obtenerCuotas(producto);
-        const cuota = cuotas[0] || null;
-        const disponible = producto.disponible === true;
-        const imagenUrl = normalizarImagenUrl(producto.imagenUrl);
-        const especificaciones = obtenerEspecificaciones(producto);
-        const coloresVisibles = colores.slice(0, 4);
-        const coloresExtra = colores.slice(4);
         const planSeleccionado = productoId ? planesSeleccionados.get(productoId) : null;
-        const dataProducto = escaparHtml(productoId);
+        const cuotas = obtenerCuotas(producto);
+        const plansButton = cuotas.length
+            ? `<button type="button" class="catalog-plans-button" data-action="open-plans" data-product-id="${escaparHtml(productoId)}">Ver planes <span aria-hidden="true">›</span></button>`
+            : '';
 
-        return `<article class="catalog-card" data-product-id="${dataProducto}">
-            <div class="catalog-device">
-                ${imagenUrl
-                    ? `<img class="catalog-product-image" src="${escaparHtml(imagenUrl)}" alt="Imagen de ${escaparHtml(nombre)}" loading="lazy">
-                        ${renderizarPlaceholder(true)}`
-                    : renderizarPlaceholder(false)}
-            </div>
-
-            <div class="catalog-card-body">
-                <div class="catalog-card-top">
-                    <div class="catalog-card-heading">
-                        <p class="catalog-category">${escaparHtml((producto.categoria || 'Equipo').toString().toUpperCase())}</p>
-                        <h2>${escaparHtml(nombre)}</h2>
-                    </div>
-                    <span class="catalog-status ${producto.estado === 2 ? 'status-seminuevo' : ''}">${escaparHtml(estado)}</span>
-                </div>
-
-                ${especificaciones.length
-                    ? `<p class="catalog-specifications">${especificaciones.map(escaparHtml).join(' <span aria-hidden="true">·</span> ')}</p>`
-                    : ''}
-
-                ${colores.length
-                    ? `<div class="catalog-colors" data-color-count="${colores.length}">
-                        <div class="catalog-color-list">
-                            ${coloresVisibles.map(function (color) { return renderizarSwatch(color, false); }).join('')}
-                            ${coloresExtra.map(function (color) { return renderizarSwatch(color, true); }).join('')}
-                        </div>
-                        ${coloresExtra.length
-                            ? `<button type="button" class="catalog-color-toggle" data-action="toggle-colors" aria-expanded="false" aria-label="Mostrar ${coloresExtra.length} colores más">
-                                +${coloresExtra.length} colores
-                            </button>`
-                            : ''}
-                    </div>`
-                    : ''}
-
-                <div class="catalog-prices">
-                    <p class="catalog-price-ars">${formatearMoneda(producto.precioARS, 'ARS')}</p>
-                    <p class="catalog-price-usd">${formatearMoneda(producto.precioUSD, 'USD')}</p>
-                </div>
-
-                <div class="catalog-financing">
-                    <span class="financing-icon"><i class="bi bi-credit-card-2-front" aria-hidden="true"></i></span>
-                    <div class="financing-copy">
-                        <strong>${cuota ? `Hasta ${cuota.cantidadCuotas} cuotas` : 'Financiación'}</strong>
-                        <span>${cuota ? `de ${formatearMoneda(cuota.montoCuota, 'ARS')}` : 'Consultar alternativas disponibles'}</span>
-                    </div>
-                    ${cuota
-                        ? `<button type="button" class="catalog-plans-button" data-action="open-plans" data-product-id="${dataProducto}">
-                            Ver planes <span aria-hidden="true">›</span>
-                        </button>`
-                        : ''}
-                </div>
-
-                ${disponible
-                    ? `<a class="catalog-action" data-product-id="${dataProducto}" href="${construirUrlWhatsApp(producto, planSeleccionado)}" target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-whatsapp" aria-hidden="true"></i> Consultar por WhatsApp
-                    </a>`
-                    : '<span class="catalog-unavailable"><i class="bi bi-clock" aria-hidden="true"></i> No disponible ahora</span>'}
-            </div>
-        </article>`;
+        return ProductPreview.renderCard(producto, {
+            mode: 'catalog',
+            whatsappUrl: construirUrlWhatsApp(producto, planSeleccionado),
+            plansButton: plansButton
+        });
     }
 
     function renderizarPlaceholder(oculto) {

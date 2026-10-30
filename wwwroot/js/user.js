@@ -80,7 +80,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
         localStorage.setItem("refreshToken", result.refreshToken);
         localStorage.setItem("email", data.email);
 
-        window.location.href = "/index.html";
+        window.location.href = "/views/Admin/dashboard.html";
 
     } catch (error) {
         // Captura tanto errores de red como el throw new Error del response.ok

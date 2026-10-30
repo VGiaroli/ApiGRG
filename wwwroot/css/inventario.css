@@ -1,0 +1,45 @@
+:root { --inventory-ink: #20243a; --inventory-muted: #747a91; --inventory-border: #e7e5ef; --inventory-purple: #6d28d9; --inventory-coral: #e55b3c; }
+.inventory-page { max-width: 1600px; margin-inline: auto; }
+.inventory-hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1.35rem; padding: clamp(1.45rem, 3vw, 2.3rem); border: 1px solid #e8dcfb; border-radius: 22px; background: radial-gradient(circle at 88% 5%, rgba(167,139,250,.28), transparent 34%), linear-gradient(125deg,#fff,#fbf8ff 64%,#f4efff); }
+.inventory-eyebrow { margin: 0 0 .45rem; color: var(--inventory-purple); font-size: .68rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+.inventory-hero h1 { margin: 0; color: var(--inventory-ink); font-size: clamp(1.8rem,3vw,2.8rem); font-weight: 800; letter-spacing: -.055em; }
+.inventory-hero p:not(.inventory-eyebrow) { max-width: 58ch; margin: .7rem 0 0; color: var(--inventory-muted); font-size: .86rem; line-height: 1.6; }
+.inventory-hero-action,.inventory-clear,.inventory-error button { display: inline-flex; align-items: center; justify-content: center; gap: .45rem; min-height: 44px; padding: .65rem .95rem; border: 1px solid #d9c5f7; border-radius: 11px; background: #fff; color: var(--inventory-purple); font: inherit; font-size: .74rem; font-weight: 800; cursor: pointer; }
+.inventory-hero-action:hover,.inventory-hero-action:focus-visible,.inventory-clear:hover,.inventory-clear:focus-visible,.inventory-error button:hover,.inventory-error button:focus-visible { border-color: var(--inventory-purple); background: #faf7ff; outline: none; box-shadow: 0 0 0 3px rgba(109,40,217,.12); }
+.inventory-toolbar { display: grid; grid-template-columns: minmax(240px,1.6fr) minmax(160px,.75fr) minmax(180px,.85fr) auto; align-items: end; gap: .8rem; padding: 1rem; border: 1px solid var(--inventory-border); border-radius: 16px; background: #fff; box-shadow: 0 8px 24px rgba(15,23,42,.035); }
+.inventory-toolbar label { display:block; margin-bottom:.4rem; color:#858a9b; font-size:.64rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+.inventory-search-control { display:flex; align-items:center; gap:.55rem; min-height:44px; padding:0 .8rem; border:1px solid var(--inventory-border); border-radius:10px; background:#fafafa; color:#a4a8b5; }
+.inventory-search-control:focus-within,.inventory-filter select:focus-visible { border-color:#a78bfa; box-shadow:0 0 0 3px rgba(124,58,237,.13); outline:none; }
+.inventory-search-control input { width:100%; min-width:0; padding:.65rem 0; border:0; outline:0; background:transparent; color:var(--inventory-ink); font:inherit; font-size:.8rem; }
+.inventory-filter select { width:100%; min-height:44px; padding:0 2rem 0 .7rem; border:1px solid var(--inventory-border); border-radius:10px; background:#fff; color:#44506b; font:inherit; font-size:.78rem; }
+.inventory-list-meta { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin:1.2rem 0 .75rem; color:#556078; font-size:.76rem; font-weight:800; }
+.inventory-note { display:inline-flex; align-items:center; gap:.35rem; color:#0f995b; font-size:.68rem; }
+.inventory-state { display:flex; align-items:center; justify-content:center; gap:.65rem; min-height:180px; border:1px dashed var(--inventory-border); border-radius:16px; background:#fff; color:#9298a9; font-size:.78rem; font-weight:700; text-align:center; }
+.inventory-state i { color:#c5bfd4; font-size:1.4rem; }
+.inventory-error { gap:.7rem; border-color:#fecaca; background:#fffafa; color:#a43d3d; }
+.inventory-error button { min-height:36px; border-color:#f3c1c1; color:#a43d3d; }
+.inventory-empty { flex-direction:column; }
+.inventory-table-card { overflow:hidden; border:1px solid var(--inventory-border); border-radius:16px; background:#fff; box-shadow:0 8px 24px rgba(15,23,42,.035); }
+.inventory-table { min-width:980px; margin:0; vertical-align:middle; }
+.inventory-table th { padding:1rem .85rem; border-bottom:1px solid #e9e7ef; color:#9298a9; font-size:.62rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; white-space:nowrap; }
+.inventory-table td { padding:.95rem .85rem; border-bottom:1px solid #f0eef4; color:#5a6278; font-size:.74rem; font-weight:600; }
+.inventory-table tbody tr:last-child td { border-bottom:0; }
+.inventory-sku { color:#8f77bd; font-family:ui-monospace,monospace; font-size:.68rem; font-weight:800; }
+.inventory-product-name { display:block; color:var(--inventory-ink); font-weight:800; }
+.inventory-product-detail { display:block; margin-top:.2rem; color:#a2a7b7; font-size:.64rem; }
+.inventory-number { color:var(--inventory-ink); font-size:.86rem; font-variant-numeric:tabular-nums; font-weight:800; }
+.inventory-number.is-unregistered { color:#a2a7b7; font-size:.7rem; }
+.stock-status,.effective-status { display:inline-flex; align-items:center; gap:.35rem; padding:.34rem .55rem; border-radius:999px; font-size:.63rem; font-weight:800; white-space:nowrap; }
+.stock-status::before,.effective-status::before { width:6px; height:6px; border-radius:50%; background:currentColor; content:''; }
+.stock-status.status-normal { background:#e9f8ef; color:#0f995b; }
+.stock-status.status-bajo { background:#fff6df; color:#b7791f; }
+.stock-status.status-agotado { background:#fff0ef; color:#c24135; }
+.stock-status.status-sinregistrar { background:#f1f3f7; color:#7c8293; }
+.effective-status.is-effective { background:#e9f8ef; color:#0f995b; }
+.effective-status:not(.is-effective) { background:#f1f3f7; color:#7c8293; }
+.inventory-action-group { display:flex; justify-content:flex-end; gap:.4rem; }
+.inventory-action { display:inline-grid; width:36px; height:36px; place-items:center; border:1px solid #e5e1ed; border-radius:9px; background:#fff; color:#6f6486; cursor:pointer; }
+.inventory-action:hover,.inventory-action:focus-visible { border-color:#d4bdf4; background:#faf7ff; color:var(--inventory-purple); outline:none; }
+
+@media (max-width:900px) { .inventory-toolbar { grid-template-columns:1fr 1fr; } .inventory-search { grid-column:span 2; } }
+@media (max-width:640px) { .inventory-hero { align-items:stretch; flex-direction:column; } .inventory-hero-action { align-self:flex-start; } .inventory-toolbar { grid-template-columns:1fr; } .inventory-search { grid-column:auto; } .inventory-list-meta { align-items:flex-start; flex-direction:column; gap:.35rem; } }

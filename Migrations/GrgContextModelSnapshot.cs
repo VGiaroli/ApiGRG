@@ -97,11 +97,67 @@ namespace ApiGRG.Migrations
                     b.Property<decimal>("PrecioUSD")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsRowVersion()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("SKU")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<int?>("StockActual")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StockMinimo")
+                        .HasColumnType("int");
+
                     b.HasKey("ProductoID");
 
                     b.HasIndex("CategoriaID");
 
                     b.ToTable("Productos");
+                });
+
+            modelBuilder.Entity("ApiGRG.Models.MovimientoStock", b =>
+                {
+                    b.Property<int>("MovimientoStockID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MovimientoStockID"));
+
+                    b.Property<int>("CantidadNueva")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CantidadAnterior")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Diferencia")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Motivo")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("ProductoID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("MovimientoStockID");
+
+                    b.HasIndex("ProductoID");
+
+                    b.ToTable("MovimientosStock");
                 });
 
             modelBuilder.Entity("ApiGRG.Models.ProductoColor", b =>
@@ -434,6 +490,17 @@ namespace ApiGRG.Migrations
                     b.Navigation("Categoria");
                 });
 
+            modelBuilder.Entity("ApiGRG.Models.MovimientoStock", b =>
+                {
+                    b.HasOne("ApiGRG.Models.Producto", "Producto")
+                        .WithMany("MovimientosStock")
+                        .HasForeignKey("ProductoID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Producto");
+                });
+
             modelBuilder.Entity("ApiGRG.Models.ProductoColor", b =>
                 {
                     b.HasOne("ApiGRG.Models.Producto", "Producto")
@@ -525,6 +592,8 @@ namespace ApiGRG.Migrations
                     b.Navigation("ProductoColores");
 
                     b.Navigation("ProductoCuotas");
+
+                    b.Navigation("MovimientosStock");
                 });
 #pragma warning restore 612, 618
         }
