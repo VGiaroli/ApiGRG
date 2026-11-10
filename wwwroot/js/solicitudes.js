@@ -13,6 +13,10 @@ let solicitudActual = null;
 
 let cargando = false;
 
+// Paginación (en el navegador: la lista completa ya viene cargada y los filtros trabajan sobre ella).
+let paginaActual = 1;
+let filasPorPagina = 10;
+
 
 // Si es true, al abrir una solicitud con el ojo queda marcada como "Visto".
 const MARCAR_VISTO_AL_ABRIR = true;
@@ -59,7 +63,9 @@ function mostrarCargando() {
         "<td><span class='skeleton' style='width:" + w + "'></span></td>"
     ).join('') + '</tr>';
 
-    $("#tabla-solicitudes").html(fila.repeat(5));
+    // Tantas filas de esqueleto como filas por página (máx. 10) para que la tabla no "salte" al cargar.
+    $("#tabla-solicitudes").html(fila.repeat(Math.min(filasPorPagina, 10)));
+    document.getElementById('paginacion').innerHTML = '';
     document.getElementById('contador-solicitudes').textContent = 'Cargando solicitudes...';
 }
 
@@ -83,6 +89,7 @@ function obtenerSolicitudes(mostrarEsqueleto = true) {
             $("#tabla-solicitudes").html(
                 "<tr><td colspan='8' class='table-message'>No se pudieron cargar las solicitudes. Revisá tu sesión e intentá de nuevo.</td></tr>"
             );
+            document.getElementById('paginacion').innerHTML = '';
             document.getElementById('contador-solicitudes').textContent = 'No se pudieron cargar las solicitudes';
         });
 }
@@ -91,10 +98,46 @@ function obtenerSolicitudes(mostrarEsqueleto = true) {
 /* ---------------- Buscador y filtros ---------------- */
 
 function configurarFiltros() {
-    document.getElementById('buscador').addEventListener('input', aplicarFiltros);
-    document.getElementById('filtro-entrega').addEventListener('change', aplicarFiltros);
-    document.getElementById('filtro-visto').addEventListener('change', aplicarFiltros);
-    document.getElementById('filtro-tipo').addEventListener('change', aplicarFiltros);
+    // Cuando cambia un filtro se vuelve a la página 1.
+    document.getElementById('buscador').addEventListener('input', cambioDeFiltro);
+    document.getElementById('filtro-entrega').addEventListener('change', cambioDeFiltro);
+    document.getElementById('filtro-visto').addEventListener('change', cambioDeFiltro);
+    document.getElementById('filtro-tipo').addEventListener('change', cambioDeFiltro);
+
+    // Rango de fechas: los dos campos y los atajos (Hoy, Últimos 7 días, Este mes).
+    document.getElementById('filtro-desde').addEventListener('change', cambioDeFecha);
+    document.getElementById('filtro-hasta').addEventListener('change', cambioDeFecha);
+    document.querySelector('.date-shortcuts').addEventListener('click', function (e) {
+        const boton = e.target.closest('[data-rango]');
+        if (!boton) return;
+
+        const rango = rangoAtajo(boton.dataset.rango);
+        const yaActivo = document.getElementById('filtro-desde').value === rango.desde &&
+                         document.getElementById('filtro-hasta').value === rango.hasta;
+
+        // Segundo clic sobre el mismo atajo: quita el rango.
+        document.getElementById('filtro-desde').value = yaActivo ? '' : rango.desde;
+        document.getElementById('filtro-hasta').value = yaActivo ? '' : rango.hasta;
+        cambioDeFecha();
+    });
+
+    document.getElementById('filas-por-pagina').addEventListener('change', function () {
+        filasPorPagina = Number(this.value);
+        cambioDeFiltro();
+    });
+
+    // Un solo listener para todos los botones del paginador.
+    document.getElementById('paginacion').addEventListener('click', function (e) {
+        const boton = e.target.closest('[data-pagina]');
+        if (!boton) return;
+
+        const pagina = Number(boton.dataset.pagina);
+        if (!pagina || pagina === paginaActual) return;
+
+        paginaActual = pagina;
+        aplicarFiltros();
+        document.querySelector('.table-custom-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
 
     // Limpiar vuelve a la vista inicial: solo las que están en proceso.
     document.getElementById('limpiar-filtros').addEventListener('click', function () {
@@ -102,8 +145,53 @@ function configurarFiltros() {
         document.getElementById('filtro-entrega').value = 'EnProceso';
         document.getElementById('filtro-visto').value = '';
         document.getElementById('filtro-tipo').value = '';
-        aplicarFiltros();
+        document.getElementById('filtro-desde').value = '';
+        document.getElementById('filtro-hasta').value = '';
+        cambioDeFecha();
     });
+}
+
+/* ---------------- Filtro por fechas ---------------- */
+
+// Fecha local como AAAA-MM-DD: es la misma que se ve en la tabla, así que filtra por lo que el usuario lee.
+function fechaISO(valor) {
+    const d = new Date(valor);
+    if (isNaN(d)) return '';
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function rangoAtajo(nombre) {
+    const hoy = new Date();
+    const hasta = fechaISO(hoy);
+
+    if (nombre === 'hoy') return { desde: hasta, hasta: hasta };
+    if (nombre === '7dias') {
+        const inicio = new Date(hoy);
+        inicio.setDate(inicio.getDate() - 6);   // hoy y los 6 días anteriores
+        return { desde: fechaISO(inicio), hasta: hasta };
+    }
+    if (nombre === 'mes') return { desde: fechaISO(new Date(hoy.getFullYear(), hoy.getMonth(), 1)), hasta: hasta };
+    return { desde: '', hasta: '' };
+}
+
+// Cambió una fecha o un atajo: se actualizan los controles y se vuelve a la primera página.
+function cambioDeFecha() {
+    const desde = document.getElementById('filtro-desde');
+    const hasta = document.getElementById('filtro-hasta');
+
+    // El calendario no deja elegir un "Hasta" anterior al "Desde" ni al revés.
+    hasta.min = desde.value;
+    desde.max = hasta.value;
+
+    // Se resalta el atajo que coincide con el rango elegido.
+    document.querySelectorAll('.date-shortcuts [data-rango]').forEach(function (boton) {
+        const r = rangoAtajo(boton.dataset.rango);
+        const activo = !!desde.value && desde.value === r.desde && hasta.value === r.hasta;
+        boton.classList.toggle('active', activo);
+        boton.setAttribute('aria-pressed', activo ? 'true' : 'false');
+    });
+
+    cambioDeFiltro();
 }
 
 // Minúsculas y sin tildes, para que "perez" encuentre "Pérez".
@@ -112,11 +200,14 @@ function normalizarTexto(t) {
 }
 
 function aplicarFiltros() {
-      if (cargando) return; // <- nueva
+    if (cargando) return;
     const texto = normalizarTexto(document.getElementById('buscador').value.trim());
     const entrega = document.getElementById('filtro-entrega').value; // '' = todas
     const visto = document.getElementById('filtro-visto').value;     // '' | 'true' | 'false'
     const tipo = document.getElementById('filtro-tipo').value;       // '' | 'mantenimiento' | 'inspeccion'
+    let desde = document.getElementById('filtro-desde').value;       // '' o AAAA-MM-DD
+    let hasta = document.getElementById('filtro-hasta').value;
+    if (desde && hasta && desde > hasta) [desde, hasta] = [hasta, desde];  // si quedaron al revés, se dan vuelta
 
     // Las bajas anteriores (eliminado) siguen ocultas.
     const vigentes = solicitudes.filter(s => !s.eliminado);
@@ -127,6 +218,13 @@ function aplicarFiltros() {
         if (tipo === 'mantenimiento' && !s.tipoArreglo) return false;
         if (tipo === 'inspeccion' && !s.tipoInspeccion) return false;
 
+        if (desde || hasta) {
+            const dia = fechaISO(s.fechaCreacion);
+            if (!dia) return false;
+            if (desde && dia < desde) return false;
+            if (hasta && dia > hasta) return false;
+        }
+
         if (!texto) return true;
         const contenido = normalizarTexto([
             s.nombre, s.apellido, s.numero, s.dni, s.gmail,
@@ -135,24 +233,41 @@ function aplicarFiltros() {
         return contenido.includes(texto);
     });
 
-    mostrarSolicitudes(lista);
-    document.getElementById('contador-solicitudes').textContent =
-        lista.length + ' de ' + vigentes.length + ' solicitudes';
+    // Si la página actual ya no existe (por ejemplo, se terminó la última fila de la última página), se vuelve a la última.
+    const totalPaginas = Math.max(1, Math.ceil(lista.length / filasPorPagina));
+    if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+    const inicio = (paginaActual - 1) * filasPorPagina;
+    const pagina = lista.slice(inicio, inicio + filasPorPagina);
+
+    mostrarSolicitudes(pagina);
+    mostrarPaginacion(totalPaginas);
+
+    let contador = lista.length === 0
+        ? '0 de ' + vigentes.length + ' solicitudes'
+        : (inicio + 1) + '–' + (inicio + pagina.length) + ' de ' + lista.length + ' solicitudes';
+    if (lista.length !== vigentes.length) contador += ' (' + vigentes.length + ' en total)';
+    document.getElementById('contador-solicitudes').textContent = contador;
+}
+
+// Filtro o buscador modificado: se empieza otra vez desde la primera página.
+function cambioDeFiltro() {
+    paginaActual = 1;
+    aplicarFiltros();
 }
 
 /* ---------------- Tabla ---------------- */
 
 function mostrarSolicitudes(listaSolicitudes) {
-    $("#tabla-solicitudes").empty();
-
     if (listaSolicitudes.length === 0) {
-        $("#tabla-solicitudes").append(
+        $("#tabla-solicitudes").html(
             "<tr><td colspan='8' class='table-message'>No hay solicitudes que coincidan con los filtros.</td></tr>"
         );
         return;
     }
 
-    $.each(listaSolicitudes, function (index, s) {
+    // Se arma todo el HTML y se inserta de una sola vez (más rápido que un append por fila).
+    const filas = listaSolicitudes.map(function (s) {
         let fecha = s.fechaCreacion ? new Date(s.fechaCreacion).toLocaleDateString('es-AR') : '';
         let equipo = [s.marca, s.modelo].filter(Boolean).join(' ');
 
@@ -167,8 +282,7 @@ function mostrarSolicitudes(listaSolicitudes) {
         let acciones =
             "<button class='btn-action' title='Ver solicitud' onclick='verSolicitud(" + s.servicioID + ")'><i class='bi bi-eye'></i></button>";
 
-        $("#tabla-solicitudes").append(
-            "<tr" + (s.visto ? "" : " class='fw-semibold'") + ">" +
+        return "<tr" + (s.visto ? "" : " class='fw-semibold'") + ">" +
             "<td>" + fecha + "</td>" +
             "<td>" + esc(s.nombre) + " " + esc(s.apellido) + "</td>" +
             "<td>" + esc(s.numero) + (s.gmail ? "<br><small>" + esc(s.gmail) + "</small>" : "") + "</td>" +
@@ -177,9 +291,57 @@ function mostrarSolicitudes(listaSolicitudes) {
             "<td>" + estado + "</td>" +
             "<td>" + confirmacion + "</td>" +
             "<td class='text-center'>" + acciones + "</td>" +
-            "</tr>"
-        )
-    })
+            "</tr>";
+    });
+
+    $("#tabla-solicitudes").html(filas.join(''));
+}
+
+/* ---------------- Paginación ---------------- */
+
+// Siempre la primera, la última y la actual con sus vecinas: 1 … 4 [5] 6 … 12
+function paginasVisibles(actual, total) {
+    const nums = [1, total, actual - 1, actual, actual + 1]
+        .filter(function (p, i, arr) { return p >= 1 && p <= total && arr.indexOf(p) === i; })
+        .sort(function (x, y) { return x - y; });
+
+    const resultado = [];
+    nums.forEach(function (p, i) {
+        const salto = i > 0 ? p - nums[i - 1] : 0;
+        if (salto === 2) resultado.push(p - 1);       // un solo hueco: se muestra el número
+        else if (salto > 2) resultado.push('...');
+        resultado.push(p);
+    });
+    return resultado;
+}
+
+function mostrarPaginacion(totalPaginas) {
+    const ul = document.getElementById('paginacion');
+    if (totalPaginas <= 1) {
+        ul.innerHTML = '';
+        return;
+    }
+
+    const item = function (contenido, pagina, opciones) {
+        opciones = opciones || {};
+        return "<li class='page-item" + (opciones.activo ? " active" : "") + (opciones.deshabilitado ? " disabled" : "") + "'>" +
+            "<button type='button' class='page-link' data-pagina='" + pagina + "'" +
+            (opciones.activo ? " aria-current='page'" : "") +
+            (opciones.deshabilitado ? " disabled" : "") +
+            (opciones.etiqueta ? " aria-label='" + opciones.etiqueta + "'" : "") +
+            ">" + contenido + "</button></li>";
+    };
+
+    let html = item("&laquo;", paginaActual - 1, { deshabilitado: paginaActual === 1, etiqueta: "Página anterior" });
+
+    paginasVisibles(paginaActual, totalPaginas).forEach(function (p) {
+        html += p === '...'
+            ? "<li class='page-item disabled'><span class='page-link'>&hellip;</span></li>"
+            : item(p, p, { activo: p === paginaActual });
+    });
+
+    html += item("&raquo;", paginaActual + 1, { deshabilitado: paginaActual === totalPaginas, etiqueta: "Página siguiente" });
+    ul.innerHTML = html;
 }
 
 function badgeVisto(visto) {

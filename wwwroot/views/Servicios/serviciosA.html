@@ -72,6 +72,23 @@
                         <option value="inspeccion">Inspección</option>
                     </select>
                 </div>
+
+                <!-- Rango de fechas + atajos (ocupa toda la fila) -->
+                <div class="product-dates">
+                    <div class="product-filter">
+                        <label for="filtro-desde">Desde</label>
+                        <input type="date" id="filtro-desde" class="form-control">
+                    </div>
+                    <div class="product-filter">
+                        <label for="filtro-hasta">Hasta</label>
+                        <input type="date" id="filtro-hasta" class="form-control">
+                    </div>
+                    <div class="date-shortcuts" role="group" aria-label="Atajos de fecha">
+                        <button type="button" class="btn-chip" data-rango="hoy" aria-pressed="false">Hoy</button>
+                        <button type="button" class="btn-chip" data-rango="7dias" aria-pressed="false">Últimos 7 días</button>
+                        <button type="button" class="btn-chip" data-rango="mes" aria-pressed="false">Este mes</button>
+                    </div>
+                </div>
             </section>
 
             <div class="product-list-meta">
@@ -98,6 +115,21 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <!-- Paginación -->
+            <div class="table-footer d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+                <div class="d-flex align-items-center gap-2">
+                    <label for="filas-por-pagina" class="mb-0 small">Filas por página</label>
+                    <select id="filas-por-pagina" class="form-select form-select-sm w-auto">
+                        <option value="10" selected>10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <nav aria-label="Paginación de solicitudes">
+                    <ul class="pagination pagination-sm mb-0" id="paginacion"></ul>
+                </nav>
             </div>
 
             <!-- Modal: sirve para agregar (campos editables) y para ver (solo lectura + acciones) -->
