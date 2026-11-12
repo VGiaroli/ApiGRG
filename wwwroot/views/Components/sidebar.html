@@ -37,6 +37,11 @@
       <span class="nav-text">Solicitudes de servicio</span>
     </a>
 
+    <a class="nav-link" href="/views/MiembroEquipos/miembroEquipos.html">
+      <span class="nav-icon"><i class="bi bi-person-badge"></i></span>
+      <span class="nav-text">Miembros de equipos</span>
+    </a>
+
     <a class="nav-link nav-link-sub" href="/views/Perfil/perfil.html">
       <span class="nav-icon"><i class="bi bi-person-circle"></i></span>
       <span class="nav-text">Perfil</span>
@@ -45,6 +50,7 @@
       <span class="nav-icon"><i class="bi bi-globe2" aria-hidden="true"></i></span>
       <span class="nav-text">Ver sitio público</span>
     </a>
+
 
   </nav>
 
@@ -90,38 +96,37 @@
 
 <div class="sidebar-backdrop" data-sidebar-close></div>
 <nav class="navbar admin-navbar navbar-expand bg-white">
-    <div class="container-fluid px-3 px-lg-4">
+  <div class="container-fluid px-3 px-lg-4">
 
 
-      <button class="sidebar-toggle" type="button" data-sidebar-toggle aria-controls="adminSidebar" aria-expanded="true"
-        aria-label="Toggle sidebar">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+    <button class="sidebar-toggle" type="button" data-sidebar-toggle aria-controls="adminSidebar" aria-expanded="true"
+      aria-label="Toggle sidebar">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
 
-      <div class="navbar-actions ms-auto">
-        <div class="dropdown">
-          <button class="profile-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img class="avatar-img avatar-sm" src="/img/avatar.jpg">
-            <span class="profile-name d-none d-sm-inline"></span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end nav-list secondary-nav">
-            <li>
-              <a href="/views/Perfil/perfil.html" class="dropdown-item d-flex align-items-center gap-2">
-                <span class="nav-icon material-symbols-rounded">account_circle</span>
-                <span class="nav-label" id="email-usuario">Perfil</span>
-              </a>
-            </li>
-            <li>
-              <a onclick="cerrarSesion()" style="cursor: pointer;"
-                class="dropdown-item d-flex align-items-center gap-2">
-                <span class="nav-icon material-symbols-rounded">logout</span>
-                <span class="nav-label">Cerrar Sesión</span>
-              </a>
-            </li>
-          </ul>
-        </div>
+    <div class="navbar-actions ms-auto">
+      <div class="dropdown">
+        <button class="profile-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <img class="avatar-img avatar-sm" src="/img/avatar.jpg">
+          <span class="profile-name d-none d-sm-inline"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end nav-list secondary-nav">
+          <li>
+            <a href="/views/Perfil/perfil.html" class="dropdown-item d-flex align-items-center gap-2">
+              <span class="nav-icon material-symbols-rounded">account_circle</span>
+              <span class="nav-label" id="email-usuario">Perfil</span>
+            </a>
+          </li>
+          <li>
+            <a onclick="cerrarSesion()" style="cursor: pointer;" class="dropdown-item d-flex align-items-center gap-2">
+              <span class="nav-icon material-symbols-rounded">logout</span>
+              <span class="nav-label">Cerrar Sesión</span>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
+  </div>
 </nav>

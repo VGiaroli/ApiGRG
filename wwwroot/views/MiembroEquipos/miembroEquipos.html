@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorias</title>
+
+    <!-- FontAwesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="/css/miembroEquipos.css">
+</head>
+
+<body>
+    <div id="navbar-placeholder"></div>
+
+
+    <div class="admin-main">
+
+        <!-- Contenido de tu página -->
+        <main class="container-fluid px-4 py-4">
+
+            <!-- Button trigger modal -->
+            <div class="page-head">
+                <div>
+                    <h1>Miembro Equipos</h1>
+                    <!-- <h4 class="subTitle">Manage your product inventory</h4> -->
+                </div>
+                <button class="btn-agregar" type="button" onclick="abrirModalCrear()">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                    Agregar
+                </button>
+            </div>
+
+            <hr class="hr-abajoTitulo">
+
+            <div class="table-custom-container my-4">
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Nombre Completo</th>
+                                <th>Cargo</th>
+                                <th>Descripción</th>
+                                <th>Etiquetas</th>
+                                <th>Imagen</th>
+                                <th>Estado</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-miembrosEquipo">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="modalRegistroMiembroEquipos" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="modalTitulo" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content miembro-modal">
+
+                        <div class="modal-header">
+                            <div>
+                                <h1 class="modal-title" id="modalTitulo">Agregar Miembro</h1>
+                                <p class="modal-subtitle">Esta información se muestra en la sección "Nuestro equipo" del
+                                    inicio.</p>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Cerrar"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <input type="hidden" id="miembroEquipoID" value="0">
+
+                            <div class="row g-4">
+
+                                <!-- Columna izquierda: foto -->
+                                <div class="col-md-4">
+                                    <label class="campo-label" for="imagenUrl">Foto</label>
+
+                                    <div class="dropzone">
+                                        <!-- El input cubre toda la zona (invisible): sirve para hacer clic y para arrastrar -->
+                                        <input type="file" id="imagenUrl" title=""
+                                            accept="image/jpeg,image/png,image/webp" onchange="seleccionarImagen(this)">
+
+                                        <div class="dz-placeholder">
+                                            <i class="bi bi-cloud-arrow-up"></i>
+                                            <strong>Subí una foto</strong>
+                                            <span>Hacé clic o arrastrá la imagen acá</span>
+                                        </div>
+
+                                        <img id="imagenPreview" alt="Vista previa" style="display: none;">
+
+                                        <div class="dz-overlay"><i class="bi bi-camera"></i> Cambiar foto</div>
+                                    </div>
+
+                                    <p class="campo-ayuda">JPG, PNG o WEBP · máx. 2 MB. Se muestra en formato vertical
+                                        (3:4).</p>
+                                </div>
+
+                                <!-- Columna derecha: datos -->
+                                <div class="col-md-8">
+
+                                    <div class="campo">
+                                        <label class="campo-label" for="nombreCompleto">Nombre completo</label>
+                                        <input type="text" id="nombreCompleto" class="form-control"
+                                            placeholder="Ej: María Gómez">
+                                    </div>
+
+                                    <div class="campo">
+                                        <label class="campo-label" for="cargo">Cargo / Rol</label>
+                                        <select class="form-select" id="cargo" required>
+                                            <option value="Dueño / Gerencia">Dueño / Gerencia</option>
+                                            <option value="Ventas">Ventas</option>
+                                            <option value="Marketing">Marketing</option>
+                                            <option value="Soporte Técnico">Soporte Técnico</option>
+                                        </select>
+                                        <p class="campo-ayuda">Define el orden en el inicio: primero dueños, después
+                                            ventas y marketing.</p>
+                                    </div>
+
+                                    <div class="campo">
+                                        <div class="d-flex justify-content-between align-items-end">
+                                            <label class="campo-label" for="descripcion">Descripción</label>
+                                            <span class="contador"><span id="contadorDescripcion">0</span>/80</span>
+                                        </div>
+                                        <textarea id="descripcion" class="form-control" rows="2" maxlength="80"
+                                            placeholder="Una frase corta sobre la persona"
+                                            oninput="actualizarContador()"></textarea>
+                                    </div>
+
+                                    <div class="campo">
+                                        <label class="campo-label" for="etiqueta">Etiquetas</label>
+                                        <div class="tag-input">
+                                            <input type="text" class="form-control" id="etiqueta"
+                                                placeholder="Escribí una etiqueta y presioná Enter"
+                                                onkeydown="if (event.key === 'Enter') { event.preventDefault(); agregarEtiqueta(); }">
+                                            <button class="btn-tag-add" type="button" onclick="agregarEtiqueta()">
+                                                <i class="bi bi-plus-lg"></i> Agregar
+                                            </button>
+                                        </div>
+                                        <div id="contenedorEtiquetas" class="tags-box"></div>
+                                    </div>
+
+                                    <!-- Estado (oculto por defecto, se muestra solo al editar) -->
+                                    <div id="contenedorEstado" style="display: none;">
+                                        <div class="estado-box">
+                                            <div>
+                                                <label class="campo-label mb-0" for="activo">Estado</label>
+                                                <p class="campo-ayuda mb-0">Los inactivos no aparecen en el inicio.</p>
+                                            </div>
+                                            <select id="activo" class="form-select">
+                                                <option value="true">Activo</option>
+                                                <option value="false">Inactivo</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn-cerrar" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn-agregar" onclick="guardarRegistro();">
+                                <i class="bi bi-check-lg"></i> Guardar
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/miembroEquipos.js"></script>
+    <script src="/js/layout.js"></script>
+    <script src="/js/sesion-usuario.js"></script>
+</body>
+
+</html>

@@ -14,6 +14,8 @@ namespace ApiGRG.Models
 
         public bool Eliminado { get; set; }
 
+        public bool Destacada { get; set; }
+
         public ICollection<Producto>? Productos { get; set; } = new List<Producto>();
     }
 }

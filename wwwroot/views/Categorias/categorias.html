@@ -35,6 +35,7 @@
                     <i class="bi bi-plus-lg" aria-hidden="true"></i>
                     Agregar
                 </button>
+                
             </div>
 
             <hr class="hr-abajoTitulo">
@@ -48,6 +49,7 @@
                                 <th scope="col">Descripción</th>
                                 <th scope="col">Imagen</th>
                                 <th scope="col">Estado</th>
+                                <th scope="col" class="text-center">Inicio</th>
                                 <th scope="col" class="text-center">Action</th>
                             </tr>
                         </thead>
@@ -60,47 +62,105 @@
 
             <!-- Modal -->
             <div class="modal fade" id="modalRegistroCategoria" data-bs-backdrop="static" data-bs-keyboard="false"
-                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
+                tabindex="-1" aria-labelledby="modalTitulo" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content categoria-modal">
+
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="modalTitulo">Agregar Categoria</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div>
+                                <h1 class="modal-title" id="modalTitulo">Agregar Categoria</h1>
+                                <p class="modal-subtitle">Las categorías marcadas para el inicio aparecen en "Nuestras
+                                    secciones".</p>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Cerrar"></button>
                         </div>
+
                         <div class="modal-body">
                             <input type="hidden" id="categoriaID" value="0">
 
-                            <div class="mb-3">
-                                <label for="nombreProducto" class="form-label">Nombre Producto</label>
-                                <input type="text" id="nombreProducto" class="form-control" style="text-transform: uppercase;">
-                            </div>
+                            <div class="row g-4">
 
-                            <div class="mb-3">
-                                <label for="descripcion" class="form-label">Descripción corta</label>
-                                <input type="text" id="descripcion" class="form-control" maxlength="80">
-                            </div>
+                                <!-- Columna izquierda: imagen -->
+                                <div class="col-md-5">
+                                    <label class="campo-label" for="imagenUrl">Imagen</label>
 
-                            <!-- selector de imagen. onchange llama a seleccionarImagen() del JS -->
-                            <div class="mb-3">
-                                <label for="imagenUrl" class="form-label">Imagen</label>
-                                <input type="file" id="imagenUrl" class="form-control"
-                                    accept="image/jpeg,image/png,image/webp" onchange="seleccionarImagen(this)">
-                                <img id="imagenPreview" class="img-fluid rounded mt-2" alt="Vista previa"
-                                    style="display: none; max-height: 150px;">
-                            </div>
+                                    <div class="dropzone">
+                                        <!-- El input cubre toda la zona (invisible): sirve para hacer clic y para arrastrar -->
+                                        <input type="file" id="imagenUrl" title=""
+                                            accept="image/jpeg,image/png,image/webp" onchange="seleccionarImagen(this)">
 
-                            <div class="mb-3" id="contenedorEstado" style="display: none;">
-                                <label for="eliminado" class="form-label">Estado</label>
-                                <select id="eliminado" class="form-select">
-                                    <option value="false">Activo</option>
-                                    <option value="true">Inactivo</option>
-                                </select>
+                                        <div class="dz-placeholder">
+                                            <i class="bi bi-cloud-arrow-up"></i>
+                                            <strong>Subí una imagen</strong>
+                                            <span>Hacé clic o arrastrá el archivo acá</span>
+                                        </div>
+
+                                        <img id="imagenPreview" alt="Vista previa" style="display: none;">
+
+                                        <div class="dz-overlay"><i class="bi bi-camera"></i> Cambiar imagen</div>
+                                    </div>
+
+                                    <p class="campo-ayuda">JPG, PNG o WEBP · máx. 2 MB. Mejor si es vertical.</p>
+                                </div>
+
+                                <!-- Columna derecha: datos -->
+                                <div class="col-md-7">
+
+                                    <div class="campo">
+                                        <label class="campo-label" for="nombreProducto">Nombre</label>
+                                        <input type="text" id="nombreProducto" class="form-control"
+                                            placeholder="Ej: Gaming">
+                                    </div>
+
+                                    <div class="campo">
+                                        <div class="d-flex justify-content-between align-items-end">
+                                            <label class="campo-label" for="descripcion">Descripción corta</label>
+                                            <span class="contador"><span id="contadorDescripcion">0</span>/80</span>
+                                        </div>
+                                        <textarea id="descripcion" class="form-control" rows="2" maxlength="80"
+                                            placeholder="Ej: Consolas, joysticks y periféricos"
+                                            oninput="actualizarContador()"></textarea>
+                                    </div>
+
+                                    <!-- Mostrar en el inicio -->
+                                    <label class="switch-box" for="destacada">
+                                        <span class="switch-icono"><i class="bi bi-star-fill"></i></span>
+                                        <span class="switch-texto">
+                                            <strong>Mostrar en el inicio</strong>
+                                            <small>Máximo 4 categorías destacadas a la vez.</small>
+                                        </span>
+                                        <span class="form-check form-switch m-0">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="destacada"
+                                                onchange="verificarLimiteDestacadas(this)">
+                                        </span>
+                                    </label>
+
+                                    <!-- Estado (oculto por defecto, se muestra solo al editar) -->
+                                    <div id="contenedorEstado" style="display: none;">
+                                        <div class="estado-box">
+                                            <div>
+                                                <label class="campo-label mb-0" for="eliminado">Estado</label>
+                                                <p class="campo-ayuda mb-0">Las inactivas no aparecen en el inicio.</p>
+                                            </div>
+                                            <select id="eliminado" class="form-select">
+                                                <option value="false">Activo</option>
+                                                <option value="true">Inactivo</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
+
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-primary" onclick="guardarRegistro();">Guardar</button>
+                            <button type="button" class="btn-cerrar" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn-agregar" onclick="guardarRegistro();">
+                                <i class="bi bi-check-lg"></i> Guardar
+                            </button>
                         </div>
+
                     </div>
                 </div>
             </div>
