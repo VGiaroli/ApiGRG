@@ -985,76 +985,63 @@
     </div>
 
     <!-- Footer -->
-    <footer id="nosotros" class="bg-dark text-white py-6 py-lg-9">
+    <footer id="nosotros" class="site-footer">
         <div class="container">
-            <div class="row gy-5">
-                <div class="col-lg-4">
-                    <div class="d-flex flex-column gap-3">
-                        <span class="fs-3 fw-extrabold text-white"
-                            style="font-size: 2rem; font-weight: 800; letter-spacing: -1px;">GRG<span
-                                class="text-primary">.</span></span>
-                        <p class="mb-0 fs-5 text-white text-opacity-75" style="max-width:320px; line-height: 1.6;">
-                            Tu tienda de confianza en tecnología, gaming, celulares y accesorios con envíos a todo el
-                            país.
-                        </p>
-                        <div class="d-flex gap-3 pt-2">
-                            <a href="#"
-                                class="icon-btn bg-white bg-opacity-10 text-white rounded-circle d-flex align-items-center justify-content-center text-decoration-none"
-                                style="width: 44px; height: 44px;"><iconify-icon icon="mdi:instagram"
-                                    class="fs-5"></iconify-icon></a>
-                            <a href="#"
-                                class="icon-btn bg-white bg-opacity-10 text-white rounded-circle d-flex align-items-center justify-content-center text-decoration-none"
-                                style="width: 44px; height: 44px;"><iconify-icon icon="mdi:facebook"
-                                    class="fs-5"></iconify-icon></a>
-                            <a href="#"
-                                class="icon-btn bg-white bg-opacity-10 text-white rounded-circle d-flex align-items-center justify-content-center text-decoration-none"
-                                style="width: 44px; height: 44px;"><iconify-icon icon="mdi:whatsapp"
-                                    class="fs-5"></iconify-icon></a>
-                        </div>
+
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <a href="#" class="footer-logo">GRG<span>.</span></a>
+                    <p class="footer-about">
+                        Tu tienda de confianza en tecnología, gaming, celulares y accesorios con envíos a todo el país.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Instagram"><iconify-icon icon="mdi:instagram"></iconify-icon></a>
+                        <a href="#" aria-label="Facebook"><iconify-icon icon="mdi:facebook"></iconify-icon></a>
+                        <a href="#" aria-label="WhatsApp"><iconify-icon icon="mdi:whatsapp"></iconify-icon></a>
                     </div>
                 </div>
-                <div class="col-6 col-lg-2">
-                    <p class="mb-3 fw-bold fs-6 text-white">Productos</p>
-                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
-                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#destacados">Celulares</a></li>
-                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#destacados">PlayStation 5</a>
+
+                <nav class="footer-col" aria-label="Productos">
+                    <h4 class="footer-title">Productos</h4>
+                    <ul class="footer-links">
+                        <li><a href="#destacados">Celulares</a></li>
+                        <li><a href="#destacados">PlayStation 5</a></li>
+                        <li><a href="#destacados">Joysticks</a></li>
+                        <li><a href="#destacados">Parlantes JBL</a></li>
+                    </ul>
+                </nav>
+
+                <nav class="footer-col" aria-label="Ayuda">
+                    <h4 class="footer-title">Ayuda</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="showToast('Envíos a todo el país disponibles', 'info'); return false;">Envíos</a></li>
+                        <li><a href="#" onclick="showToast('Garantía oficial de 12 meses', 'info'); return false;">Garantía</a></li>
+                        <li><a href="#contacto">Preguntas frecuentes</a></li>
+                        <li><a href="#" onclick="showToast('Seguí tu envío', 'info'); return false;">Seguimiento</a></li>
+                    </ul>
+                </nav>
+
+                <div class="footer-col footer-col-contact">
+                    <h4 class="footer-title">Contacto</h4>
+                    <ul class="footer-contact">
+                        <li>
+                            <span class="fc-ico"><iconify-icon icon="lucide:mail"></iconify-icon></span>
+                            <a href="mailto:ventas@grgstore.com">ventas@grgstore.com</a>
                         </li>
-                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#destacados">Joysticks</a></li>
-                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#destacados">Parlantes JBL</a>
+                        <li>
+                            <span class="fc-ico"><iconify-icon icon="lucide:phone"></iconify-icon></span>
+                            <a href="tel:+5493511234567">+54 9 351 123-4567</a>
+                        </li>
+                        <li>
+                            <span class="fc-ico"><iconify-icon icon="lucide:clock"></iconify-icon></span>
+                            <span>Lun a Sáb de 9 a 20h</span>
                         </li>
                     </ul>
-                </div>
-                <div class="col-6 col-lg-2">
-                    <p class="mb-3 fw-bold fs-6 text-white">Ayuda</p>
-                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
-                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#"
-                                onclick="showToast('Envíos a todo el país disponibles', 'info'); return false;">Envíos</a>
-                        </li>
-                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#"
-                                onclick="showToast('Garantía oficial de 12 meses', 'info'); return false;">Garantía</a>
-                        </li>
-                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#"
-                                onclick="showToast('Preguntas frecuentes', 'info'); return false;">FAQ</a></li>
-                        <li><a class="link-hover fs-5 text-white text-opacity-75" href="#"
-                                onclick="showToast('Seguí tu envío', 'info'); return false;">Seguimiento</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-4">
-                    <p class="mb-3 fw-bold fs-6 text-white">Contacto</p>
-                    <div class="d-flex flex-column gap-2">
-                        <a href="mailto:ventas@grgstore.com"
-                            class="link-hover fs-5 text-white text-opacity-75 d-flex align-items-center gap-2"><iconify-icon
-                                icon="lucide:mail"></iconify-icon> ventas@grgstore.com</a>
-                        <a href="tel:+5493511234567"
-                            class="link-hover fs-5 text-white text-opacity-75 d-flex align-items-center gap-2"><iconify-icon
-                                icon="lucide:phone"></iconify-icon> +54 9 351 123-4567</a>
-                        <p class="mb-0 fs-5 text-white text-opacity-75 d-flex align-items-center gap-2"><iconify-icon
-                                icon="lucide:clock"></iconify-icon> Lun a Sáb de 9 a 20h</p>
-                    </div>
                 </div>
             </div>
-            <div class="pay-row">
-                <p class="pay-title mb-0">Medios de pago</p>
+
+            <div class="footer-pay">
+                <p class="footer-pay-title">Medios de pago</p>
                 <div class="pay-methods">
                     <span class="pay-chip" title="Visa"><iconify-icon icon="logos:visa"></iconify-icon></span>
                     <span class="pay-chip" title="Mastercard"><iconify-icon icon="logos:mastercard"></iconify-icon></span>
@@ -1070,16 +1057,15 @@
                     </span>
                 </div>
             </div>
-            <hr class="my-6 border-white border-opacity-10">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-                <p class="mb-0 fs-4 text-white text-opacity-60">© 2026 GRG Store. Todos los derechos reservados.</p>
-                <div class="d-flex gap-4">
-                    <a class="fs-4 text-white text-opacity-60 text-decoration-none link-hover" href="#"
-                        onclick="showToast('Términos y condiciones', 'info'); return false;">Términos y condiciones</a>
-                    <a class="fs-4 text-white text-opacity-60 text-decoration-none link-hover" href="#"
-                        onclick="showToast('Defensa del consumidor', 'info'); return false;">Legales</a>
+
+            <div class="footer-bottom">
+                <p class="footer-copy">© 2026 GRG Store. Todos los derechos reservados.</p>
+                <div class="footer-legal">
+                    <a href="/terminos.html">Términos y condiciones</a>
+                    <a href="/legales.html">Legales</a>
                 </div>
             </div>
+
         </div>
     </footer>
 

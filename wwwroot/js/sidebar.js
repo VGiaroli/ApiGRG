@@ -1,252 +1,222 @@
-"use strict";
-
 (function () {
-  var sidebarStorageKey = "adminHMD.sidebarMini";
-  var themeStorageKey = "adminHMD.colorTheme";
-  var desktopMedia = "(min-width: 992px)";
+    'use strict';
 
-  function onReady(callback) {
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", callback);
-      return;
+    const sidebarStorageKey = 'adminHMD.sidebarMini';
+    const themeStorageKey = 'adminHMD.colorTheme';
+    const desktopMedia = '(min-width: 992px)';
+
+    function isDesktop() {
+        return window.matchMedia(desktopMedia).matches;
     }
 
-    callback();
-  }
-
-  function isDesktop() {
-    return window.matchMedia(desktopMedia).matches;
-  }
-
-  function canUseStorage() {
-    try {
-      var testKey = sidebarStorageKey + ".test";
-      window.localStorage.setItem(testKey, "1");
-      window.localStorage.removeItem(testKey);
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  function getSavedMiniState(storageAvailable) {
-    if (!storageAvailable) {
-      return false;
+    function canUseStorage() {
+        try {
+            const testKey = sidebarStorageKey + '.test';
+            window.localStorage.setItem(testKey, '1');
+            window.localStorage.removeItem(testKey);
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 
-    return window.localStorage.getItem(sidebarStorageKey) === "true";
-  }
-
-  function saveMiniState(storageAvailable, isMini) {
-    if (storageAvailable) {
-      window.localStorage.setItem(sidebarStorageKey, String(isMini));
+    function getSavedMiniState(storageAvailable) {
+        return storageAvailable && window.localStorage.getItem(sidebarStorageKey) === 'true';
     }
-  }
 
-  function getPreferredTheme(storageAvailable) {
-    var savedTheme = storageAvailable ? window.localStorage.getItem(themeStorageKey) : "";
+    function saveMiniState(storageAvailable, isMini) {
+        if (storageAvailable) {
+            window.localStorage.setItem(sidebarStorageKey, String(isMini));
+        }
+    }
 
-    // // if (savedTheme === "dark" || savedTheme === "light") {
-    // //   return savedTheme;
-    // // }
+    function applyTheme(storageAvailable) {
+        const savedTheme = storageAvailable ? window.localStorage.getItem(themeStorageKey) : null;
+        const theme = savedTheme === 'dark' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.setAttribute('data-bs-theme', theme);
+    }
 
-    // if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    //   return "dark";
-    // }
+    function normalizePath(path) {
+        const withoutQuery = (path || '/').split('?')[0].split('#')[0];
+        if (withoutQuery.length <= 1) {
+            return '/';
+        }
 
-    return "light";
-  }
+        return withoutQuery.replace(/\/+$/, '').toLowerCase();
+    }
 
-  onReady(function () {
-    var body = document.body;
-    var sidebarToggle = document.querySelector("[data-sidebar-toggle]");
-    var themeToggles = document.querySelectorAll("[data-theme-toggle]");
-    var themeIcons = document.querySelectorAll("[data-theme-icon]");
-    var closeButtons = document.querySelectorAll("[data-sidebar-close]");
-    var sidebarLinks = document.querySelectorAll(".sidebar-nav .nav-link");
-    var mediaQuery = window.matchMedia(desktopMedia);
-    var storageAvailable = canUseStorage();
-
-
+    function updateActiveLink() {
+        const currentPath = normalizePath(window.location.pathname);
+        document.querySelectorAll('.sidebar-nav .nav-link, .sidebar-bottom-nav .nav-link').forEach(function (link) {
+            const target = normalizePath(new URL(link.href, window.location.origin).pathname);
+            const active = target !== '/' && (currentPath === target || currentPath.indexOf(target + '/') === 0);
+            link.classList.toggle('active', active);
+            if (active) {
+                link.setAttribute('aria-current', 'page');
+            } else {
+                link.removeAttribute('aria-current');
+            }
+        });
+    }
 
     function initValidation() {
-      var forms = document.querySelectorAll(".needs-validation");
+        document.querySelectorAll('.needs-validation').forEach(function (form) {
+            if (form.dataset.validationInitialized === 'true') {
+                return;
+            }
 
-      Array.prototype.forEach.call(forms, function (form) {
-        form.addEventListener("submit", function (event) {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
+            form.dataset.validationInitialized = 'true';
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
 
-          form.classList.add("was-validated");
+                form.classList.add('was-validated');
+            });
         });
-      });
     }
 
     function initTableSearch() {
-      var searchInputs = document.querySelectorAll("[data-table-search]");
+        document.querySelectorAll('[data-table-search]').forEach(function (input) {
+            if (input.dataset.tableSearchInitialized === 'true') {
+                return;
+            }
 
-      Array.prototype.forEach.call(searchInputs, function (input) {
-        var tableId = input.getAttribute("data-table-search");
-        var table = document.getElementById(tableId);
+            const table = document.getElementById(input.getAttribute('data-table-search'));
+            if (!table) {
+                return;
+            }
 
-        if (!table) {
-          return;
+            input.dataset.tableSearchInitialized = 'true';
+            input.addEventListener('input', function () {
+                const query = input.value.trim().toLowerCase();
+                table.querySelectorAll('tbody tr').forEach(function (row) {
+                    row.hidden = query !== '' && row.textContent.toLowerCase().indexOf(query) === -1;
+                });
+            });
+        });
+    }
+
+    function initUserProfile() {
+        const user = window.adminHMDUser;
+        if (!user) {
+            return;
         }
 
-        input.addEventListener("input", function () {
-          var query = input.value.trim().toLowerCase();
-          var rows = table.querySelectorAll("tbody tr");
-
-          Array.prototype.forEach.call(rows, function (row) {
-            row.hidden = query !== "" && row.textContent.toLowerCase().indexOf(query) === -1;
-          });
+        document.querySelectorAll('.profile-name').forEach(function (element) {
+            element.textContent = user.name || '';
         });
-      });
-    }
-
-    function updateThemeControls(theme) {
-      var nextTheme = theme === "dark" ? "light" : "dark";
-      var label = "Switch to " + nextTheme + " mode";
-      var iconClass = theme === "dark" ? "bi bi-sun" : "bi bi-moon-stars";
-
-      Array.prototype.forEach.call(themeToggles, function (button) {
-        button.setAttribute("aria-label", label);
-        button.setAttribute("title", label);
-      });
-
-      Array.prototype.forEach.call(themeIcons, function (icon) {
-        icon.className = iconClass;
-      });
-    }
-
-    function applyTheme(theme) {
-      document.documentElement.setAttribute("data-theme", theme);
-      document.documentElement.setAttribute("data-bs-theme", theme);
-
-      if (storageAvailable) {
-        window.localStorage.setItem(themeStorageKey, theme);
-      }
-
-      updateThemeControls(theme);
-    }
-
-    function initThemeToggle() {
-      applyTheme(getPreferredTheme(storageAvailable));
-
-      Array.prototype.forEach.call(themeToggles, function (button) {
-        button.addEventListener("click", function () {
-          var currentTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
-          applyTheme(currentTheme === "dark" ? "light" : "dark");
+        document.querySelectorAll('.profile-button img').forEach(function (image) {
+            if (user.avatar) {
+                image.src = user.avatar;
+            }
+            if (user.name) {
+                image.alt = user.name;
+            }
         });
-      });
     }
 
-    initValidation();
-    initTableSearch();
-    initThemeToggle();
+    function initAdminSidebar() {
+        const body = document.body;
+        const sidebar = document.getElementById('adminSidebar');
+        if (!sidebar || body.dataset.sidebarInitialized === 'true') {
+            return;
+        }
 
-    // Initialize user profile values in UI. Provide a window.adminHMDUser object to override defaults.
-    function initUserProfile() {
-      var user = window.adminHMDUser;
+        body.dataset.sidebarInitialized = 'true';
+        const storageAvailable = canUseStorage();
+        const sidebarToggle = document.querySelector('[data-sidebar-toggle]');
+        const mediaQuery = window.matchMedia(desktopMedia);
 
-      if (!user) {
-        return;
-      }
+        applyTheme(storageAvailable);
+        initValidation();
+        initTableSearch();
+        initUserProfile();
+        updateActiveLink();
 
-      var sidebarNameEl = document.querySelector(".sidebar-user strong");
-      var sidebarWorkspaceEl = document.querySelector(".sidebar-user small");
-      var sidebarAvatar = document.querySelector(".sidebar-user .avatar-img");
-      var profileNameEls = document.querySelectorAll(".profile-name");
-      var profileAvatarEls = document.querySelectorAll(".profile-button .avatar-img, .profile-button img");
+        function setToggleExpanded() {
+            if (!sidebarToggle) {
+                return;
+            }
 
-      if (sidebarNameEl) sidebarNameEl.textContent = user.name;
-      if (sidebarWorkspaceEl) sidebarWorkspaceEl.textContent = user.workspace;
-      if (sidebarAvatar && user.avatar) { sidebarAvatar.src = user.avatar; sidebarAvatar.alt = user.name; }
+            const expanded = isDesktop()
+                ? !body.classList.contains('sidebar-mini')
+                : body.classList.contains('sidebar-open');
+            sidebarToggle.setAttribute('aria-expanded', String(expanded));
+        }
 
-      Array.prototype.forEach.call(profileNameEls, function (el) { el.textContent = user.name; });
-      Array.prototype.forEach.call(profileAvatarEls, function (img) { if (user.avatar) img.src = user.avatar; if (user.name) img.alt = user.name; });
-    }
+        function closeMobileSidebar() {
+            body.classList.remove('sidebar-open');
+            setToggleExpanded();
+        }
 
-    initUserProfile();
+        function toggleSidebar() {
+            if (isDesktop()) {
+                body.classList.toggle('sidebar-mini');
+                saveMiniState(storageAvailable, body.classList.contains('sidebar-mini'));
+            } else {
+                body.classList.toggle('sidebar-open');
+            }
 
-    if (!sidebarToggle) {
-      return;
-    }
+            setToggleExpanded();
+        }
 
-    function setClass(element, className, enabled) {
-      if (enabled) {
-        element.classList.add(className);
-      } else {
-        element.classList.remove(className);
-      }
-    }
+        if (getSavedMiniState(storageAvailable) && isDesktop()) {
+            body.classList.add('sidebar-mini');
+        }
 
-    function setToggleExpanded() {
-      var expanded = isDesktop()
-        ? !body.classList.contains("sidebar-mini")
-        : body.classList.contains("sidebar-open");
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', toggleSidebar);
+        }
 
-      sidebarToggle.setAttribute("aria-expanded", String(expanded));
-    }
-
-    function closeMobileSidebar() {
-      body.classList.remove("sidebar-open");
-      setToggleExpanded();
-    }
-
-    function toggleSidebar() {
-      if (isDesktop()) {
-        body.classList.toggle("sidebar-mini");
-        saveMiniState(storageAvailable, body.classList.contains("sidebar-mini"));
-      } else {
-        body.classList.toggle("sidebar-open");
-      }
-
-      setToggleExpanded();
-    }
-
-    function addCloseHandlers(items) {
-      Array.prototype.forEach.call(items, function (item) {
-        item.addEventListener("click", function () {
-          if (!isDesktop()) {
-            closeMobileSidebar();
-          }
+        document.querySelectorAll('[data-sidebar-close], .sidebar-nav .nav-link, .sidebar-bottom-nav .nav-link').forEach(function (element) {
+            element.addEventListener('click', function () {
+                if (!isDesktop()) {
+                    closeMobileSidebar();
+                }
+            });
         });
-      });
+
+        document.querySelectorAll('[data-action="logout"]').forEach(function (element) {
+            element.addEventListener('click', function (event) {
+                event.preventDefault();
+                if (typeof window.cerrarSesion === 'function') {
+                    window.cerrarSesion();
+                } else {
+                    window.location.href = '/views/Usuarios/login.html';
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !isDesktop()) {
+                closeMobileSidebar();
+            }
+        });
+
+        function handleBreakpointChange() {
+            if (isDesktop()) {
+                body.classList.remove('sidebar-open');
+                if (getSavedMiniState(storageAvailable)) {
+                    body.classList.add('sidebar-mini');
+                }
+            } else {
+                body.classList.remove('sidebar-mini');
+            }
+
+            setToggleExpanded();
+        }
+
+        if (mediaQuery.addEventListener) {
+            mediaQuery.addEventListener('change', handleBreakpointChange);
+        } else if (mediaQuery.addListener) {
+            mediaQuery.addListener(handleBreakpointChange);
+        }
+
+        setToggleExpanded();
     }
 
-    if (getSavedMiniState(storageAvailable) && isDesktop()) {
-      body.classList.add("sidebar-mini");
-    }
-
-    sidebarToggle.addEventListener("click", toggleSidebar);
-    addCloseHandlers(closeButtons);
-    addCloseHandlers(sidebarLinks);
-    setToggleExpanded();
-
-    function handleBreakpointChange() {
-      if (isDesktop()) {
-        body.classList.remove("sidebar-open");
-        setClass(body, "sidebar-mini", getSavedMiniState(storageAvailable));
-      } else {
-        body.classList.remove("sidebar-mini");
-      }
-
-      setToggleExpanded();
-    }
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener("change", handleBreakpointChange);
-    } else if (mediaQuery.addListener) {
-      mediaQuery.addListener(handleBreakpointChange);
-    }
-  });
+    window.initAdminSidebar = initAdminSidebar;
 })();
-
-document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
-  if (link.getAttribute('href') === window.location.pathname) {
-    link.classList.add('active');
-  }
-});

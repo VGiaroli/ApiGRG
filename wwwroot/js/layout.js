@@ -1,37 +1,44 @@
-// layout.js
-// Se encarga de insertar la navegación administrativa compartida en cualquier
-// vista que tenga un <div id="navbar-placeholder"></div>.
-// Así evitamos copiar el mismo bloque de fetch + createElement en cada HTML:
-// cada vista solo necesita incluir <script src="/js/layout.js"></script>.
+(function () {
+    'use strict';
 
-document.addEventListener('DOMContentLoaded', function () {
-  var placeholder = document.getElementById('navbar-placeholder');
+    function inicializarLayoutAdmin() {
+        const placeholder = document.getElementById('navbar-placeholder');
 
-  if (!placeholder) {
-    return; // esta vista no usa sidebar (ej: login), no hacemos nada
-  }
+        if (!placeholder || placeholder.dataset.layoutLoaded === 'true') {
+            return;
+        }
 
-  fetch('/views/Components/sidebar.html')
-    .then(function (response) {
-      if (!response.ok) {
-        throw new Error('No se pudo cargar el sidebar (' + response.status + ')');
-      }
-      return response.text();
-    })
-    .then(function (html) {
-      placeholder.innerHTML = html;
+        placeholder.dataset.layoutLoaded = 'loading';
 
-      // sidebar.html se inserta con innerHTML y sus scripts no se ejecutan.
-      // Por eso se carga sidebar.js después de insertar el componente.
-      var script = document.createElement('script');
-      script.src = '/js/sidebar.js';
-      document.body.appendChild(script);
+        fetch('/views/Components/sidebar.html')
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('No se pudo cargar el sidebar (' + response.status + ')');
+                }
 
-      if (typeof verificarUsuario === 'function') {
-        verificarUsuario();
-      }
-    })
-    .catch(function (error) {
-      console.error('Error cargando sidebar:', error);
-    });
-});
+                return response.text();
+            })
+            .then(function (html) {
+                placeholder.innerHTML = html;
+                placeholder.dataset.layoutLoaded = 'true';
+
+                if (typeof window.initAdminSidebar === 'function') {
+                    window.initAdminSidebar();
+                }
+
+                if (typeof window.verificarUsuario === 'function') {
+                    window.verificarUsuario();
+                }
+            })
+            .catch(function (error) {
+                placeholder.dataset.layoutLoaded = 'error';
+                console.error('Error cargando sidebar:', error);
+            });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', inicializarLayoutAdmin, { once: true });
+    } else {
+        inicializarLayoutAdmin();
+    }
+})();

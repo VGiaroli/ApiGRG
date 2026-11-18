@@ -17,7 +17,7 @@ namespace ApiGRG.Controllers
             _context = context;
         }
 
-        // GET: api/servicios -> todas las solicitudes (activas e inactivas), las más nuevas primero
+        // GET: api/servicios -> todas las solicitudes, las más nuevas primero
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Servicio>>> GetServicios()
         {
@@ -49,7 +49,6 @@ namespace ApiGRG.Controllers
                 Dni = solicitud.Dni,
                 Gmail = solicitud.Email,
                 Localidad = solicitud.Localidad,
-                NombreDispositivo = solicitud.NombreDispositivo,
                 Marca = solicitud.Marca,
                 Modelo = solicitud.Modelo,
                 TipoArreglo = solicitud.TipoArreglo,
@@ -57,7 +56,8 @@ namespace ApiGRG.Controllers
                 Descripcion = solicitud.Descripcion,
                 FechaCreacion = DateTime.Now,
                 Eliminado = false,
-                Confirmacion = EstadoConfirmacion.Pendiente
+                Visto = false,
+                Confirmacion = EstadoConfirmacion.EnProceso
             };
 
             _context.Servicios.Add(servicio);
@@ -70,36 +70,19 @@ namespace ApiGRG.Controllers
             });
         }
 
-        // PUT: api/servicios/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutServicio(int id, Servicio servicio)
+        // PUT: api/servicios/5/visto -> marca como visto / no visto
+        [HttpPut("{id}/visto")]
+        public async Task<IActionResult> PutVisto(int id, [FromBody] VistoDto dto)
         {
-            if (id != servicio.ServicioID) return BadRequest();
+            var servicio = await _context.Servicios.FindAsync(id);
+            if (servicio == null) return NotFound();
 
-            var existente = await _context.Servicios.FindAsync(id);
-            if (existente == null) return NotFound();
-
-            existente.Nombre = servicio.Nombre;
-            existente.Apellido = servicio.Apellido;
-            existente.Numero = servicio.Numero;
-            existente.Dni = servicio.Dni;
-            existente.Gmail = servicio.Gmail;
-            existente.Localidad = servicio.Localidad;
-            existente.NombreDispositivo = servicio.NombreDispositivo;
-            existente.Marca = servicio.Marca;
-            existente.Modelo = servicio.Modelo;
-            existente.TipoArreglo = servicio.TipoArreglo;
-            existente.TipoInspeccion = servicio.TipoInspeccion;
-            existente.Descripcion = servicio.Descripcion;
-            existente.Eliminado = servicio.Eliminado;
-            // OJO: NO se copia Confirmacion -> editar no resetea la confirmación.
-            // FechaCreacion tampoco se modifica.
-
+            servicio.Visto = dto.Visto;
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
-        // PUT: api/servicios/5/confirmacion -> cambia solo el estado de WhatsApp
+        // PUT: api/servicios/5/confirmacion -> En proceso / Terminado
         [HttpPut("{id}/confirmacion")]
         public async Task<IActionResult> PutConfirmacion(int id, [FromBody] ConfirmacionDto dto)
         {
@@ -114,21 +97,13 @@ namespace ApiGRG.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
-
-        // DELETE: api/servicios/5 -> baja lógica (Eliminado = true)
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteServicio(int id)
-        {
-            var servicio = await _context.Servicios.FindAsync(id);
-            if (servicio == null) return NotFound();
-
-            servicio.Eliminado = true;
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
     }
 
-    // DTO chico para el endpoint de confirmación
+    public class VistoDto
+    {
+        public bool Visto { get; set; }
+    }
+
     public class ConfirmacionDto
     {
         public EstadoConfirmacion Confirmacion { get; set; }

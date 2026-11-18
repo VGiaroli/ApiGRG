@@ -15,6 +15,9 @@
     let formularioProductoCargando = false;
     let categoriasFormularioPromise = Promise.resolve(false);
     let mediosPagoPromise = Promise.resolve(false);
+    let modalPrecioProducto;
+    let productoPrecioEditandoId = null;
+    let productoBaseActual = null;
 
     document.addEventListener('DOMContentLoaded', function () {
         const buscador = document.getElementById('buscador-productos');
@@ -41,7 +44,11 @@
         });
 
         inicializarFormularioProducto();
+        window.StockMovements.init();
         obtenerProductos();
+        if (window.location.hash === '#nuevo-producto') {
+            abrirModalNuevoProducto();
+        }
     });
 
     function inicializarFormularioProducto() {
@@ -49,10 +56,13 @@
         const formulario = document.getElementById('form-nuevo-producto');
 
         modalNuevoProducto = new bootstrap.Modal(modalElement);
+        modalPrecioProducto = new bootstrap.Modal(document.getElementById('modalPrecioProducto'));
         document.getElementById('btn-nuevo-producto').addEventListener('click', abrirModalNuevoProducto);
         document.getElementById('agregar-color').addEventListener('click', function () { agregarColorFila(); });
         document.getElementById('agregar-cuota').addEventListener('click', function () { agregarCuotaFila(); });
         document.getElementById('producto-imagen-url').addEventListener('input', actualizarPreviewImagen);
+        document.getElementById('vista-previa-formulario').addEventListener('click', abrirVistaPreviaFormulario);
+        document.getElementById('form-precio-producto').addEventListener('submit', guardarPrecioRapido);
         formulario.addEventListener('submit', guardarProducto);
         modalElement.addEventListener('hidden.bs.modal', limpiarFormularioProducto);
 
@@ -119,12 +129,34 @@
     }
 
     function manejarAccionesTabla(event) {
-        const botonEditar = event.target.closest('[data-producto-id]');
-        if (!botonEditar || !event.currentTarget.contains(botonEditar)) {
+        const boton = event.target.closest('[data-producto-id][data-action]');
+        if (!boton || !event.currentTarget.contains(boton)) {
             return;
         }
 
-        abrirModalEditarProducto(Number(botonEditar.dataset.productoId));
+        const productoID = Number(boton.dataset.productoId);
+        const producto = productos.find(function (item) { return Number(item.productoID) === productoID; });
+        if (!producto) {
+            return;
+        }
+
+        switch (boton.dataset.action) {
+            case 'edit':
+                abrirModalEditarProducto(productoID);
+                break;
+            case 'price':
+                abrirModalPrecioProducto(producto);
+                break;
+            case 'stock':
+                window.StockMovements.open(producto, function () { obtenerProductos(); });
+                break;
+            case 'availability':
+                cambiarDisponibilidad(producto);
+                break;
+            case 'preview':
+                ProductPreview.open(producto, { unsaved: false });
+                break;
+        }
     }
 
     function abrirModalEditarProducto(productoID) {
@@ -136,6 +168,7 @@
         prepararFormularioProductoLimpio();
         modoFormulario = 'editar';
         productoEditandoId = productoID;
+        productoBaseActual = productos.find(function (item) { return Number(item.productoID) === productoID; }) || null;
         actualizarModalFormulario();
         ocultarFormMensaje();
         alternarCargaFormulario(true);
@@ -199,6 +232,8 @@
         document.getElementById('producto-precio-ars').value = producto.precioARS ?? '';
         document.getElementById('producto-precio-usd').value = producto.precioUSD ?? '';
         document.getElementById('producto-disponible').checked = Boolean(producto.disponible);
+        document.getElementById('producto-sku').value = producto.sku || '';
+        document.getElementById('producto-stock-minimo').value = producto.stockMinimo ?? 1;
         document.getElementById('producto-imagen-url').value = producto.imagenUrl || '';
 
         document.getElementById('producto-colores').innerHTML = '';
@@ -296,6 +331,135 @@
         });
     }
 
+    function abrirVistaPreviaFormulario() {
+        const producto = {
+            productoID: productoEditandoId || 'preview',
+            nombre: document.getElementById('producto-nombre').value.trim() || 'Producto sin nombre',
+            categoria: document.getElementById('producto-categoria').selectedOptions[0]?.textContent || 'Equipo',
+            estado: Number(document.getElementById('producto-estado').value || 1),
+            precioARS: Number(document.getElementById('producto-precio-ars').value || 0),
+            precioUSD: Number(document.getElementById('producto-precio-usd').value || 0),
+            disponible: document.getElementById('producto-disponible').checked,
+            stockActual: productoBaseActual ? productoBaseActual.stockActual : null,
+            imagenUrl: document.getElementById('producto-imagen-url').value.trim(),
+            colores: Array.from(document.querySelectorAll('[data-color]')).map(function (input) { return input.value.trim(); }).filter(Boolean),
+            cuotas: leerCuotasFormulario().cuotas.map(function (cuota) {
+                const medio = mediosPago.find(function (item) { return Number(item.medioPagoID) === Number(cuota.medioPagoID); });
+                return { cantidadCuotas: cuota.cantidadCuotas, montoCuota: cuota.montoCuota, medioPago: medio ? medio.nombre : '' };
+            })
+        };
+
+        producto.disponibilidadEfectiva = producto.stockActual === null || producto.stockActual === undefined
+            ? producto.disponible
+            : producto.disponible && producto.stockActual > 0;
+        ProductPreview.open(producto, { unsaved: true });
+    }
+
+    function abrirModalPrecioProducto(producto) {
+        productoPrecioEditandoId = Number(producto.productoID);
+        document.getElementById('precio-producto-nombre').textContent = producto.nombre || 'Producto';
+        document.getElementById('precio-rapido-ars').value = producto.precioARS ?? '';
+        document.getElementById('precio-rapido-usd').value = producto.precioUSD ?? '';
+        document.getElementById('precio-mensaje').hidden = true;
+        document.getElementById('precio-mensaje').textContent = '';
+        modalPrecioProducto.show();
+    }
+
+    async function guardarPrecioRapido(event) {
+        event.preventDefault();
+        if (!productoPrecioEditandoId) {
+            return;
+        }
+
+        const precioARS = Number(document.getElementById('precio-rapido-ars').value);
+        const precioUSD = Number(document.getElementById('precio-rapido-usd').value);
+        const button = document.getElementById('guardar-precio-rapido');
+
+        if (!Number.isFinite(precioARS) || !Number.isFinite(precioUSD) || precioARS < 0 || precioUSD < 0) {
+            mostrarMensajePrecio('Ingresá importes válidos y no negativos.');
+            return;
+        }
+
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> Guardando...';
+
+        try {
+            const response = await fetch(`${linkApi}/productos/${productoPrecioEditandoId}/precios`, {
+                method: 'PATCH',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ precioARS: precioARS, precioUSD: precioUSD })
+            });
+
+            if (!response.ok) {
+                const error = await response.json().catch(function () { return null; });
+                throw new Error(error && error.message ? error.message : 'No se pudo guardar el precio.');
+            }
+
+            modalPrecioProducto.hide();
+            mostrarConfirmacionRapida('Precio actualizado correctamente.');
+            obtenerProductos();
+        } catch (error) {
+            mostrarMensajePrecio(error.message || 'No se pudo guardar el precio.');
+        } finally {
+            button.disabled = false;
+            button.innerHTML = '<i class="bi bi-check2" aria-hidden="true"></i> Guardar precio';
+        }
+    }
+
+    async function cambiarDisponibilidad(producto) {
+        const nuevoValor = !(producto.habilitadoVenta ?? producto.disponible);
+        const accion = nuevoValor ? 'habilitar' : 'deshabilitar';
+        let confirmado = true;
+
+        if (window.Swal) {
+            const respuesta = await Swal.fire({
+                title: `${nuevoValor ? 'Habilitar' : 'Deshabilitar'} producto`,
+                text: `¿Querés ${accion} la venta de ${producto.nombre}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: nuevoValor ? 'Habilitar' : 'Deshabilitar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: nuevoValor ? '#6d28d9' : '#b93828'
+            });
+            confirmado = respuesta.isConfirmed;
+        }
+
+        if (!confirmado) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${linkApi}/productos/${producto.productoID}/disponibilidad`, {
+                method: 'PATCH',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ disponible: nuevoValor })
+            });
+
+            if (!response.ok) {
+                const error = await response.json().catch(function () { return null; });
+                throw new Error(error && error.message ? error.message : 'No se pudo actualizar la disponibilidad.');
+            }
+
+            const resultado = await response.json();
+            mostrarConfirmacionRapida(resultado.disponibilidadEfectiva ? 'Producto disponible para venta.' : 'Disponibilidad actualizada; el stock puede impedir la venta efectiva.');
+            obtenerProductos();
+        } catch (error) {
+            mostrarConfirmacionRapida(error.message || 'No se pudo actualizar la disponibilidad.', 'error');
+        }
+    }
+
+    function mostrarMensajePrecio(mensaje) {
+        const element = document.getElementById('precio-mensaje');
+        element.textContent = mensaje;
+        element.hidden = false;
+    }
+
+    function mostrarConfirmacionRapida(mensaje, icono) {
+        if (window.Swal) {
+            Swal.fire({ text: mensaje, icon: icono || 'success', position: 'top-end', toast: true, timer: 3200, timerProgressBar: true, showConfirmButton: false });
+        }
+    }
+
     async function guardarProducto(event) {
         event.preventDefault();
 
@@ -327,6 +491,8 @@
             precioARS: Number(document.getElementById('producto-precio-ars').value),
             precioUSD: Number(document.getElementById('producto-precio-usd').value),
             disponible: document.getElementById('producto-disponible').checked,
+            sku: document.getElementById('producto-sku').value.trim() || null,
+            stockMinimo: Number(document.getElementById('producto-stock-minimo').value),
             imagenUrl: document.getElementById('producto-imagen-url').value.trim() || null,
             colores: Array.from(document.querySelectorAll('[data-color]'))
                 .map(function (input) { return input.value.trim(); })
@@ -397,6 +563,7 @@
         solicitudProductoEdicion += 1;
         modoFormulario = 'crear';
         productoEditandoId = null;
+        productoBaseActual = null;
         prepararFormularioProductoLimpio();
         ocultarFormMensaje();
         alternarCargaFormulario(false);
@@ -413,6 +580,8 @@
         formulario.classList.remove('was-validated');
         document.getElementById('producto-colores').innerHTML = '';
         document.getElementById('producto-cuotas').innerHTML = '';
+        document.getElementById('producto-sku').value = '';
+        document.getElementById('producto-stock-minimo').value = '1';
         document.getElementById('producto-imagen-preview').innerHTML = `<div class="image-preview-placeholder">
             <i class="bi bi-image" aria-hidden="true"></i>
             <span>La vista previa aparecerá aquí</span>
@@ -475,7 +644,7 @@
     }
 
     function obtenerProductos() {
-        fetch(`${linkApi}/productos`)
+        fetch(`${linkApi}/productos/admin`)
             .then(function (response) {
                 if (!response.ok) {
                     throw new Error('No se pudo obtener el inventario');
@@ -489,7 +658,7 @@
             })
             .catch(function () {
                 const cuerpo = document.getElementById('tabla-productos');
-                cuerpo.innerHTML = '<tr><td colspan="7" class="table-message error-message">No se pudo cargar el inventario.</td></tr>';
+                cuerpo.innerHTML = '<tr><td colspan="9" class="table-message error-message">No se pudo cargar el inventario.</td></tr>';
                 document.getElementById('contador-productos').textContent = 'Error al cargar los productos';
             });
     }
@@ -521,30 +690,48 @@
             const textoBusqueda = [
                 producto.nombre,
                 producto.categoria,
+                producto.sku,
                 ...(producto.colores || [])
             ].join(' ').toLowerCase();
+            const disponibilidadEfectiva = producto.disponibilidadEfectiva ?? producto.disponible;
 
             return (!query || textoBusqueda.includes(query))
                 && (!categoria || producto.categoria === categoria)
                 && (!estado || String(producto.estado) === estado)
-                && (!disponibilidad || String(producto.disponible) === disponibilidad);
+                && (!disponibilidad || String(disponibilidadEfectiva) === disponibilidad);
         });
 
         cuerpo.innerHTML = filtrados.length
             ? filtrados.map(crearFilaProducto).join('')
-            : '<tr><td colspan="7" class="table-message">No hay productos que coincidan con los filtros.</td></tr>';
+            : '<tr><td colspan="9" class="table-message">No hay productos que coincidan con los filtros.</td></tr>';
 
         document.getElementById('contador-productos').textContent = `${filtrados.length} de ${productos.length} productos`;
     }
 
     function crearFilaProducto(producto) {
         const estado = estadoNombres[producto.estado] || 'Sin definir';
-        const disponibilidad = producto.disponible;
+        const habilitadoVenta = producto.habilitadoVenta ?? producto.disponible;
+        const disponibilidad = producto.disponibilidadEfectiva ?? producto.disponible;
+        const disponibilidadTexto = disponibilidad
+            ? 'Disponible'
+            : (habilitadoVenta && producto.stockActual === 0 ? 'Agotado' : 'No disponible');
         const colores = producto.colores && producto.colores.length
             ? producto.colores.join(', ')
             : 'Sin colores cargados';
+        const stockTexto = producto.stockActual === null || producto.stockActual === undefined
+            ? 'Sin registrar'
+            : Number(producto.stockActual).toLocaleString('es-AR');
+        const stockClass = producto.estadoStock === 'Normal'
+            ? 'is-normal'
+            : producto.estadoStock === 'Bajo'
+                ? 'is-low'
+                : producto.estadoStock === 'Agotado' ? 'is-empty' : '';
+        const availabilityTitle = habilitadoVenta
+            ? (producto.stockActual === 0 ? 'Habilitado para venta, pero agotado' : 'Deshabilitar venta')
+            : 'Habilitar venta';
 
         return `<tr>
+            <td class="product-sku-cell">${escaparHtml(producto.sku || 'Sin SKU')}</td>
             <td>
                 <div class="product-name-cell">${escaparHtml(producto.nombre)}</div>
                 <small class="product-detail">${escaparHtml(colores)}</small>
@@ -553,14 +740,17 @@
             <td class="price-cell">${formatearMoneda(producto.precioARS, 'ARS')}</td>
             <td class="price-cell">${formatearMoneda(producto.precioUSD, 'USD')}</td>
             <td><span class="status-pill status-${String(producto.estado).toLowerCase()}">${estado}</span></td>
-            <td><span class="availability-pill ${disponibilidad ? 'is-available' : 'is-unavailable'}">
-                <span class="availability-dot" aria-hidden="true"></span>${disponibilidad ? 'Disponible' : 'No disponible'}
+            <td><span class="stock-inline ${stockClass}" title="Stock mínimo: ${Number(producto.stockMinimo || 0).toLocaleString('es-AR')}">${stockTexto}</span></td>
+            <td><span class="availability-pill ${disponibilidad ? 'is-available' : 'is-unavailable'}" title="${escaparHtml(habilitadoVenta ? 'Habilitado comercialmente' : 'Deshabilitado comercialmente')}">
+                <span class="availability-dot" aria-hidden="true"></span>${disponibilidadTexto}
             </span></td>
-            <td>
-                <button type="button" class="btn-action btn-edit-product" data-producto-id="${producto.productoID}" aria-label="Editar ${escaparHtml(producto.nombre)}">
-                    <i class="bi bi-pencil-square" aria-hidden="true"></i>
-                    <span>Editar</span>
-                </button>
+            <td><div class="product-actions">
+                <button type="button" class="btn-action btn-icon-only" data-action="price" data-producto-id="${producto.productoID}" title="Cambiar precio" aria-label="Cambiar precio de ${escaparHtml(producto.nombre)}"><i class="bi bi-currency-dollar" aria-hidden="true"></i></button>
+                <button type="button" class="btn-action btn-icon-only" data-action="stock" data-producto-id="${producto.productoID}" title="Ajustar stock" aria-label="Ajustar stock de ${escaparHtml(producto.nombre)}"><i class="bi bi-boxes" aria-hidden="true"></i></button>
+                <button type="button" class="btn-action btn-icon-only ${habilitadoVenta ? 'btn-availability-off' : ''}" data-action="availability" data-producto-id="${producto.productoID}" title="${availabilityTitle}" aria-label="${availabilityTitle} para ${escaparHtml(producto.nombre)}"><i class="bi ${habilitadoVenta ? 'bi-toggle-on' : 'bi-toggle-off'}" aria-hidden="true"></i></button>
+                <button type="button" class="btn-action btn-icon-only" data-action="preview" data-producto-id="${producto.productoID}" title="Vista previa" aria-label="Vista previa de ${escaparHtml(producto.nombre)}"><i class="bi bi-eye" aria-hidden="true"></i></button>
+                <button type="button" class="btn-action btn-edit-product" data-action="edit" data-producto-id="${producto.productoID}" aria-label="Editar ${escaparHtml(producto.nombre)}"><i class="bi bi-pencil-square" aria-hidden="true"></i><span>Editar</span></button>
+            </div>
             </td>
         </tr>`;
     }

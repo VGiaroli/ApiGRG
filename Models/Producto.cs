@@ -21,6 +21,15 @@ namespace ApiGRG.Models
 
         public bool Disponible {get; set;}
 
+        public string? SKU { get; set; }
+
+        public int? StockActual { get; set; }
+
+        public int StockMinimo { get; set; } = 1;
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; } = Array.Empty<byte>();
+
         public string? ImagenUrl { get; set; }
 
         public DateTime FechaCreacion {get; set;}
@@ -30,6 +39,8 @@ namespace ApiGRG.Models
         public ICollection<ProductoColor> ProductoColores {get; set;}
 
         public ICollection<ProductoCuota> ProductoCuotas {get; set;}
+
+        public ICollection<MovimientoStock> MovimientosStock { get; set; } = new List<MovimientoStock>();
 
     }
 
