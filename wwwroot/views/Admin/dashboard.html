@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Resumen de administración de GRG">
+    <title>Dashboard | GRG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <div class="admin-main">
+        <main class="dashboard-page container-fluid px-3 px-lg-4 py-4" id="contenido-dashboard">
+            <header class="dashboard-hero">
+                <div>
+                    <p class="dashboard-eyebrow"><i class="bi bi-stars" aria-hidden="true"></i> Panel de control</p>
+                    <h1>Resumen de GRG</h1>
+                    <p class="dashboard-intro">Una lectura rápida del catálogo, el inventario y las solicitudes activas.</p>
+                </div>
+                <button type="button" class="dashboard-refresh" id="dashboard-refrescar">
+                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                    Actualizar
+                </button>
+            </header>
+
+            <section id="dashboard-cargando" class="dashboard-state dashboard-loading" role="status" aria-live="polite">
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                <span>Cargando información real del sistema...</span>
+            </section>
+
+            <section id="dashboard-error" class="dashboard-state dashboard-error" hidden role="alert">
+                <i class="bi bi-cloud-slash" aria-hidden="true"></i>
+                <div><strong>No pudimos cargar el resumen.</strong><span>Revisá la conexión e intentá nuevamente.</span></div>
+                <button type="button" class="dashboard-inline-action" id="dashboard-reintentar">Reintentar</button>
+            </section>
+
+            <div id="dashboard-contenido" hidden>
+                <section class="dashboard-metrics" aria-label="Indicadores principales">
+                    <article class="metric-card metric-purple"><span class="metric-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></span><div><span class="metric-label">Productos registrados</span><strong id="metric-total">—</strong><small>Catálogo completo</small></div></article>
+                    <article class="metric-card metric-green"><span class="metric-icon"><i class="bi bi-check2-circle" aria-hidden="true"></i></span><div><span class="metric-label">Disponibles para venta</span><strong id="metric-disponibles">—</strong><small>Disponibilidad efectiva</small></div></article>
+                    <article class="metric-card metric-red"><span class="metric-icon"><i class="bi bi-exclamation-octagon" aria-hidden="true"></i></span><div><span class="metric-label">Agotados</span><strong id="metric-agotados">—</strong><small>Stock registrado en cero</small></div></article>
+                    <article class="metric-card metric-amber"><span class="metric-icon"><i class="bi bi-graph-down-arrow" aria-hidden="true"></i></span><div><span class="metric-label">Stock bajo</span><strong id="metric-bajo">—</strong><small>Dentro del mínimo</small></div></article>
+                    <article class="metric-card metric-blue"><span class="metric-icon"><i class="bi bi-question-circle" aria-hidden="true"></i></span><div><span class="metric-label">Stock sin registrar</span><strong id="metric-sin-registrar">—</strong><small>Requieren carga inicial</small></div></article>
+                    <article class="metric-card metric-coral"><span class="metric-icon"><i class="bi bi-tools" aria-hidden="true"></i></span><div><span class="metric-label">Solicitudes activas</span><strong id="metric-solicitudes">—</strong><small>Sin depender de confirmación</small></div></article>
+                </section>
+
+                <div class="dashboard-columns">
+                    <section class="dashboard-panel recent-panel" aria-labelledby="productos-recientes-titulo">
+                        <div class="panel-heading"><div><p class="panel-kicker">Actividad de catálogo</p><h2 id="productos-recientes-titulo">Productos recientes</h2></div><a class="panel-link" href="/views/Productos/productos.html">Ver equipos <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a></div>
+                        <div id="dashboard-recientes-cargando" class="panel-empty panel-loading"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span> Cargando productos...</div>
+                        <div id="dashboard-recientes-vacio" class="panel-empty" hidden><i class="bi bi-inbox" aria-hidden="true"></i><span>Todavía no hay productos registrados.</span></div>
+                        <div class="table-responsive" id="dashboard-recientes-tabla" hidden>
+                            <table class="table dashboard-table"><thead><tr><th>Producto</th><th>Estado</th><th>Stock</th><th>Última actualización</th></tr></thead><tbody id="dashboard-recientes-body"></tbody></table>
+                        </div>
+                    </section>
+
+                    <section class="dashboard-panel quick-panel" aria-labelledby="accesos-rapidos-titulo">
+                        <div class="panel-heading"><div><p class="panel-kicker">Atajos</p><h2 id="accesos-rapidos-titulo">Acciones rápidas</h2></div></div>
+                        <div class="quick-links">
+                            <a class="quick-link quick-link-primary" href="/views/Productos/productos.html#nuevo-producto"><span><i class="bi bi-plus-circle" aria-hidden="true"></i></span><div><strong>Nuevo producto</strong><small>Sumá un equipo al catálogo</small></div><i class="bi bi-arrow-up-right" aria-hidden="true"></i></a>
+                            <a class="quick-link" href="/views/Productos/productos.html"><span><i class="bi bi-laptop" aria-hidden="true"></i></span><div><strong>Listado de equipos</strong><small>Editá y consultá productos</small></div><i class="bi bi-chevron-right" aria-hidden="true"></i></a>
+                            <a class="quick-link" href="/views/Inventario/inventario.html"><span><i class="bi bi-boxes" aria-hidden="true"></i></span><div><strong>Inventario</strong><small>Controlá unidades y mínimos</small></div><i class="bi bi-chevron-right" aria-hidden="true"></i></a>
+                            <a class="quick-link" href="/views/Categorias/categorias.html"><span><i class="bi bi-tags" aria-hidden="true"></i></span><div><strong>Categorías</strong><small>Organizá los equipos</small></div><i class="bi bi-chevron-right" aria-hidden="true"></i></a>
+                            <a class="quick-link" href="/views/Servicios/serviciosA.html"><span><i class="bi bi-tools" aria-hidden="true"></i></span><div><strong>Solicitudes de servicio</strong><small>Revisá los trabajos activos</small></div><i class="bi bi-chevron-right" aria-hidden="true"></i></a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/sesion-usuario.js"></script>
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/layout.js"></script>
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

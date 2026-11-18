@@ -3,3 +3,8 @@
 /obj/
 /.vs/
 /.worktrees/
+
+# Memoria local del agente (no versionar)
+/project-map.md
+/session-log.md
+/state.md

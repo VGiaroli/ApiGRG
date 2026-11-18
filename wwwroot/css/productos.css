@@ -806,6 +806,29 @@
     color: #b91c1c !important;
 }
 
+.table-custom { min-width: 1080px; }
+.product-sku-cell { color: #8f77bd !important; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.72rem !important; font-weight: 800 !important; white-space: nowrap; }
+.stock-inline { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.32rem 0.5rem; border-radius: 999px; background: #f1f3f7; color: #6f7485; font-size: 0.68rem; font-weight: 800; white-space: nowrap; }
+.stock-inline.is-normal { background: #e9f8ef; color: #0f995b; }
+.stock-inline.is-low { background: #fff6df; color: #b7791f; }
+.stock-inline.is-empty { background: #fff0ef; color: #c24135; }
+.stock-inline::before { width: 6px; height: 6px; border-radius: 50%; background: currentColor; content: ''; }
+.product-actions { display: inline-flex; align-items: center; justify-content: flex-end; gap: 0.3rem; }
+.btn-action.btn-icon-only { width: 36px; min-width: 36px; padding: 0; }
+.btn-action.btn-icon-only:hover, .btn-action.btn-icon-only:focus-visible { background: #faf7ff; border-color: #c4b5fd; color: #6d28d9; }
+.btn-action.btn-availability-off:hover, .btn-action.btn-availability-off:focus-visible { background: #fff0ed; border-color: #f4b6aa; color: #b93828; }
+.quick-price-modal .modal-header { align-items: flex-start; padding: 1.25rem 1.35rem 1rem; border-bottom: 1px solid #eceaf1; }
+.quick-price-modal .modal-title { color: #20243a; font-size: 1.15rem; font-weight: 800; }
+.quick-price-modal .modal-body { padding: 1.25rem 1.35rem; }
+.quick-price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+.quick-price-grid label { display: block; margin-bottom: 0.4rem; color: #667087; font-size: 0.7rem; font-weight: 800; }
+.quick-price-grid .form-control { min-height: 44px; border-color: #e4e1ea; border-radius: 10px; font-size: 0.8rem; }
+.quick-price-grid .form-control:focus { border-color: #a78bfa; box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12); }
+.quick-action-message { margin-bottom: 1rem; padding: 0.7rem 0.8rem; border: 1px solid #fecaca; border-radius: 10px; background: #fff7f7; color: #a43d3d; font-size: 0.72rem; font-weight: 700; }
+.quick-price-modal .modal-footer { padding: 1rem 1.35rem 1.25rem; border-top: 1px solid #eceaf1; }
+
+@media (max-width: 600px) { .quick-price-grid { grid-template-columns: 1fr; } }
+
 @media (max-width: 1100px) {
     .product-toolbar {
         grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(150px, 1fr));
