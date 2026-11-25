@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiGRG.ModelsView;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace ApiGRG.Models
 {
@@ -13,7 +14,7 @@ namespace ApiGRG.Models
 
         // Proporciona información sobre el entorno de la aplicación,
         // nos dice dónde está la carpeta wwwroot
-        private readonly IWebHostEnvironment _env; 
+        private readonly IWebHostEnvironment _env;
 
         public CategoriasController(GrgContext context, IWebHostEnvironment env)
         {
@@ -47,6 +48,16 @@ namespace ApiGRG.Models
             return categorias;
         }
 
+        [HttpGet("Destacadas")]
+        public async Task<ActionResult<IEnumerable<Categoria>>> GetDestacadas()
+        {
+            return await _context.Categorias
+            .Where(c => c.Destacada && !c.Eliminado)
+            .OrderBy(c => c.CategoriaID)
+            .Take(4)
+            .ToListAsync();
+        }
+
         [HttpPost]
         public async Task<ActionResult<Categoria>> PostCategoria([FromForm] VistaCategoria vistaCategoria)
         {
@@ -61,7 +72,8 @@ namespace ApiGRG.Models
                 // Convertir a mayúsculas aquí  
                 NombreProducto = vistaCategoria.NombreProducto.Trim().ToUpper(),
                 Descripcion = vistaCategoria.Descripcion?.Trim(),
-                Eliminado = vistaCategoria.Eliminado
+                Eliminado = vistaCategoria.Eliminado,
+                Destacada = vistaCategoria.Destacada
             };
 
             // si el usuario eligió una imagen
@@ -94,21 +106,19 @@ namespace ApiGRG.Models
                 return BadRequest(new { message = "El Nombre del Producto es requerido." });
             }
 
-            // Buscamos la categoría que ya existe en la base de datos
             var categoria = await _context.Categorias.FindAsync(id);
             if (categoria == null)
             {
                 return NotFound();
             }
 
-            // Actualizamos solo los campos que vienen del formulario
             categoria.NombreProducto = dto.NombreProducto.Trim().ToUpper();
             categoria.Descripcion = dto.Descripcion?.Trim();
             categoria.Eliminado = dto.Eliminado;
+            categoria.Destacada = dto.Destacada;
 
-            // Solo si eligió una imagen NUEVA reemplazamos la anterior.
-            // Si no eligió ninguna, ImagenUrl queda como estaba.
             string? imagenVieja = null;
+            string? imagenNueva = null;
             if (dto.Imagen != null)
             {
                 var resultado = await GuardarImagen(dto.Imagen);
@@ -117,10 +127,33 @@ namespace ApiGRG.Models
                     return BadRequest(new { message = resultado.error });
                 }
                 imagenVieja = categoria.ImagenUrl;
-                categoria.ImagenUrl = resultado.url;
+                imagenNueva = resultado.url;
+                categoria.ImagenUrl = imagenNueva;
             }
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // Si falló el guardado, la imagen nueva quedó huérfana en el disco: la borramos
+                BorrarImagen(imagenNueva);
+
+                // Alguien pudo haber eliminado la categoría mientras la editábamos
+                if (!CategoriaExists(id))
+                {
+                    return NotFound();
+                }
+
+                throw; // la categoría existe, es otro conflicto de concurrencia: lo dejamos subir
+            }
+            catch (DbUpdateException)
+            {
+                // Cualquier otro error de base de datos: también limpiamos la imagen nueva
+                BorrarImagen(imagenNueva);
+                return StatusCode(500, new { message = "No se pudo guardar la categoría." });
+            }
 
             // Borramos la imagen vieja recién cuando ya se guardó todo bien
             BorrarImagen(imagenVieja);
@@ -149,7 +182,7 @@ namespace ApiGRG.Models
             return NoContent();
         }
 
-        
+
         // Guarda la imagen en wwwroot/img/categorias y devuelve la ruta (o un error)
         private async Task<(string? url, string? error)> GuardarImagen(IFormFile archivo)
         {
@@ -196,9 +229,16 @@ namespace ApiGRG.Models
             if (!urlImagen.StartsWith("/img/categorias/")) return;
 
             var ruta = Path.Combine(_env.WebRootPath, urlImagen.TrimStart('/'));
-            if (System.IO.File.Exists(ruta))
+            try
             {
-                System.IO.File.Delete(ruta);
+                if (System.IO.File.Exists(ruta))
+                {
+                    System.IO.File.Delete(ruta);
+                }
+            }
+            catch(Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+            {
+                
             }
         }
 

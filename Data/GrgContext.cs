@@ -23,6 +23,8 @@ public DbSet<Servicio> Servicios { get; set; }
 
     public DbSet<MovimientoStock> MovimientosStock { get; set; }
 
+    public DbSet<MiembroEquipo> MiembroEquipos { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

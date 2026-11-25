@@ -32,6 +32,9 @@ namespace ApiGRG.Migrations
                     b.Property<string>("Descripcion")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Destacada")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("Eliminado")
                         .HasColumnType("bit");
 
@@ -65,6 +68,42 @@ namespace ApiGRG.Migrations
                     b.HasKey("MedioPagoID");
 
                     b.ToTable("MedioPagos");
+                });
+
+            modelBuilder.Entity("ApiGRG.Models.MiembroEquipo", b =>
+                {
+                    b.Property<int>("MiembroEquipoID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MiembroEquipoID"));
+
+                    b.Property<bool>("Activo")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Cargo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EtiquetasJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagenUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NombreCompleto")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MiembroEquipoID");
+
+                    b.ToTable("MiembroEquipos");
                 });
 
             modelBuilder.Entity("ApiGRG.Models.Producto", b =>
